@@ -17,8 +17,10 @@ Skill validation:
   ✓ code-analysis-skill
   ✓ example-skill
   ✓ file-management-skill
+  ✓ git-workflow-skill
   ✓ skill-creator
   ✓ skill-router
+  ✓ testing-skill
 
   PASS  .github/plugin/marketplace.json
   PASS  .claude-plugin/marketplace.json
@@ -33,8 +35,10 @@ Schema validation: All 3 file(s) valid.
 | code-analysis-skill | A skill for analyzing code quality, identifying patterns, and suggesting impr... | read_file, grep, list_directory |
 | example-skill | An example skill to demonstrate the structure and format for Agent Skills. | — |
 | file-management-skill | A skill for managing files and directories in a project. Use this skill when ... | read_file, write_file, list_directory, create_directory, delete_path, move_path, copy_path |
+| git-workflow-skill | Git operations and workflows. Use when committing, branching, merging, rebasi... | read_file, write_file, list_directory |
 | skill-creator | Guide for creating effective skills. This skill should be used when users wan... | — |
 | skill-router | Find and load skills on demand. Use when you need a specialized skill for a t... | list_skills, get_skill |
+| testing-skill | Writing and running tests. Use when creating unit tests, integration tests, e... | read_file, write_file, list_directory |
 
 ## Available Commands
 

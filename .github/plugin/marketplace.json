@@ -19,6 +19,8 @@
         "./skills/example-skill",
         "./skills/file-management-skill",
         "./skills/code-analysis-skill",
+        "./skills/git-workflow-skill",
+        "./skills/testing-skill",
         "./skills/skill-creator"
       ]
     }
