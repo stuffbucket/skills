@@ -1,0 +1,20 @@
+{
+  "name": "stuffbucket-agent-skills",
+  "owner": {
+    "name": "Stuffbucket",
+    "email": "231133237+stuffbucket@users.noreply.github.com"
+  },
+  "metadata": {
+    "description": "Custom skills for Stuffbucket",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "custom-skills",
+      "description": "Collection of custom skills",
+      "source": "./",
+      "strict": false,
+      "skills": ["./skills/example-skill"]
+    }
+  ]
+}
