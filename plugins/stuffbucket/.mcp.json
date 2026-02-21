@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "skill-router": {
+      "command": "npx",
+      "args": ["-y", "@stuffbucket/skills"]
+    }
+  }
+}

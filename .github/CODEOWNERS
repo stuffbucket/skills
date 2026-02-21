@@ -1,0 +1,21 @@
+# Default — require review for all changes
+* @stuffbucket/maintainers
+
+# Skills and plugin content
+plugins/ @stuffbucket/maintainers
+template/ @stuffbucket/maintainers
+
+# Discovery manifests — changes affect agent registration
+.github/plugin/marketplace.json @stuffbucket/maintainers
+.claude-plugin/marketplace.json @stuffbucket/maintainers
+
+# Schemas — changes affect validation contracts
+schemas/ @stuffbucket/maintainers
+
+# CI and tooling
+.github/workflows/ @stuffbucket/maintainers
+scripts/ @stuffbucket/maintainers
+
+# Spec and docs
+spec/ @stuffbucket/maintainers
+docs/ @stuffbucket/maintainers

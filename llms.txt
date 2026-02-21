@@ -1,0 +1,87 @@
+# Agent Skills
+
+AI assistant skills for Claude, Copilot, and other LLMs, following the Agent Skills specification.
+
+## Quick Start
+
+  npm run setup          # create MCP symlinks + build skill index
+  npm run build:index    # rebuild skill index only
+  npm run build:llms     # regenerate llms.txt from template
+  npm run lint           # run all linters (markdown, JS, JSON schemas)
+  npm run validate       # validate example skill frontmatter
+  npm run test           # lint + validate + build index
+
+## Repository Health
+
+Skill validation:
+  ✓ code-analysis-skill
+  ✓ example-skill
+  ✓ file-management-skill
+  ✓ skill-creator
+  ✓ skill-router
+
+  PASS  .github/plugin/marketplace.json
+  PASS  .claude-plugin/marketplace.json
+  PASS  plugins/stuffbucket/.mcp.json
+
+Schema validation: All 3 file(s) valid.
+
+## Skills
+
+| Skill | Description | Allowed Tools |
+|---|---|---|
+| code-analysis-skill | A skill for analyzing code quality, identifying patterns, and suggesting impr... | read_file, grep, list_directory |
+| example-skill | An example skill to demonstrate the structure and format for Agent Skills. | — |
+| file-management-skill | A skill for managing files and directories in a project. Use this skill when ... | read_file, write_file, list_directory, create_directory, delete_path, move_path, copy_path |
+| skill-creator | Guide for creating effective skills. This skill should be used when users wan... | — |
+| skill-router | Find and load skills on demand. Use when you need a specialized skill for a t... | list_skills, get_skill |
+
+## Available Commands
+
+**skill-creator:**
+- `generate_llms_txt.py [--check] [--stdout]` — llms.txt Generator - Assembles llms.txt from repo sources of truth
+- `init_skill.py <skill-name> --path <path>` — Skill Initializer - Creates a new skill from template
+- `package_skill.py <path/to/skill-folder> [output-directory]` — Skill Packager - Creates a distributable .skill file of a skill folder
+- `quick_validate.py` — Quick validation script for skills - minimal version
+- `validate_schemas.py [repo-root]` — JSON Schema Validator - Validates marketplace.json and .mcp.json files against schemas
+
+**skill-router:**
+- `node build-index.js [rootDir]` — Builds a compact skill index from SKILL.md frontmatter across all plugins.
+- `npx @stuffbucket/skills` — Minimal MCP-compatible skill router server.
+
+## MCP Server
+
+Server: `skill-router`
+Command: `npx -y @stuffbucket/skills`
+
+Tools:
+- `list_skills` — Discover available skills. Call with no arguments to see all skills, or pass a query to filter by keyword.
+  - `query` (string, optional) — Keyword to filter skills by name, description, or tags. Omit to return all.
+- `get_skill` — Load a skill's full instructions by name. Skill names are kebab-case identifiers from list_skills.
+  - `name` (string, required) — Skill name, e.g. code-analysis-skill.
+
+## Structure
+
+- `plugins/<plugin>/skills/<skill>/SKILL.md` — skill definitions (YAML frontmatter + markdown)
+- `plugins/<plugin>/.mcp.json` — canonical MCP server config per plugin
+- `.mcp.json` — symlink → plugins/stuffbucket/.mcp.json (root-level MCP discovery)
+- `.vscode/mcp.json` — symlink → plugins/stuffbucket/.mcp.json (VS Code MCP discovery)
+- `.claude-plugin/marketplace.json` — Claude Code plugin discovery (functional)
+- `.github/plugin/marketplace.json` — Copilot plugin manifest (aspirational)
+- `plugins/stuffbucket/skills/skill-router/index.json` — generated skill index (npm run build:index)
+- `template/` — starter template for new skills
+
+## Conventions
+
+- Each skill lives in its own directory with a required `SKILL.md`
+- YAML frontmatter requires `name` (kebab-case, matches directory) and `description`
+- Optional frontmatter: `license`, `metadata`, `compatibility`, `allowed-tools`
+- Content should be under 500 lines for optimal context management
+- Optional subdirectories: `scripts/`, `references/`, `assets/`
+
+## Docs
+
+- `docs/best-practices.md` — Skill Creation Best Practices
+- `docs/contributing.md` — Contribution Guidelines
+- `docs/integration-status.md` — Integration Status
+- `spec/agent-skills-spec.md` — Agent Skills Specification

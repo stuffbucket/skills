@@ -1,0 +1,49 @@
+name: Lint & Validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint Markdown
+        run: npm run lint:md
+
+      - name: Lint JavaScript
+        run: npm run lint:js
+
+      - name: Validate JSON schemas
+        run: npm run lint:json
+
+      - name: Validate skills
+        run: npm run validate
+
+      - name: Build skill index
+        run: npm run build:index
+
+      - name: Test MCP server
+        run: node plugins/stuffbucket/skills/skill-router/tests/test-mcp-server.js
+
+      - name: Check llms.txt is up to date
+        run: npm run check:llms

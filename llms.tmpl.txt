@@ -1,0 +1,39 @@
+# Agent Skills
+
+AI assistant skills for Claude, Copilot, and other LLMs, following the Agent Skills specification.
+
+## Quick Start
+
+{{QUICK_START}}
+
+## Repository Health
+
+{{HEALTH}}
+
+## Skills
+
+{{SKILLS}}
+
+## Available Commands
+
+{{COMMANDS}}
+
+## MCP Server
+
+{{MCP}}
+
+## Structure
+
+{{STRUCTURE}}
+
+## Conventions
+
+- Each skill lives in its own directory with a required `SKILL.md`
+- YAML frontmatter requires `name` (kebab-case, matches directory) and `description`
+- Optional frontmatter: `license`, `metadata`, `compatibility`, `allowed-tools`
+- Content should be under 500 lines for optimal context management
+- Optional subdirectories: `scripts/`, `references/`, `assets/`
+
+## Docs
+
+{{DOCS}}

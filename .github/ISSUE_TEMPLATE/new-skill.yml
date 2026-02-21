@@ -1,0 +1,43 @@
+---
+name: New skill
+description: Propose a new skill for the repository
+labels: ["new-skill"]
+body:
+  - type: input
+    id: skill-name
+    attributes:
+      label: Skill name
+      description: Kebab-case name (e.g., my-new-skill)
+      placeholder: my-new-skill
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What does this skill do and when should an AI assistant use it?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - utilities
+        - development
+        - documentation
+        - testing
+        - other
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: compatibility
+    attributes:
+      label: Target platforms
+      options:
+        - label: Claude
+        - label: GitHub Copilot
+        - label: Other LLMs

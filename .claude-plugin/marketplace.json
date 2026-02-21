@@ -1,19 +1,19 @@
 {
-  "name": "stuffbucket-copilot-plugins",
-  "metadata": {
-    "description": "Stuffbucket plugins for GitHub Copilot",
-    "version": "1.0.0"
-  },
+  "name": "stuffbucket-agent-skills",
   "owner": {
     "name": "Stuffbucket",
     "email": "contact@stuffbucket.com"
   },
+  "metadata": {
+    "description": "Stuffbucket skills for Claude Code and GitHub Copilot",
+    "version": "1.0.0"
+  },
   "plugins": [
     {
       "name": "stuffbucket",
-      "source": "plugins/stuffbucket",
       "description": "Tools and utilities for Stuffbucket workflows",
-      "version": "1.0.0",
+      "source": "plugins/stuffbucket",
+      "strict": false,
       "skills": [
         "./skills/skill-router",
         "./skills/example-skill",

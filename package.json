@@ -1,0 +1,52 @@
+{
+  "name": "@stuffbucket/skills",
+  "version": "1.0.0",
+  "description": "Agent skills, MCP skill-router server, and dev tooling for Claude, Copilot, and other AI assistants",
+  "bin": {
+    "stuffbucket-skills": "plugins/stuffbucket/skills/skill-router/scripts/mcp-server.js"
+  },
+  "files": [
+    "plugins/stuffbucket/skills/*/SKILL.md",
+    "plugins/stuffbucket/skills/*/scripts/**",
+    "plugins/stuffbucket/skills/*/references/**",
+    "plugins/stuffbucket/skills/*/assets/**",
+    "plugins/stuffbucket/skills/*/LICENSE*",
+    "plugins/stuffbucket/skills/skill-router/index.json",
+    "plugins/stuffbucket/.mcp.json",
+    ".claude-plugin/",
+    ".github/plugin/",
+    "llms.txt",
+    "LICENSE"
+  ],
+  "scripts": {
+    "setup": "npm install && node scripts/setup-links.js && npm run build:index",
+    "build:index": "node plugins/stuffbucket/skills/skill-router/scripts/build-index.js",
+    "build:llms": "python3 plugins/stuffbucket/skills/skill-creator/scripts/generate_llms_txt.py",
+    "check:llms": "python3 plugins/stuffbucket/skills/skill-creator/scripts/generate_llms_txt.py --check",
+    "lint": "npm run lint:md && npm run lint:js && npm run lint:json",
+    "lint:md": "markdownlint-cli2 '**/*.md' '#node_modules'",
+    "lint:js": "eslint .",
+    "lint:json": "python3 plugins/stuffbucket/skills/skill-creator/scripts/validate_schemas.py",
+    "validate": "python3 plugins/stuffbucket/skills/skill-creator/scripts/quick_validate.py plugins/stuffbucket/skills/example-skill",
+    "test": "npm run build:index && node plugins/stuffbucket/skills/skill-router/tests/test-mcp-server.js",
+    "test:repl": "npm run build:index && node plugins/stuffbucket/skills/skill-router/scripts/mcp-server.js",
+    "prepublishOnly": "npm run build:index"
+  },
+  "dependencies": {
+    "fuse.js": "^7.1.0"
+  },
+  "devDependencies": {
+    "ajv": "^8.18.0",
+    "eslint": "^10.0.1",
+    "markdownlint-cli2": "^0.21.0"
+  },
+  "keywords": [
+    "mcp",
+    "skills",
+    "agent",
+    "copilot",
+    "claude",
+    "llm"
+  ],
+  "license": "MIT"
+}
