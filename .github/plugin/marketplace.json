@@ -1,0 +1,22 @@
+{
+  "name": "stuffbucket-copilot-plugins",
+  "metadata": {
+    "description": "Stuffbucket plugins for GitHub Copilot",
+    "version": "1.0.0"
+  },
+  "owner": {
+    "name": "Stuffbucket",
+    "email": "contact@stuffbucket.com"
+  },
+  "plugins": [
+    {
+      "name": "stuffbucket-tools",
+      "source": "plugins/stuffbucket-tools",
+      "description": "Tools and utilities for Stuffbucket workflows",
+      "version": "1.0.0",
+      "skills": [
+        "./skills/example-skill"
+      ]
+    }
+  ]
+}
