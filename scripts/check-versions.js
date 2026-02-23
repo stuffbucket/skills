@@ -14,11 +14,11 @@ const pkgVersion = JSON.parse(
 const checks = [
   {
     file: ".claude-plugin/marketplace.json",
-    fields: ["metadata.version", "plugins.0.version"],
+    fields: ["plugins.0.version"],
   },
   {
     file: ".github/plugin/marketplace.json",
-    fields: ["metadata.version", "plugins.0.version"],
+    fields: ["plugins.0.version"],
   },
   {
     file: "plugins/stuffbucket/plugin.json",
