@@ -25,6 +25,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
+          registry-url: https://registry.npmjs.org
 
       - uses: actions/setup-python@v5
         with:
