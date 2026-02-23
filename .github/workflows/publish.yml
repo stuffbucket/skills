@@ -2,26 +2,27 @@ name: Publish to npm
 
 on:
   push:
-    tags:
-      - 'v*'
-
-permissions:
-  contents: read
-  id-token: write
+    branches:
+      - main
 
 jobs:
-  publish:
+  ci-and-version:
     runs-on: ubuntu-latest
-    # Skip tags created by auto-patch workflow
+    # Skip version bump commits created by this workflow
     if: "!startsWith(github.event.head_commit.message, 'chore: bump version to')"
+    permissions:
+      contents: write
+    outputs:
+      sha: ${{ steps.version.outputs.sha }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22.x
+          node-version: 24.x
           cache: npm
-          registry-url: https://registry.npmjs.org
 
       - uses: actions/setup-python@v5
         with:
@@ -45,16 +46,71 @@ jobs:
       - name: Check llms.txt is up to date
         run: npm run check:llms
 
-      - name: Verify tag matches package.json version
+      - name: Bump version, sync manifests, and push
+        id: version
         run: |
-          PKG_VERSION="v$(node -p 'require("./package.json").version')"
-          if [ "$PKG_VERSION" != "$GITHUB_REF_NAME" ]; then
-            echo "Tag $GITHUB_REF_NAME does not match package.json version $PKG_VERSION"
-            exit 1
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          CURRENT_VERSION=$(node -p 'require("./package.json").version')
+          PREV_VERSION=$(git show HEAD~1:package.json 2>/dev/null | node -p 'JSON.parse(require("fs").readFileSync(0,"utf8")).version' 2>/dev/null || echo "")
+
+          if [ "$CURRENT_VERSION" != "$PREV_VERSION" ] && [ -n "$PREV_VERSION" ]; then
+            echo "Version manually changed: $PREV_VERSION → $CURRENT_VERSION"
+            NEW_VERSION="v${CURRENT_VERSION}"
+          else
+            echo "Auto-bumping patch version"
+            NEW_VERSION=$(npm version patch --no-git-tag-version)
           fi
+
+          CLEAN_VERSION=${NEW_VERSION#v}
+
+          # Sync version into marketplace and plugin manifests
+          node -e "
+            const fs = require('fs');
+            for (const f of ['.claude-plugin/marketplace.json', '.github/plugin/marketplace.json']) {
+              const j = JSON.parse(fs.readFileSync(f, 'utf8'));
+              j.metadata.version = '$CLEAN_VERSION';
+              j.plugins.forEach(p => { p.version = '$CLEAN_VERSION'; });
+              fs.writeFileSync(f, JSON.stringify(j, null, 2) + '\n');
+            }
+            const pj = JSON.parse(fs.readFileSync('plugins/stuffbucket/plugin.json', 'utf8'));
+            pj.version = '$CLEAN_VERSION';
+            fs.writeFileSync('plugins/stuffbucket/plugin.json', JSON.stringify(pj, null, 2) + '\n');
+          "
+
+          git add package.json package-lock.json .claude-plugin/marketplace.json .github/plugin/marketplace.json plugins/stuffbucket/plugin.json
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: bump version to ${NEW_VERSION}"
+          fi
+
+          git tag "${NEW_VERSION}" || true
+          git push origin main --tags
+
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Verify manifest versions match
         run: npm run check:versions
+
+  publish:
+    needs: ci-and-version
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.ci-and-version.outputs.sha }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+          cache: npm
+          registry-url: https://registry.npmjs.org
+
+      - name: Install dependencies
+        run: npm ci
 
       - name: Publish
         run: npm publish --access public
