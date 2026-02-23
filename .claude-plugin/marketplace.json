@@ -6,14 +6,14 @@
   },
   "metadata": {
     "description": "Agent skills and MCP skill-router for Claude, Copilot, and other AI assistants",
-    "version": "0.1.6"
+    "version": "0.1.7"
   },
   "plugins": [
     {
       "name": "stuffbucket",
       "source": "plugins/stuffbucket",
       "description": "Agent skills and MCP skill-router",
-      "version": "0.1.6"
+      "version": "0.1.7"
     }
   ]
 }
