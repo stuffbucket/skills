@@ -56,11 +56,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/stuffbucket/skills.git"
-  },
-  "homepage": "https://github.com/stuffbucket/skills#readme",
-  "bugs": {
-    "url": "https://github.com/stuffbucket/skills/issues"
+    "url": "git+https://github.com/stuffbucket/skills.git"
   },
   "license": "MIT"
 }
