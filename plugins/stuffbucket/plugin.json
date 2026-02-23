@@ -1,7 +1,7 @@
 {
   "name": "stuffbucket",
   "description": "Agent skills and MCP skill-router for Claude, Copilot, and other AI assistants",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": {
     "name": "Stuffbucket",
     "email": "contact@stuffbucket.com"
@@ -9,7 +9,13 @@
   "license": "MIT",
   "homepage": "https://github.com/stuffbucket/skills",
   "repository": "https://github.com/stuffbucket/skills.git",
-  "keywords": ["mcp", "skills", "agent", "copilot", "claude"],
+  "keywords": [
+    "mcp",
+    "skills",
+    "agent",
+    "copilot",
+    "claude"
+  ],
   "skills": "skills/",
   "mcpServers": ".mcp.json"
 }
