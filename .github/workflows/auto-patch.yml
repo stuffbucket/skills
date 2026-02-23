@@ -1,0 +1,81 @@
+name: Auto-patch and publish
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  auto-patch:
+    runs-on: ubuntu-latest
+    # Skip version bump commits (from this workflow or manual npm version)
+    if: >-
+      !startsWith(github.event.head_commit.message, 'chore: bump version to')
+      && !startsWith(github.event.head_commit.message, 'v')
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          registry-url: https://registry.npmjs.org
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Validate skills
+        run: npm run validate
+
+      - name: Build skill index
+        run: npm run build:index
+
+      - name: Test MCP server
+        run: node plugins/stuffbucket/skills/skill-router/tests/test-mcp-server.js
+
+      - name: Check llms.txt is up to date
+        run: npm run check:llms
+
+      - name: Bump patch version, tag, and publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          NEW_VERSION=$(npm version patch --no-git-tag-version)
+          CLEAN_VERSION=${NEW_VERSION#v}
+
+          # Sync version into marketplace and plugin manifests
+          node -e "
+            const fs = require('fs');
+            for (const f of ['.claude-plugin/marketplace.json', '.github/plugin/marketplace.json']) {
+              const j = JSON.parse(fs.readFileSync(f, 'utf8'));
+              j.metadata.version = '$CLEAN_VERSION';
+              j.plugins.forEach(p => { p.version = '$CLEAN_VERSION'; });
+              fs.writeFileSync(f, JSON.stringify(j, null, 2) + '\n');
+            }
+            const pj = JSON.parse(fs.readFileSync('plugins/stuffbucket/plugin.json', 'utf8'));
+            pj.version = '$CLEAN_VERSION';
+            fs.writeFileSync('plugins/stuffbucket/plugin.json', JSON.stringify(pj, null, 2) + '\n');
+          "
+
+          git add package.json package-lock.json .claude-plugin/marketplace.json .github/plugin/marketplace.json plugins/stuffbucket/plugin.json
+          git commit -m "chore: bump version to ${NEW_VERSION}"
+          git tag "${NEW_VERSION}"
+          git push origin main --tags
+
+          npm publish --provenance --access public

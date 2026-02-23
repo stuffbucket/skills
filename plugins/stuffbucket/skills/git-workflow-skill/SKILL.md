@@ -10,7 +10,7 @@ allowed-tools: read_file write_file list_directory
 
 Use Conventional Commits format:
 
-```
+```text
 <type>(<scope>): <subject>
 
 [body]
@@ -21,13 +21,15 @@ Use Conventional Commits format:
 Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `ci`, `perf`, `build`
 
 Rules:
+
 - Subject line: imperative mood, lowercase, no period, max 72 chars
 - Scope: optional, name the module/area affected
 - Body: wrap at 72 chars, explain *what* and *why* (not *how*)
 - Footer: `BREAKING CHANGE:` or issue references (`Fixes #123`)
 
 Examples:
-```
+
+```text
 feat(skill-router): add fuzzy matching with Fuse.js
 
 Replace hand-rolled token scoring with Fuse.js + Porter stemmer.
@@ -36,7 +38,7 @@ Adds ignoreLocation for position-independent matching.
 Fixes #42
 ```
 
-```
+```text
 fix(mcp): handle missing index.json gracefully
 
 Return empty skill list instead of crashing when index.json
@@ -45,12 +47,12 @@ hasn't been built yet.
 
 ## Branch Naming
 
-```
+```text
 <type>/<ticket-or-short-description>
 ```
 
 | Type | Use |
-|---|---|
+| --- | --- |
 | `feat/` | New features |
 | `fix/` | Bug fixes |
 | `chore/` | Maintenance, deps |
@@ -63,7 +65,7 @@ Examples: `feat/skill-router-fuzzy`, `fix/mcp-ping-handler`, `chore/bump-eslint-
 
 ### Feature Branch
 
-```
+```text
 1. git checkout main && git pull
 2. git checkout -b feat/<name>
 3. Make changes, commit with conventional format
@@ -73,7 +75,7 @@ Examples: `feat/skill-router-fuzzy`, `fix/mcp-ping-handler`, `chore/bump-eslint-
 
 ### Bug Fix (same branch model)
 
-```
+```text
 1. git checkout main && git pull
 2. git checkout -b fix/<name>
 3. Write a failing test that reproduces the bug
@@ -86,7 +88,7 @@ Examples: `feat/skill-router-fuzzy`, `fix/mcp-ping-handler`, `chore/bump-eslint-
 
 When a feature branch is behind main:
 
-```
+```text
 1. git fetch origin
 2. git rebase origin/main
 3. Resolve conflicts file-by-file (see Conflict Resolution below)
@@ -98,7 +100,7 @@ Never use `--force` — always `--force-with-lease` to avoid overwriting others'
 
 ### Interactive Rebase (cleanup before PR)
 
-```
+```text
 1. git rebase -i HEAD~<n>    # n = number of commits to squash
 2. Mark commits as:
    - pick   — keep as-is

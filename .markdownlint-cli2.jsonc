@@ -15,6 +15,7 @@
     "MD041": false
   },
   "ignores": [
-    "node_modules/**"
+    "node_modules/**",
+    "THIRD_PARTY_NOTICES.md"
   ]
 }

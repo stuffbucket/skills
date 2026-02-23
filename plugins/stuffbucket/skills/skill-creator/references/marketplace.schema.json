@@ -28,7 +28,7 @@
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["name", "source", "description", "skills"],
+        "required": ["name", "source", "description"],
         "properties": {
           "name": { "type": "string", "minLength": 1 },
           "source": { "type": "string", "minLength": 1 },

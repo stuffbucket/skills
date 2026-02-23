@@ -33,6 +33,7 @@ This skill is for educational purposes only. Study the structure and format to u
 ## Troubleshooting
 
 If you're having trouble understanding the format:
+
 1. Refer to the spec/agent-skills-spec.md document
 2. Look at the template/SKILL.md file for a complete template
 3. Check that all required fields are included in the YAML frontmatter

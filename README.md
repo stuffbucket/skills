@@ -11,7 +11,7 @@ npm run setup    # install deps, create MCP symlinks, build skill index
 ## Available Skills
 
 | Skill | Description |
-|---|---|
+| --- | --- |
 | `skill-router` | MCP server — find and load skills on demand (context window optimization) |
 | `skill-creator` | Guide for creating, validating, and packaging new skills |
 | `example-skill` | Demonstrates proper structure and format |
@@ -41,7 +41,7 @@ Or configure in any MCP client:
 
 ## Structure
 
-```
+```text
 plugins/stuffbucket/
 ├── .mcp.json                          # MCP server config (canonical)
 └── skills/
@@ -53,13 +53,13 @@ plugins/stuffbucket/
 .mcp.json                              # Symlink → plugins/stuffbucket/.mcp.json
 .vscode/mcp.json                       # Symlink → same (VS Code discovery)
 .claude-plugin/marketplace.json        # Claude Code plugin manifest
-.github/plugin/marketplace.json        # Copilot plugin manifest (aspirational)
+.github/plugin/marketplace.json        # Copilot plugin manifest
 ```
 
 ## Scripts
 
 | Command | What it does |
-|---|---|
+| --- | --- |
 | `npm run setup` | Install deps + create MCP symlinks + build index |
 | `npm run build:index` | Rebuild the skill-router index |
 | `npm test` | Build index + run MCP server smoke tests |

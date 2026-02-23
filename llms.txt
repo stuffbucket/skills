@@ -71,7 +71,7 @@ Tools:
 - `.mcp.json` — symlink → plugins/stuffbucket/.mcp.json (root-level MCP discovery)
 - `.vscode/mcp.json` — symlink → plugins/stuffbucket/.mcp.json (VS Code MCP discovery)
 - `.claude-plugin/marketplace.json` — Claude Code plugin discovery (functional)
-- `.github/plugin/marketplace.json` — Copilot plugin manifest (aspirational)
+- `.github/plugin/marketplace.json` — Copilot plugin manifest
 - `plugins/stuffbucket/skills/skill-router/index.json` — generated skill index (npm run build:index)
 - `template/` — starter template for new skills
 

@@ -1,28 +1,19 @@
 {
-  "name": "stuffbucket-copilot-plugins",
-  "metadata": {
-    "description": "Stuffbucket plugins for GitHub Copilot",
-    "version": "1.0.0"
-  },
+  "name": "stuffbucket-skills",
   "owner": {
     "name": "Stuffbucket",
     "email": "contact@stuffbucket.com"
+  },
+  "metadata": {
+    "description": "Agent skills and MCP skill-router for Claude, Copilot, and other AI assistants",
+    "version": "0.1.0"
   },
   "plugins": [
     {
       "name": "stuffbucket",
       "source": "plugins/stuffbucket",
-      "description": "Tools and utilities for Stuffbucket workflows",
-      "version": "1.0.0",
-      "skills": [
-        "./skills/skill-router",
-        "./skills/example-skill",
-        "./skills/file-management-skill",
-        "./skills/code-analysis-skill",
-        "./skills/git-workflow-skill",
-        "./skills/testing-skill",
-        "./skills/skill-creator"
-      ]
+      "description": "Agent skills and MCP skill-router",
+      "version": "0.1.0"
     }
   ]
 }

@@ -11,18 +11,21 @@
 ## Skill Submission Requirements
 
 ### Code Quality
+
 - Follow the Agent Skills specification
 - Include proper YAML frontmatter
 - Maintain content under 500 lines when possible
 - Use clear, concise language
 
 ### Documentation
+
 - Provide comprehensive usage instructions
 - Include relevant examples
 - Document prerequisites and limitations
 - Add troubleshooting guidance
 
 ### Testing
+
 - Test with multiple AI assistants
 - Validate with the provided validation script
 - Ensure all required fields are present
@@ -31,6 +34,7 @@
 ## Review Process
 
 All submissions will be reviewed for:
+
 1. Compliance with the Agent Skills specification
 2. Clarity and completeness of documentation
 3. Quality and accuracy of content

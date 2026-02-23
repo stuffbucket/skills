@@ -5,30 +5,30 @@ Current state of each integration surface as of February 2026.
 ## Functional
 
 | Artifact | Consumer | Notes |
-|---|---|---|
-| `.claude-plugin/marketplace.json` | Claude Code | Plugin/skill discovery for Claude Code |
-| `plugins/stuffbucket/.mcp.json` | MCP clients | Canonical MCP server config (symlinked to root and `.vscode/`) |
+| --- | --- | --- |
+| `.claude-plugin/marketplace.json` | Claude Code, Copilot CLI | Marketplace manifest — plugin/skill discovery. Copilot CLI also checks this location. |
+| `.github/plugin/marketplace.json` | Copilot CLI | Marketplace manifest — primary discovery location for `copilot plugin marketplace` commands. |
+| `plugins/stuffbucket/plugin.json` | Copilot CLI, Claude Code | Per-plugin manifest — defines skills, MCP servers, and metadata for the plugin. |
+| `plugins/stuffbucket/.mcp.json` | MCP clients | Canonical MCP server config (symlinked to root and `.vscode/`). Also referenced by `plugin.json`. |
 | `.mcp.json` (root symlink) | Claude Code, Cursor, other MCP clients | Symlink → `plugins/stuffbucket/.mcp.json` |
 | `.vscode/mcp.json` (symlink) | VS Code built-in MCP support | Symlink → `plugins/stuffbucket/.mcp.json` |
 | `SKILL.md` files | Any agent with context injection | Content standard — instructions consumed by LLMs |
 | `llms.txt` | LLM-based tools | Repo orientation for AI assistants |
 
-## Aspirational
-
-| Artifact | Intended Consumer | Current Reality |
-|---|---|---|
-| `.github/plugin/marketplace.json` | GitHub Copilot | No shipping Copilot feature reads this file. Copilot Extensions are GitHub Apps registered via GitHub, not repo-level convention files. Retained as forward-looking scaffolding. |
-
 ## MCP Discovery
 
 The canonical MCP server configuration lives at `plugins/stuffbucket/.mcp.json`. Two symlinks provide discovery for editors that look in standard locations:
 
-```
+```text
 .mcp.json                  → plugins/stuffbucket/.mcp.json   (root — Claude Code, Cursor)
 .vscode/mcp.json           → plugins/stuffbucket/.mcp.json   (VS Code built-in MCP)
 ```
 
-These are created by `npm run setup` (runs `scripts/setup-links.js`). On macOS/Linux, true symlinks are created. On Windows with Developer Mode enabled, symlinks are also used. On Windows without Developer Mode, files are copied instead — re-run `npm run setup` after editing the canonical file to keep them in sync.
+These are created by `npm run setup` (runs `scripts/setup-links.js`).
+On macOS/Linux, true symlinks are created.
+On Windows with Developer Mode enabled, symlinks are also used.
+On Windows without Developer Mode, files are copied instead —
+re-run `npm run setup` after editing the canonical file to keep them in sync.
 
 The POSIX-only `scripts/setup-links.sh` is also available for environments without Node.js.
 
@@ -42,7 +42,7 @@ The MCP server exposes a **skill-router** instead of registering each skill as a
 The MCP server (`skill-router/scripts/mcp-server.js`) exposes two tools:
 
 | Tool | Description | Context cost |
-|---|---|---|
+| --- | --- | --- |
 | `list_skills` | Returns compact index (name + description + tags) | ~80 tokens response, only when called |
 | `get_skill` | Returns full SKILL.md for a named skill | Only when called, only for the skill requested |
 
@@ -73,9 +73,24 @@ For local development, you can also run the server directly:
 node plugins/stuffbucket/skills/skill-router/scripts/mcp-server.js
 ```
 
-### What would be needed for Copilot Chat integration
+### Copilot CLI plugin installation
 
-- Register a GitHub App as a Copilot Extension (agent or skillset type)
-- Back it with an HTTP endpoint or MCP server
-- Users install the extension via GitHub Marketplace or org settings
-- `.github/plugin/marketplace.json` is **not** part of this flow
+Users can install directly from the repo:
+
+```sh
+copilot plugin install stuffbucket/skills
+```
+
+Or register as a marketplace and browse:
+
+```sh
+copilot plugin marketplace add stuffbucket/skills
+copilot plugin marketplace browse stuffbucket-skills
+copilot plugin install stuffbucket@stuffbucket-skills
+```
+
+The CLI discovers `plugin.json` at `plugins/stuffbucket/plugin.json` (via the marketplace `source` field), which points to `skills/` for skill discovery and `.mcp.json` for the MCP server.
+
+### Copilot Chat (GitHub.com / VS Code extension)
+
+Copilot Chat extensions are a separate system — GitHub Apps registered via GitHub, backed by HTTP endpoints. The repo-level `marketplace.json` and `plugin.json` files are **not** part of that flow.

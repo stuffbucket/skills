@@ -58,7 +58,9 @@ async function run() {
         // Queue for the next waitForResponse call
         responses.push(response);
       }
-    } catch (_) {}
+    } catch (_) {
+      // ignore JSON parse errors from partial chunks
+    }
   });
 
   function waitForResponse() {

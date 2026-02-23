@@ -111,6 +111,22 @@ Reference docs are ideal for:
 - Complex multi-step processes
 - Information too lengthy for main SKILL.md
 - Content that's only needed for specific use cases
+
+## Structure Suggestions
+
+### API Reference Example
+- Overview
+- Authentication
+- Endpoints with examples
+- Error codes
+- Rate limits
+
+### Workflow Guide Example
+- Prerequisites
+- Step-by-step instructions
+- Common patterns
+- Troubleshooting
+- Best practices
 """
 
 EXAMPLE_ASSET = """# Example Asset File
@@ -120,6 +136,15 @@ Replace with actual asset files (templates, images, fonts, etc.) or delete if no
 
 Asset files are NOT intended to be loaded into context, but rather used within
 the output Claude produces.
+
+## Common Asset Types
+
+- Templates: .pptx, .docx, boilerplate directories
+- Images: .png, .jpg, .svg, .gif
+- Fonts: .ttf, .otf, .woff, .woff2
+- Boilerplate code: Project directories, starter files
+- Icons: .ico, .svg
+- Data files: .csv, .json, .xml, .yaml
 """
 
 

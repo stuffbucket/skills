@@ -2,7 +2,7 @@
 
 This directory contains the specification for Agent Skills.
 
-The full specification is maintained at: https://agentskills.io/specification
+The full specification is maintained at: <https://agentskills.io/specification>
 
 ## Quick Reference
 

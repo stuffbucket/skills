@@ -39,6 +39,9 @@ jobs:
       - name: Validate skills
         run: npm run validate
 
+      - name: Check version consistency
+        run: npm run check:versions
+
       - name: Build skill index
         run: npm run build:index
 

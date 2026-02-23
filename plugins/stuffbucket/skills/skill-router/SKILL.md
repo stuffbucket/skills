@@ -7,79 +7,56 @@ allowed-tools: list_skills get_skill
 
 # Skill Router
 
-A single-tool entry point that replaces loading all skill descriptions into context. Query the index to discover skills, then load only the ones you need.
+A local MCP tool that lets you discover and load skills on demand instead of keeping all skill descriptions in context permanently.
 
 ## Why This Exists
 
-Every MCP tool description occupies context window tokens on every turn. With N skills registered as separate tools, the cost is N × description_size tokens — permanently. This router reduces that to one small description (~50 tokens) plus on-demand loading of only the skills actually needed.
+Every MCP tool description occupies context window tokens on every turn.
+With N skills registered as separate tools, the cost is N × description_size tokens — permanently.
+This router reduces that to one small description (~50 tokens)
+plus on-demand loading of only the skills actually needed.
 
-## How to Use
+## How Agents Reach This Repo
 
-### 1. Generate or read the index
+There are two interaction patterns. They are independent — an agent may use either or both.
 
-Run the index generator to build a compact catalog:
+### Pattern 1: Static discovery via marketplace.json
 
-```bash
-node plugins/stuffbucket/skills/skill-router/scripts/build-index.js
-```
+An agent is pointed at this GitHub repo (by URL or by a mechanism that loads marketplace.json locally).
+The agent reads the marketplace manifest, discovers available skills and MCP servers, and installs what it needs.
+This may be the end of the interaction — the agent now has skills loaded and can use them directly.
 
-This produces `plugins/stuffbucket/skills/skill-router/index.json` — a compact manifest of all available skills with just name, description, path, and tags.
+The marketplace.json lists all skills and MCP configurations. No MCP server needs to be running for this pattern.
 
-Or read the pre-built index directly:
+### Pattern 2: Dynamic routing via MCP
 
-```
-read_file plugins/stuffbucket/skills/skill-router/index.json
-```
+The agent uses the skill-router MCP for on-demand skill discovery and loading.
+Skills are not installed or configured permanently —
+they are capabilities of the MCP that return knowledge to the agent on demand.
+At the end of the agent session, that knowledge is gone.
+Only the skill-router MCP configuration persists between sessions.
 
-### 2. Match task to skill
+This requires installing the MCP onto the host and into the agent's configuration.
+The MCP runs locally as a stdio tool — it does not call any remote service.
+All skill content is bundled in the npm package so everything stays on the host.
 
-Scan the index entries. Each entry has:
-- `name` — skill identifier
-- `description` — when to use it
-- `path` — location of the full SKILL.md
-- `tags` — keyword hints for matching
-- `allowed-tools` — what tools the skill expects
+Installation can happen via:
 
-Pick the entry whose description best matches the current task.
+- The marketplace.json (if the agent's platform supports MCP installation from manifests)
+- Direct npx invocation (see Setup below)
 
-### 3. Load the full skill on demand
+Other MCPs listed in the marketplace (e.g., workiq-proxy) follow the same pattern: the agent reads the manifest from the repo and installs them onto the host separately.
 
-Once you identify the right skill, load its full SKILL.md:
+## MCP Tools
 
-```
-read_file <path>/SKILL.md
-```
-
-Only load what you need. If multiple skills seem relevant, load them one at a time and assess before loading more.
-
-### 4. Load bundled resources as needed
-
-If the loaded skill references scripts, references, or assets, load those only when the skill instructions say to.
-
-## Integration with MCP
-
-The MCP server exposes two operations as a single process:
+The MCP server exposes two tools:
 
 - `list_skills` — returns the compact index (name + description + tags), with fuzzy keyword filtering
 - `get_skill(name)` — returns full SKILL.md content, with fuzzy name matching and suggestions
 
-### Running the server
+### Setup
 
-Via published npm package (runs offline after first install):
-
-```bash
-npx @stuffbucket/skills
-```
-
-Or directly from the repo:
-
-```bash
-node plugins/stuffbucket/skills/skill-router/scripts/mcp-server.js
-```
-
-In a terminal, the server starts an interactive REPL. When piped from an MCP client, it uses the standard JSON-RPC stdio transport.
-
-### .mcp.json configuration
+Add to the agent's MCP configuration:
 
 ```json
 {
@@ -92,10 +69,43 @@ In a terminal, the server starts an interactive REPL. When piped from an MCP cli
 }
 ```
 
+The npm package bundles all skill content, the pre-built index, and the MCP server. After first install, it runs fully offline.
+
+For local development, the server can also be run directly:
+
+```bash
+node plugins/stuffbucket/skills/skill-router/scripts/mcp-server.js
+```
+
+In a terminal, the server starts an interactive REPL. When piped from an MCP client, it uses the standard JSON-RPC stdio transport.
+
+## Using Skills
+
+### 1. Discover
+
+Call `list_skills` with no arguments to see everything, or pass a keyword to filter.
+
+### 2. Match
+
+Each entry has:
+
+- `name` — skill identifier
+- `description` — when to use it
+- `tags` — keyword hints for matching
+
+Pick the entry whose description best matches the current task.
+
+### 3. Load
+
+Call `get_skill(name)` to load the full instructions. Only load what you need — one or two skills per task at most.
+
+### 4. Follow the skill
+
+If the loaded skill references scripts, references, or assets, load those only when the skill instructions say to.
+
 ## Guidelines
 
 - Always check the index before loading a full skill
 - Load at most one or two skills per task — if you need more, reassess the task decomposition
 - Prefer skills with matching `tags` over fuzzy description matching
 - If no skill matches, say so — don't force a poor match
-- The index is generated from live frontmatter, so it's always in sync after `build-index.js` runs

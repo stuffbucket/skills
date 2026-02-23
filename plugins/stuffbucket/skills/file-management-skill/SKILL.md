@@ -12,6 +12,7 @@ This skill helps manage files and directories in a project workspace.
 ## When to Use This Skill
 
 Use this skill when you need to:
+
 - Navigate and explore project directories
 - Read or modify file contents
 - Create new files or directories
@@ -44,6 +45,7 @@ Use this skill when you need to:
 ## Troubleshooting
 
 If operations fail:
+
 1. Verify that paths are correct and exist
 2. Check that you have appropriate permissions
 3. Confirm that file operations won't overwrite important data unintentionally

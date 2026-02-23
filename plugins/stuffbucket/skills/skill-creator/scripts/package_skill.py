@@ -10,13 +10,22 @@ Examples:
     package_skill.py plugins/stuffbucket/skills/my-skill ./dist
 """
 
+import importlib.util
 import sys
 import zipfile
 from pathlib import Path
 
-# Import quick_validate from the same directory
-sys.path.insert(0, str(Path(__file__).parent))
-from quick_validate import validate_skill
+
+def _load_validate_skill():
+    """Load validate_skill from quick_validate.py in the same directory."""
+    module_path = Path(__file__).resolve().parent / "quick_validate.py"
+    if not module_path.is_file():
+        print(f"Error: Required dependency not found: {module_path}")
+        sys.exit(1)
+    spec = importlib.util.spec_from_file_location("quick_validate", module_path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod.validate_skill
 
 
 def package_skill(skill_path, output_dir=None):
@@ -46,6 +55,7 @@ def package_skill(skill_path, output_dir=None):
         return None
 
     print("Validating skill...")
+    validate_skill = _load_validate_skill()
     valid, message = validate_skill(skill_path)
     if not valid:
         print(f"Validation failed: {message}")

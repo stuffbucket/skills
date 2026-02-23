@@ -1,6 +1,6 @@
 {
   "name": "@stuffbucket/skills",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Agent skills, MCP skill-router server, and dev tooling for Claude, Copilot, and other AI assistants",
   "bin": {
     "stuffbucket-skills": "plugins/stuffbucket/skills/skill-router/scripts/mcp-server.js"
@@ -13,16 +13,18 @@
     "plugins/stuffbucket/skills/*/LICENSE*",
     "plugins/stuffbucket/skills/skill-router/index.json",
     "plugins/stuffbucket/.mcp.json",
+    "plugins/stuffbucket/plugin.json",
     ".claude-plugin/",
     ".github/plugin/",
-    "llms.txt",
-    "LICENSE"
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md"
   ],
   "scripts": {
     "setup": "npm install && node scripts/setup-links.js && npm run build:index",
     "build:index": "node plugins/stuffbucket/skills/skill-router/scripts/build-index.js",
     "build:llms": "python3 plugins/stuffbucket/skills/skill-creator/scripts/generate_llms_txt.py",
     "check:llms": "python3 plugins/stuffbucket/skills/skill-creator/scripts/generate_llms_txt.py --check",
+    "check:versions": "node scripts/check-versions.js",
     "lint": "npm run lint:md && npm run lint:js && npm run lint:json",
     "lint:md": "markdownlint-cli2 '**/*.md' '#node_modules'",
     "lint:js": "eslint .",
@@ -30,12 +32,14 @@
     "validate": "python3 plugins/stuffbucket/skills/skill-creator/scripts/quick_validate.py plugins/stuffbucket/skills/example-skill",
     "test": "npm run build:index && node plugins/stuffbucket/skills/skill-router/tests/test-mcp-server.js",
     "test:repl": "npm run build:index && node plugins/stuffbucket/skills/skill-router/scripts/mcp-server.js",
+    "ci": "npm run lint && npm run validate && npm run check:versions && npm run test && npm run check:llms",
     "prepublishOnly": "npm run build:index"
   },
   "dependencies": {
     "fuse.js": "^7.1.0"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "ajv": "^8.18.0",
     "eslint": "^10.0.1",
     "markdownlint-cli2": "^0.21.0"
@@ -48,5 +52,13 @@
     "claude",
     "llm"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stuffbucket/skills.git"
+  },
+  "homepage": "https://github.com/stuffbucket/skills#readme",
+  "bugs": {
+    "url": "https://github.com/stuffbucket/skills/issues"
+  },
   "license": "MIT"
 }

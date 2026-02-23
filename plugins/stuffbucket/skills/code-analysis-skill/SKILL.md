@@ -12,6 +12,7 @@ This skill helps analyze code quality, identify patterns, and suggest improvemen
 ## When to Use This Skill
 
 Use this skill when you need to:
+
 - Review code for potential issues or improvements
 - Analyze coding patterns and practices
 - Identify areas for refactoring
@@ -44,6 +45,7 @@ Use this skill when you need to:
 ## Troubleshooting
 
 If analysis seems off-target:
+
 1. Provide more context about the code's purpose and constraints
 2. Clarify the specific aspects you want analyzed
 3. Share relevant documentation or requirements

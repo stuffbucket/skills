@@ -11,7 +11,7 @@ allowed-tools: read_file write_file list_directory
 Mirror the source tree with a test suffix:
 
 | Source | Test |
-|---|---|
+| --- | --- |
 | `src/utils.js` | `src/utils.test.js` or `tests/utils.test.js` |
 | `lib/parser.py` | `tests/test_parser.py` |
 | `plugins/router/server.js` | `plugins/router/server.test.js` |
@@ -53,7 +53,7 @@ def test_calculates_total_with_tax():
 
 Test names should describe the behavior, not the implementation:
 
-```
+```text
 ✓ "returns empty array when no skills match query"
 ✗ "test filter function"
 
@@ -69,12 +69,14 @@ Pattern: `<action> when <condition>` or `<expected result> given <input>`
 ## What to Test
 
 ### Always test
+
 - Public API / exported functions
 - Edge cases: empty input, null, boundary values, very large input
 - Error paths: invalid input, missing files, network failures
 - State transitions: before/after side effects
 
 ### Skip testing
+
 - Private implementation details (test through public API)
 - Framework/library internals
 - Simple getters/setters with no logic
@@ -108,6 +110,7 @@ def test_loads_index(mock_file):
 ```
 
 Rules:
+
 - Mock at the boundary (fs, network, database, clock)
 - Don't mock the thing you're testing
 - Prefer dependency injection over patching when possible
@@ -182,6 +185,7 @@ Coverage measures which lines/branches execute during tests. Aim for meaningful 
 - **0% is fine** on generated code, type definitions, config files
 
 Run coverage:
+
 ```bash
 npx jest --coverage
 python -m pytest --cov=src --cov-report=term-missing

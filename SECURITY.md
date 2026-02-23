@@ -6,7 +6,7 @@ If you discover a security vulnerability in this project, please report it respo
 
 **Do not open a public issue for security vulnerabilities.**
 
-Instead, please contact us at contact@stuffbucket.com with details of the vulnerability.
+Instead, please contact us at <contact@stuffbucket.com> with details of the vulnerability.
 
 ## Scope
 

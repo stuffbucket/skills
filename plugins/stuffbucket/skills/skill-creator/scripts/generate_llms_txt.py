@@ -245,7 +245,7 @@ def probe_structure(root):
         ('.claude-plugin/marketplace.json',
          'Claude Code plugin discovery (functional)'),
         ('.github/plugin/marketplace.json',
-         'Copilot plugin manifest (aspirational)'),
+         'Copilot plugin manifest'),
         ('plugins/stuffbucket/skills/skill-router/index.json',
          'generated skill index (npm run build:index)'),
         ('template/',
