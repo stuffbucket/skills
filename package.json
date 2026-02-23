@@ -8,6 +8,8 @@
   "files": [
     "plugins/stuffbucket/skills/*/SKILL.md",
     "plugins/stuffbucket/skills/*/scripts/**",
+    "!**/__pycache__",
+    "!**/*.pyc",
     "plugins/stuffbucket/skills/*/references/**",
     "plugins/stuffbucket/skills/*/assets/**",
     "plugins/stuffbucket/skills/*/LICENSE*",
