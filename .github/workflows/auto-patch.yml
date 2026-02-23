@@ -25,7 +25,6 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          registry-url: https://registry.npmjs.org
 
       - uses: actions/setup-python@v5
         with:
@@ -50,8 +49,6 @@ jobs:
         run: npm run check:llms
 
       - name: Bump patch version, tag, and publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
