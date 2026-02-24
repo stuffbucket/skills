@@ -15,7 +15,7 @@
     "plugins/stuffbucket/skills/*/LICENSE*",
     "plugins/stuffbucket/skills/skill-router/index.json",
     "plugins/stuffbucket/.mcp.json",
-    "plugins/stuffbucket/plugin.json",
+    "plugins/stuffbucket/.claude-plugin/",
     ".claude-plugin/",
     ".github/plugin/",
     "LICENSE",
@@ -32,7 +32,8 @@
     "lint:js": "eslint .",
     "lint:json": "python3 plugins/stuffbucket/skills/skill-creator/scripts/validate_schemas.py",
     "validate": "python3 plugins/stuffbucket/skills/skill-creator/scripts/quick_validate.py plugins/stuffbucket/skills/example-skill",
-    "test": "npm run build:index && node plugins/stuffbucket/skills/skill-router/tests/test-mcp-server.js",
+    "test": "npm run build:index && node plugins/stuffbucket/skills/skill-router/tests/test-mcp-server.js && node tests/test-plugin-structure.js",
+    "test:structure": "node tests/test-plugin-structure.js",
     "test:repl": "npm run build:index && node plugins/stuffbucket/skills/skill-router/scripts/mcp-server.js",
     "ci": "npm run lint && npm run validate && npm run check:versions && npm run test && npm run check:llms",
     "prepublishOnly": "npm run build:index"

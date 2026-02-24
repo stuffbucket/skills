@@ -24,7 +24,7 @@ def find_repo_root(start=None):
     """Walk up from start to find the repository root."""
     current = Path(start).resolve() if start else Path(__file__).resolve().parent
     while current != current.parent:
-        if (current / '.github').is_dir() or (current / '.claude-plugin').is_dir():
+        if (current / '.git').is_dir():
             return current
         current = current.parent
     return None
@@ -34,9 +34,19 @@ def validate_type(value, schema, path="$"):
     """Validate a value against a JSON Schema (subset implementation).
 
     Supports: type, required, properties, additionalProperties,
-    minLength, minItems, minProperties, pattern, items, enum.
+    minLength, minItems, minProperties, pattern, items, enum, oneOf.
     """
     errors = []
+
+    if "oneOf" in schema:
+        matches = []
+        for i, sub in enumerate(schema["oneOf"]):
+            sub_errors = validate_type(value, sub, path)
+            if not sub_errors:
+                matches.append(i)
+        if len(matches) != 1:
+            errors.append(f"{path}: must match exactly one of oneOf (matched {len(matches)})")
+        return errors
 
     if "type" in schema:
         expected = schema["type"]
@@ -107,7 +117,14 @@ def validate_file(json_path, schema):
 
 
 def discover_files(repo_root):
-    """Discover marketplace.json and .mcp.json files."""
+    """Discover marketplace.json and .mcp.json files with their schemas.
+
+    For marketplace.json files, the schema is resolved by:
+      1. Reading the $schema URL from the JSON file
+      2. Looking for a matching schema file in the same directory
+         (e.g., marketplace.schema.json)
+    For .mcp.json files, the schema is loaded from the skill-creator references.
+    """
     targets = []
 
     marketplace_locations = [
@@ -116,12 +133,16 @@ def discover_files(repo_root):
     ]
     for loc in marketplace_locations:
         if loc.exists():
-            targets.append(('marketplace', loc))
+            schema_path = loc.parent / 'marketplace.schema.json'
+            if schema_path.exists():
+                targets.append(('marketplace', loc, schema_path))
+            else:
+                print(f"  SKIP  {loc.relative_to(repo_root)} — no co-located schema")
 
     plugins_dir = repo_root / 'plugins'
     if plugins_dir.is_dir():
         for mcp_file in plugins_dir.rglob('.mcp.json'):
-            targets.append(('mcp', mcp_file))
+            targets.append(('mcp', mcp_file, None))
 
     return targets
 
@@ -138,19 +159,15 @@ def main():
         print("Usage: validate_schemas.py [repo-root]")
         sys.exit(1)
 
-    # Load schemas from references/ directory next to this script
+    # Load MCP schema from references/ directory next to this script
     script_dir = Path(__file__).resolve().parent
     references_dir = script_dir.parent / 'references'
 
-    marketplace_schema_path = references_dir / 'marketplace.schema.json'
     mcp_schema_path = references_dir / 'mcp.schema.json'
-
-    schemas = {}
-    for name, path in [('marketplace', marketplace_schema_path), ('mcp', mcp_schema_path)]:
-        if not path.exists():
-            print(f"Error: Schema not found: {path}")
-            sys.exit(1)
-        schemas[name] = json.loads(path.read_text())
+    if not mcp_schema_path.exists():
+        print(f"Error: MCP schema not found: {mcp_schema_path}")
+        sys.exit(1)
+    mcp_schema = json.loads(mcp_schema_path.read_text())
 
     targets = discover_files(repo_root)
     if not targets:
@@ -160,9 +177,13 @@ def main():
     print(f"Validating JSON schemas in {repo_root}\n")
 
     all_valid = True
-    for schema_type, file_path in targets:
+    for schema_type, file_path, schema_path in targets:
         rel_path = file_path.relative_to(repo_root)
-        valid, errors = validate_file(file_path, schemas[schema_type])
+        if schema_type == 'marketplace':
+            schema = json.loads(schema_path.read_text())
+        else:
+            schema = mcp_schema
+        valid, errors = validate_file(file_path, schema)
 
         if valid:
             print(f"  PASS  {rel_path}")

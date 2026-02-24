@@ -18,10 +18,10 @@ const checks = [
   },
   {
     file: ".github/plugin/marketplace.json",
-    fields: ["plugins.0.version"],
+    fields: ["metadata.version", "plugins.0.version"],
   },
   {
-    file: "plugins/stuffbucket/plugin.json",
+    file: "plugins/stuffbucket/.claude-plugin/plugin.json",
     fields: ["version"],
   },
 ];

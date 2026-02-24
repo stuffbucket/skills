@@ -2,6 +2,20 @@
 
 Agent skills for Claude, Copilot, and other AI assistants, with a bundled MCP skill-router server.
 
+## Install as Plugin Marketplace
+
+### Claude Code
+
+```sh
+/plugin marketplace add stuffbucket/skills
+```
+
+### Copilot CLI
+
+```sh
+/plugin marketplace add stuffbucket/skills
+```
+
 ## Setup
 
 ```sh

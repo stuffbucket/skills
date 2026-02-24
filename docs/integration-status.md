@@ -8,7 +8,7 @@ Current state of each integration surface as of February 2026.
 | --- | --- | --- |
 | `.claude-plugin/marketplace.json` | Claude Code, Copilot CLI | Marketplace manifest — plugin/skill discovery. Copilot CLI also checks this location. |
 | `.github/plugin/marketplace.json` | Copilot CLI | Marketplace manifest — primary discovery location for `copilot plugin marketplace` commands. |
-| `plugins/stuffbucket/plugin.json` | Copilot CLI, Claude Code | Per-plugin manifest — defines skills, MCP servers, and metadata for the plugin. |
+| `plugins/stuffbucket/.claude-plugin/plugin.json` | Copilot CLI, Claude Code | Per-plugin manifest — defines skills, MCP servers, and metadata for the plugin. |
 | `plugins/stuffbucket/.mcp.json` | MCP clients | Canonical MCP server config (symlinked to root and `.vscode/`). Also referenced by `plugin.json`. |
 | `.mcp.json` (root symlink) | Claude Code, Cursor, other MCP clients | Symlink → `plugins/stuffbucket/.mcp.json` |
 | `.vscode/mcp.json` (symlink) | VS Code built-in MCP support | Symlink → `plugins/stuffbucket/.mcp.json` |
@@ -89,7 +89,7 @@ copilot plugin marketplace browse stuffbucket-skills
 copilot plugin install stuffbucket@stuffbucket-skills
 ```
 
-The CLI discovers `plugin.json` at `plugins/stuffbucket/plugin.json` (via the marketplace `source` field), which points to `skills/` for skill discovery and `.mcp.json` for the MCP server.
+The CLI discovers `plugin.json` at `plugins/stuffbucket/.claude-plugin/plugin.json` (via the marketplace `source` field). Claude Code auto-discovers `skills/` and `.mcp.json` at the plugin root.
 
 ### Copilot Chat (GitHub.com / VS Code extension)
 

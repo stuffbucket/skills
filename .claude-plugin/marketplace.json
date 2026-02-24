@@ -17,7 +17,8 @@
       },
       "source": "./plugins/stuffbucket",
       "category": "development",
-      "strict": false
+      "strict": false,
+      "homepage": "https://github.com/stuffbucket/skills"
     }
   ]
 }
