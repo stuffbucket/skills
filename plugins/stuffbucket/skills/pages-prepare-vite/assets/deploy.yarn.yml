@@ -1,0 +1,54 @@
+# GitHub Pages deployment — template: skills/pages-prepare-vite/assets/deploy.yarn.yml
+# Copied to .github/workflows/deploy.yml by prepare_pages.py (substitutes {{BRANCH}})
+# Package manager: yarn
+# Source: GitHub Actions (not branch). Builds Vite dist/ in CI and deploys.
+
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [{{BRANCH}}]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: yarn
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Build
+        run: yarn build
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

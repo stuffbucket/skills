@@ -16,8 +16,14 @@ AI assistant skills for Claude, Copilot, and other LLMs, following the Agent Ski
 Skill validation:
   ✓ code-analysis-skill
   ✓ example-skill
+  ✓ figma-make-to-vite
   ✓ file-management-skill
   ✓ git-workflow-skill
+  ✓ pages-build-vite
+  ✓ pages-commit-vite
+  ✓ pages-prepare-vite
+  ✓ pages-publish-vite
+  ✓ pages-push-vite
   ✓ skill-creator
   ✓ skill-router
   ✓ testing-skill
@@ -34,13 +40,29 @@ Schema validation: All 3 file(s) valid.
 |---|---|---|
 | code-analysis-skill | A skill for analyzing code quality, identifying patterns, and suggesting impr... | read_file, grep, list_directory |
 | example-skill | An example skill to demonstrate the structure and format for Agent Skills. | — |
+| figma-make-to-vite | Initializes a Vite + React + TypeScript project and integrates a Figma Make e... | — |
 | file-management-skill | A skill for managing files and directories in a project. Use this skill when ... | read_file, write_file, list_directory, create_directory, delete_path, move_path, copy_path |
 | git-workflow-skill | Git operations and workflows. Use when committing, branching, merging, rebasi... | read_file, write_file, list_directory |
+| pages-build-vite | Locally builds the Vite project and verifies the dist/ output before committi... | — |
+| pages-commit-vite | Stages and commits the GitHub Pages configuration files to the local git repo... | — |
+| pages-prepare-vite | Prepares a Vite project for GitHub Pages deployment via GitHub Actions. Patch... | — |
+| pages-publish-vite | Monitors the GitHub Actions deployment workflow and reports the live GitHub P... | — |
+| pages-push-vite | Pushes the current branch to the git remote, triggering the GitHub Actions wo... | — |
 | skill-creator | Guide for creating effective skills. This skill should be used when users wan... | — |
 | skill-router | Find and load skills on demand. Use when you need a specialized skill for a t... | list_skills, get_skill |
 | testing-skill | Writing and running tests. Use when creating unit tests, integration tests, e... | read_file, write_file, list_directory |
 
 ## Available Commands
+
+**figma-make-to-vite:**
+- `python3 skills/figma-make-to-vite/scripts/apply_figma_make.py` — apply_figma_make.py — Integrate a Figma Make ZIP export into a Vite project.
+- `python3 skills/figma-make-to-vite/scripts/fix_figma_type_errors.py` — fix_figma_type_errors.py
+
+**pages-prepare-vite:**
+- `python3 skills/pages-prepare-vite/scripts/prepare_pages.py` — prepare_pages.py — Prepare a Vite project for GitHub Pages (Actions-based deployment)
+
+**pages-publish-vite:**
+- `python3 skills/pages-publish-vite/scripts/publish_pages.py --token $GITHUB_TOKEN` — publish_pages.py — Monitor GitHub Pages deployment and report the live URL
 
 **skill-creator:**
 - `generate_llms_txt.py [--check] [--stdout]` — llms.txt Generator - Assembles llms.txt from repo sources of truth
