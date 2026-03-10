@@ -10,7 +10,7 @@
     {
       "name": "stuffbucket",
       "description": "Agent skills and MCP skill-router",
-      "version": "0.1.11",
+      "version": "0.1.12",
       "author": {
         "name": "Stuffbucket",
         "email": "contact@stuffbucket.co"
