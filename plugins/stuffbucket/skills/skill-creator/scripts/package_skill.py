@@ -70,12 +70,16 @@ def package_skill(skill_path, output_dir=None):
     else:
         output_path = Path.cwd()
 
+    EXCLUDE_PATTERNS = {'__pycache__', '.pyc', '.DS_Store'}
+
     skill_filename = output_path / f"{skill_name}.skill"
 
     try:
         with zipfile.ZipFile(skill_filename, 'w', zipfile.ZIP_DEFLATED) as zipf:
             for file_path in skill_path.rglob('*'):
                 if file_path.is_file():
+                    if any(pat in str(file_path) for pat in EXCLUDE_PATTERNS):
+                        continue
                     arcname = file_path.relative_to(skill_path.parent)
                     zipf.write(file_path, arcname)
                     print(f"  Added: {arcname}")

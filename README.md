@@ -79,17 +79,22 @@ plugins/stuffbucket/
 | `npm test` | Build index + run MCP server smoke tests |
 | `npm run test:repl` | Build index + launch interactive REPL |
 | `npm run lint` | Lint markdown + JS + JSON schemas |
-| `npm run validate` | Validate example skill frontmatter |
+| `npm run validate` | Validate all skills (frontmatter + content completeness) |
+| `npm run validate:one -- <path>` | Validate a single skill |
+| `npm run new -- <name>` | Scaffold a new skill |
 | `npm run build:llms` | Regenerate llms.txt from template |
 
 ## Creating a New Skill
 
 ```bash
-python3 plugins/stuffbucket/skills/skill-creator/scripts/init_skill.py my-new-skill \
-  --path plugins/stuffbucket/skills
+npm run new -- my-new-skill
+# edit SKILL.md and resource files
+npm run validate
+npm run package -- plugins/stuffbucket/skills/my-new-skill
+# open a New skill issue and attach the .skill file
 ```
 
-Then update SKILL.md and add the skill path to both marketplace.json manifests. See [CONTRIBUTING.md](CONTRIBUTING.md).
+Skills are auto-discovered. A workflow validates the package and opens a PR automatically. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Docs
 

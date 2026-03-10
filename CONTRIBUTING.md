@@ -4,21 +4,23 @@ Thank you for your interest in contributing to this project.
 
 ## Adding a New Skill
 
-The fastest way to create a new skill is with the init script:
+The fastest way to create a new skill:
 
 ```bash
-python3 plugins/stuffbucket/skills/skill-creator/scripts/init_skill.py my-new-skill \
-  --path plugins/stuffbucket/skills
+npm run new -- my-new-skill
 ```
 
-This scaffolds a directory with a SKILL.md template and example resource directories.
+This scaffolds a directory under `plugins/stuffbucket/skills/` with a SKILL.md template and example resource directories.
 
 Then:
 
 1. Edit the generated SKILL.md — update the frontmatter `name` and `description`, and replace the TODO sections
 2. Customize or remove the example files in `scripts/`, `references/`, and `assets/`
-3. Add the skill path to both marketplace.json files (`.github/plugin/` and `.claude-plugin/`)
-4. Validate with `python3 plugins/stuffbucket/skills/skill-creator/scripts/quick_validate.py plugins/stuffbucket/skills/my-new-skill`
+3. Validate with `npm run validate`
+4. Package with `npm run package -- plugins/stuffbucket/skills/my-new-skill`
+5. Open a **New skill** issue and attach the `.skill` file — a workflow validates and opens a PR automatically
+
+Skills are auto-discovered by the index builder — no manual registration needed.
 
 ## Skill Guidelines
 

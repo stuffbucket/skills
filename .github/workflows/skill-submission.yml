@@ -1,0 +1,247 @@
+name: Process Skill Submission
+
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  process-submission:
+    if: contains(github.event.issue.labels.*.name, 'new-skill')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Extract skill info from issue
+        id: parse
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = context.payload.issue.body || '';
+
+            // Extract skill name from form field
+            const nameMatch = body.match(/### Skill name\s*\n+([^\n]+)/);
+            const skillName = nameMatch ? nameMatch[1].trim() : '';
+
+            if (!skillName) {
+              core.setFailed('Could not extract skill name from issue');
+              return;
+            }
+
+            // Validate kebab-case
+            if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(skillName)) {
+              core.setFailed(`Skill name "${skillName}" is not valid kebab-case`);
+              return;
+            }
+
+            // Look for .skill file attachment (GitHub renders uploads as markdown links)
+            const attachmentMatch = body.match(/\[([^\]]*\.skill)\]\((https:\/\/github\.com\/[^\s)]+)\)/);
+            const zipUrl = attachmentMatch ? attachmentMatch[2] : null;
+
+            // Also check for raw URLs to uploaded files
+            const rawUrlMatch = !zipUrl && body.match(/(https:\/\/github\.com\/user-attachments\/assets\/[^\s)]+\.skill)/);
+            const finalUrl = zipUrl || (rawUrlMatch ? rawUrlMatch[1] : null);
+
+            if (!finalUrl) {
+              // No attachment — just acknowledge the proposal
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: [
+                  '## Skill Proposal Received',
+                  '',
+                  `Skill name: \`${skillName}\``,
+                  '',
+                  'No `.skill` package was attached. To automate PR creation:',
+                  '1. Build your skill locally with `npm run new -- ' + skillName + '`',
+                  '2. Package it with `npm run package -- plugins/stuffbucket/skills/' + skillName + '`',
+                  '3. Edit this issue and attach the `.skill` file',
+                ].join('\n'),
+              });
+              return;
+            }
+
+            core.setOutput('skill_name', skillName);
+            core.setOutput('skill_url', finalUrl);
+            core.setOutput('has_attachment', 'true');
+
+      - name: Download and extract skill package
+        if: steps.parse.outputs.has_attachment == 'true'
+        env:
+          SKILL_NAME: ${{ steps.parse.outputs.skill_name }}
+          SKILL_URL: ${{ steps.parse.outputs.skill_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          DEST="plugins/stuffbucket/skills/${SKILL_NAME}"
+
+          if [ -d "$DEST" ]; then
+            echo "::error::Skill directory already exists: ${DEST}"
+            exit 1
+          fi
+
+          # Download the .skill file (it's a zip)
+          curl -fSL -o "${SKILL_NAME}.skill" "${SKILL_URL}" \
+            -H "Authorization: token ${GH_TOKEN}"
+
+          # Verify it's a valid zip
+          if ! unzip -t "${SKILL_NAME}.skill" > /dev/null 2>&1; then
+            echo "::error::Downloaded file is not a valid zip archive"
+            exit 1
+          fi
+
+          # Extract — the .skill zip contains <skill-name>/ as root
+          unzip -q "${SKILL_NAME}.skill" -d /tmp/skill-extract
+
+          # Find the SKILL.md to determine the actual root inside the zip
+          SKILL_MD=$(find /tmp/skill-extract -name SKILL.md -type f | head -1)
+          if [ -z "$SKILL_MD" ]; then
+            echo "::error::No SKILL.md found in the .skill package"
+            exit 1
+          fi
+
+          EXTRACTED_DIR=$(dirname "$SKILL_MD")
+          mkdir -p "$DEST"
+          cp -r "$EXTRACTED_DIR"/* "$DEST"/
+
+          echo "Extracted skill to ${DEST}"
+          ls -la "$DEST"
+
+      - name: Validate skill
+        if: steps.parse.outputs.has_attachment == 'true'
+        id: validate
+        run: |
+          SKILL_PATH="plugins/stuffbucket/skills/${{ steps.parse.outputs.skill_name }}"
+          npm run validate:one -- "$SKILL_PATH" 2>&1 | tee validate-output.txt
+          echo "exit_code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+
+      - name: Build index
+        if: steps.parse.outputs.has_attachment == 'true'
+        id: index
+        run: |
+          npm run build:index 2>&1 | tee index-output.txt
+          echo "exit_code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+
+      - name: Create PR or report failure
+        if: steps.parse.outputs.has_attachment == 'true'
+        uses: actions/github-script@v7
+        env:
+          SKILL_NAME: ${{ steps.parse.outputs.skill_name }}
+          VALIDATE_OK: ${{ steps.validate.outputs.exit_code }}
+          INDEX_OK: ${{ steps.index.outputs.exit_code }}
+        with:
+          script: |
+            const fs = require('fs');
+            const skillName = process.env.SKILL_NAME;
+            const validateOk = process.env.VALIDATE_OK === '0';
+            const indexOk = process.env.INDEX_OK === '0';
+            const validateOutput = fs.readFileSync('validate-output.txt', 'utf8').trim();
+
+            if (!validateOk || !indexOk) {
+              // Report failure on the issue
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: [
+                  '## ❌ Skill Validation Failed',
+                  '',
+                  '```',
+                  validateOutput,
+                  '```',
+                  '',
+                  `Index build: ${indexOk ? '✅ passed' : '❌ failed'}`,
+                  '',
+                  'Please fix the issues and attach an updated `.skill` file.',
+                ].join('\n'),
+              });
+              return;
+            }
+
+            // Create a branch and PR
+            const branchName = `skill/${skillName}`;
+            const baseSha = (await github.rest.git.getRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'heads/main',
+            })).data.object.sha;
+
+            await github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: `refs/heads/${branchName}`,
+              sha: baseSha,
+            });
+
+            // Use git to commit the extracted files
+            const { execSync } = require('child_process');
+            execSync(`git config user.name "github-actions[bot]"`);
+            execSync(`git config user.email "github-actions[bot]@users.noreply.github.com"`);
+            execSync(`git checkout -b ${branchName}`);
+            execSync(`git add plugins/stuffbucket/skills/${skillName}/`);
+            execSync(`git commit -m "feat: add ${skillName} skill\n\nSubmitted via #${context.issue.number}"`);
+            execSync(`git push origin ${branchName}`);
+
+            const pr = await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `feat: add ${skillName} skill`,
+              head: branchName,
+              base: 'main',
+              body: [
+                `## New Skill: \`${skillName}\``,
+                '',
+                `Submitted via #${context.issue.number}`,
+                '',
+                '### Validation',
+                '```',
+                validateOutput,
+                '```',
+                '',
+                '### Checklist',
+                '- [x] SKILL.md has valid YAML frontmatter',
+                '- [x] Directory name is kebab-case',
+                '- [x] `npm run validate` passes',
+                '- [x] Skill index builds successfully',
+              ].join('\n'),
+            });
+
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.data.number,
+              labels: ['new-skill'],
+            });
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: [
+                '## ✅ Skill Validated & PR Created',
+                '',
+                `PR: #${pr.data.number}`,
+                '',
+                '```',
+                validateOutput,
+                '```',
+                '',
+                'The skill passed validation and a pull request has been opened for review.',
+              ].join('\n'),
+            });

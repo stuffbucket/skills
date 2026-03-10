@@ -1,6 +1,6 @@
 ---
 name: New skill
-description: Propose a new skill for the repository
+description: Submit a new skill for the repository
 labels: ["new-skill"]
 body:
   - type: input
@@ -41,3 +41,15 @@ body:
         - label: Claude
         - label: GitHub Copilot
         - label: Other LLMs
+
+  - type: textarea
+    id: skill-file
+    attributes:
+      label: Skill package
+      description: |
+        Attach a `.skill` file created by `npm run package -- <path/to/skill>`.
+        Drag-and-drop the file here or paste a link.
+        A workflow will automatically validate and open a PR.
+      placeholder: Drag and drop your .skill file here
+    validations:
+      required: false

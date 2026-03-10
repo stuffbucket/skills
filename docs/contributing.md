@@ -2,11 +2,14 @@
 
 ## Getting Started
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-new-skill`)
-3. Commit your changes (`git commit -am 'Add amazing new skill'`)
-4. Push to the branch (`git push origin feature/amazing-new-skill`)
-5. Create a new Pull Request
+1. Create a skill with `npm run new -- my-new-skill`
+2. Edit the generated SKILL.md and resource files
+3. Run `npm run validate` to check your work
+4. Package with `npm run package -- plugins/stuffbucket/skills/my-new-skill`
+5. Open a **New skill** issue and attach the `.skill` file
+6. A workflow will validate the package and open a PR automatically
+
+Skills are auto-discovered — no fork, branch, or manual registration needed.
 
 ## Skill Submission Requirements
 

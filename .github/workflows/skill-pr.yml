@@ -1,0 +1,140 @@
+name: Skill PR Automation
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - 'plugins/**/skills/*/SKILL.md'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  detect-and-label:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Detect new and changed skills
+        id: detect
+        run: |
+          BASE=${{ github.event.pull_request.base.sha }}
+          HEAD=${{ github.event.pull_request.head.sha }}
+
+          NEW_SKILLS=""
+          CHANGED_SKILLS=""
+
+          for file in $(git diff --name-only --diff-filter=A "$BASE" "$HEAD" | grep 'plugins/.*/skills/.*/SKILL.md'); do
+            skill_dir=$(dirname "$file")
+            skill_name=$(basename "$skill_dir")
+            NEW_SKILLS="${NEW_SKILLS}${skill_name}\n"
+          done
+
+          for file in $(git diff --name-only --diff-filter=M "$BASE" "$HEAD" | grep 'plugins/.*/skills/.*/SKILL.md'); do
+            skill_dir=$(dirname "$file")
+            skill_name=$(basename "$skill_dir")
+            CHANGED_SKILLS="${CHANGED_SKILLS}${skill_name}\n"
+          done
+
+          echo "new_skills<<EOF" >> "$GITHUB_OUTPUT"
+          printf '%b' "$NEW_SKILLS" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+          echo "changed_skills<<EOF" >> "$GITHUB_OUTPUT"
+          printf '%b' "$CHANGED_SKILLS" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+          if [ -n "$NEW_SKILLS" ]; then
+            echo "has_new=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_new=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Label new skill PRs
+        if: steps.detect.outputs.has_new == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['new-skill']
+            });
+
+      - name: Validate all skills
+        id: validate
+        run: |
+          npm run validate 2>&1 | tee validate-output.txt
+          echo "exit_code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+
+      - name: Build skill index
+        id: index
+        run: |
+          npm run build:index 2>&1 | tee index-output.txt
+          echo "exit_code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+
+      - name: Post validation summary
+        if: steps.detect.outputs.has_new == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const newSkills = `${{ steps.detect.outputs.new_skills }}`.trim().split('\n').filter(Boolean);
+            const validateOk = '${{ steps.validate.outputs.exit_code }}' === '0';
+            const indexOk = '${{ steps.index.outputs.exit_code }}' === '0';
+            const validateOutput = fs.readFileSync('validate-output.txt', 'utf8').trim();
+
+            const status = validateOk && indexOk ? '✅' : '❌';
+            const body = [
+              `## ${status} Skill Validation Report`,
+              '',
+              `**New skill(s):** ${newSkills.map(s => '`' + s + '`').join(', ')}`,
+              '',
+              '### Validation',
+              '```',
+              validateOutput,
+              '```',
+              '',
+              `Index build: ${indexOk ? '✅ passed' : '❌ failed'}`,
+            ].join('\n');
+
+            // Find and update existing bot comment, or create new one
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const botComment = comments.data.find(c =>
+              c.user.type === 'Bot' && c.body.includes('Skill Validation Report')
+            );
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }

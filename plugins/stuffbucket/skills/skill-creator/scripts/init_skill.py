@@ -218,27 +218,52 @@ def init_skill(skill_name, path):
     print("\nNext steps:")
     print("1. Edit SKILL.md to complete the TODO items and update the description")
     print("2. Customize or delete the example files in scripts/, references/, and assets/")
-    print("3. Run quick_validate.py when ready to check the skill structure")
+    print("3. Run 'npm run validate' to check the skill structure")
+    print(f"4. Run 'npm run package -- {skill_dir}' to create a .skill file")
+    print("5. Open a New skill issue and attach the .skill file")
 
     return skill_dir
 
 
+def find_default_path():
+    """Auto-detect the default skills directory relative to the repo root."""
+    # Walk up from this script to find the repo root (has package.json)
+    current = Path(__file__).resolve().parent
+    for _ in range(10):
+        if (current / 'package.json').exists():
+            default = current / 'plugins' / 'stuffbucket' / 'skills'
+            if default.is_dir():
+                return str(default)
+        current = current.parent
+    return None
+
+
 def main():
-    if len(sys.argv) < 4 or sys.argv[2] != '--path':
-        print("Usage: init_skill.py <skill-name> --path <path>")
+    # Parse arguments: <skill-name> [--path <path>]
+    if len(sys.argv) < 2 or sys.argv[1] in ('-h', '--help'):
+        print("Usage: init_skill.py <skill-name> [--path <path>]")
+        print("\nIf --path is omitted, defaults to plugins/stuffbucket/skills")
         print("\nSkill name requirements:")
         print("  - Kebab-case identifier (e.g., 'my-data-analyzer')")
         print("  - Lowercase letters, digits, and hyphens only")
         print("  - Max 64 characters")
         print("  - Must match directory name exactly")
         print("\nExamples:")
-        print("  init_skill.py my-new-skill --path plugins/stuffbucket/skills")
-        print("  init_skill.py my-api-helper --path plugins/stuffbucket/skills")
-        print("  init_skill.py custom-skill --path /custom/location")
+        print("  npm run new -- my-new-skill")
+        print("  init_skill.py my-new-skill")
+        print("  init_skill.py my-new-skill --path /custom/location")
         sys.exit(1)
 
     skill_name = sys.argv[1]
-    path = sys.argv[3]
+
+    if len(sys.argv) >= 4 and sys.argv[2] == '--path':
+        path = sys.argv[3]
+    else:
+        path = find_default_path()
+        if path is None:
+            print("Error: Could not auto-detect skills directory.")
+            print("Run from the repo root or pass --path explicitly.")
+            sys.exit(1)
 
     print(f"Initializing skill: {skill_name}")
     print(f"   Location: {path}")

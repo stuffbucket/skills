@@ -133,9 +133,9 @@ Skill creation involves these steps:
 
 1. Understand the skill with concrete examples
 2. Plan reusable skill contents (scripts, references, assets)
-3. Initialize the skill (run init_skill.py)
+3. Initialize the skill (`npm run new -- <name>`)
 4. Edit the skill (implement resources and write SKILL.md)
-5. Validate and package the skill
+5. Validate (`npm run validate`)
 6. Iterate based on real usage
 
 Follow these steps in order, skipping only if there is a clear reason why they are not applicable.
@@ -159,13 +159,13 @@ Analyze each example by:
 
 ### Step 3: Initializing the Skill
 
-When creating a new skill from scratch, run the `init_skill.py` script:
+When creating a new skill from scratch:
 
 ```bash
-scripts/init_skill.py <skill-name> --path plugins/stuffbucket/skills
+npm run new -- <skill-name>
 ```
 
-The script creates the skill directory with a SKILL.md template and example resource directories.
+The script creates the skill directory under `plugins/stuffbucket/skills/` with a SKILL.md template and example resource directories.
 
 After initialization, customize or remove the generated SKILL.md and example files as needed.
 
@@ -205,10 +205,16 @@ Do not include any other fields in YAML frontmatter.
 
 #### Quick Validation
 
-Validate a single skill's SKILL.md frontmatter:
+Validate all skills:
 
 ```bash
-scripts/quick_validate.py <path/to/skill-folder>
+npm run validate
+```
+
+Or validate a single skill:
+
+```bash
+npm run validate:one -- <path/to/skill-folder>
 ```
 
 #### Schema Validation
@@ -226,12 +232,24 @@ This auto-discovers both marketplace.json locations (`.github/plugin/` and `.cla
 Package a skill into a distributable .skill file:
 
 ```bash
-scripts/package_skill.py <path/to/skill-folder> [output-directory]
+npm run package -- <path/to/skill-folder> [output-directory]
 ```
 
 The packaging script validates the skill first, then creates a .skill file (zip format).
 
-### Step 6: Iterate
+### Step 6: Submit
+
+After packaging, submit the skill by opening a GitHub issue:
+
+1. Run `npm run package -- <path/to/skill-folder>` to create the `.skill` file
+2. Open a new issue using the **New skill** template at the repository
+3. Fill in the skill name, description, and category
+4. Attach the `.skill` file to the issue
+5. A workflow will automatically validate the skill and open a PR
+
+This is the recommended path for agents — no Git operations required.
+
+### Step 7: Iterate
 
 1. Use the skill on real tasks
 2. Notice struggles or inefficiencies
@@ -253,4 +271,5 @@ plugins/
             └── SKILL.md           # (+ optional scripts/, references/, assets/)
 ```
 
-When adding a new skill, register it in **both** marketplace.json manifests. See `references/marketplace.schema.json` and `references/mcp.schema.json` for the JSON schemas these files must conform to.
+Skills are auto-discovered — no manual registration in marketplace.json needed.
+See `references/marketplace.schema.json` and `references/mcp.schema.json` for the JSON schemas plugin manifests must conform to.

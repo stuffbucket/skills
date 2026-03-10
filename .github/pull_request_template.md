@@ -16,5 +16,5 @@
 - [ ] SKILL.md has valid YAML frontmatter (`name`, `description`)
 - [ ] Directory name is kebab-case and matches frontmatter `name`
 - [ ] Content is under 500 lines
-- [ ] Skill is registered in both `marketplace.json` files (if new)
+- [ ] `npm run validate` passes locally
 - [ ] `npm test` passes locally

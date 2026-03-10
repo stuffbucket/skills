@@ -103,14 +103,110 @@ def validate_skill(skill_path):
         if len(compatibility) > 500:
             return False, f"Compatibility is too long ({len(compatibility)} characters). Maximum is 500 characters."
 
+    # ── Content completeness checks ──
+
+    # Detect leftover TODO markers from the init template
+    body = content[match.end():]  # text after frontmatter
+    todo_lines = [
+        i + 1 for i, line in enumerate(body.splitlines())
+        if re.search(r'\[TODO\b', line)
+    ]
+    if todo_lines:
+        return False, f"Unfinished [TODO] markers on line(s) {', '.join(str(n) for n in todo_lines[:5])} (relative to body)"
+
+    # Detect leftover description placeholder in frontmatter
+    if description.startswith('[TODO'):
+        return False, "Frontmatter description is still a placeholder"
+
+    # ── Placeholder file detection ──
+
+    PLACEHOLDER_SIGNATURES = [
+        'This is a placeholder script',
+        'This is a placeholder for detailed reference documentation',
+        'This placeholder represents where asset files would be stored',
+    ]
+
+    for subdir in ('scripts', 'references', 'assets'):
+        sub_path = skill_path / subdir
+        if not sub_path.is_dir():
+            continue
+        for f in sub_path.iterdir():
+            if not f.is_file():
+                continue
+            try:
+                file_text = f.read_text(errors='ignore')[:2048]
+            except OSError:
+                continue
+            for sig in PLACEHOLDER_SIGNATURES:
+                if sig in file_text:
+                    return False, f"Placeholder file not replaced: {subdir}/{f.name}"
+
+    # ── Script presence check ──
+    # If SKILL.md references scripts/<file> in a run/execution context, verify
+    # the file exists. Skip fenced code blocks, inline backtick spans, and
+    # illustrative examples.
+
+    in_fence = False
+    for line in body.splitlines():
+        # Track fenced code blocks
+        if line.strip().startswith('```'):
+            in_fence = not in_fence
+            continue
+        if in_fence:
+            continue
+        # Skip lines that are illustrative examples, not actual references
+        if re.search(r'\bexample\b|e\.g\.|for instance', line, re.IGNORECASE):
+            continue
+        # Strip inline backtick spans before matching
+        stripped = re.sub(r'`[^`]+`', '', line)
+        for ref_match in re.finditer(r'scripts/([A-Za-z0-9_.-]+)', stripped):
+            script_name = ref_match.group(1)
+            script_file = skill_path / 'scripts' / script_name
+            if not script_file.exists():
+                return False, f"SKILL.md references scripts/{script_name} but the file does not exist"
+
     return True, "Skill is valid!"
 
 
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python quick_validate.py <skill_directory>")
-        sys.exit(1)
+def validate_all_skills(skills_root):
+    """Validate every skill under a root directory (each subdirectory with a SKILL.md)."""
+    root = Path(skills_root)
+    if not root.is_dir():
+        print(f"Error: {skills_root} is not a directory")
+        return False
 
-    valid, message = validate_skill(sys.argv[1])
-    print(message)
-    sys.exit(0 if valid else 1)
+    skill_dirs = sorted(
+        d for d in root.iterdir()
+        if d.is_dir() and (d / 'SKILL.md').exists()
+    )
+
+    if not skill_dirs:
+        print(f"No skills found under {skills_root}")
+        return False
+
+    all_valid = True
+    for skill_dir in skill_dirs:
+        valid, message = validate_skill(skill_dir)
+        status = "PASS" if valid else "FAIL"
+        print(f"  [{status}] {skill_dir.name}: {message}")
+        if not valid:
+            all_valid = False
+
+    print()
+    print(f"Validated {len(skill_dirs)} skill(s): {'all passed' if all_valid else 'some failed'}")
+    return all_valid
+
+
+if __name__ == "__main__":
+    if len(sys.argv) == 3 and sys.argv[1] == '--all':
+        success = validate_all_skills(sys.argv[2])
+        sys.exit(0 if success else 1)
+    elif len(sys.argv) == 2:
+        valid, message = validate_skill(sys.argv[1])
+        print(message)
+        sys.exit(0 if valid else 1)
+    else:
+        print("Usage:")
+        print("  python quick_validate.py <skill_directory>        # validate one skill")
+        print("  python quick_validate.py --all <skills_root>      # validate all skills")
+        sys.exit(1)
