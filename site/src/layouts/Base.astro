@@ -1,0 +1,62 @@
+---
+import '../styles/global.css';
+import '@fontsource-variable/inter';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title} — Stuffbucket Skills</title>
+  {description && <meta name="description" content={description} />}
+  <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
+</head>
+<body>
+
+<div class="hero-gradient"><span class="blob"></span></div>
+
+<nav class="site-nav">
+  <div class="site-nav-inner">
+    <a class="site-nav-brand" href={`${base}/`}>
+      <span class="text-gradient"><b>Stuffbucket Skills</b></span>
+    </a>
+    <div class="site-nav-links">
+      <a href={`${base}/catalog/`}>Catalog</a>
+      <a href={`${base}/docs/`}>Docs</a>
+      <a href={`${base}/about/`}>About</a>
+      <a href={`${base}/philosophy/`}>Philosophy</a>
+      <a href="https://github.com/stuffbucket/skills">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <slot />
+</main>
+
+<footer class="footer">
+  <a href="https://github.com/stuffbucket/skills">Stuffbucket Skills</a> · MIT License
+</footer>
+
+<script>
+  const nav = document.querySelector('.site-nav');
+  if (nav) {
+    const update = () => {
+      if (window.scrollY > 2) nav.setAttribute('data-scrolled', '');
+      else nav.removeAttribute('data-scrolled');
+    };
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+  }
+</script>
+
+</body>
+</html>

@@ -9,6 +9,12 @@ yarn-error.log*
 dist/
 build/
 plugins/stuffbucket/skills/skill-router/index.json
+plugins/stuffbucket/skills/skill-router/semantic-index.json
+site/.astro/
+site/src/content/skills/
+site/src/content/docs/
+site/public/skill-index.json
+site/public/semantic-index.json
 
 # Environment files
 .env*

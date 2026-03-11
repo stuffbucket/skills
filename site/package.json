@@ -1,0 +1,20 @@
+{
+  "name": "@stuffbucket/skills-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "sync": "node scripts/sync-skills.js",
+    "build:semantic": "node scripts/build-semantic-index.js",
+    "dev": "npm run sync && astro dev",
+    "build": "npm run sync && npm run build:semantic && astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@fontsource-variable/inter": "^5.1.1",
+    "astro": "^5.9.3",
+    "fuse.js": "^7.1.0"
+  },
+  "devDependencies": {
+    "@huggingface/transformers": "^3.8.1"
+  }
+}

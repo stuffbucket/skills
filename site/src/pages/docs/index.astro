@@ -1,0 +1,40 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+import { ICON_PATHS } from '../../lib/icons.js';
+
+const docs = await getCollection('docs');
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const DOC_DESCRIPTIONS: Record<string, string> = {
+  'best-practices': 'Naming, structure, and patterns for effective skills.',
+  'contributing': 'How to create and submit a new skill.',
+  'integration-status': 'Current state of each integration surface.',
+  'agent-skills-spec': 'The formal Agent Skills specification.',
+};
+---
+
+<Base title="Documentation" description="Guides and references for the Stuffbucket Skills library.">
+  <section class="docs-hero">
+    <h1><span class="text-gradient">Documentation</span></h1>
+    <p class="docs-subtitle">Guides and references for building, contributing, and integrating skills.</p>
+  </section>
+
+  <section class="docs-grid">
+    {docs.sort((a, b) => a.data.order - b.data.order).map(doc => {
+      const iconPath = ICON_PATHS[doc.data.icon] || ICON_PATHS['file-text'];
+      const desc = DOC_DESCRIPTIONS[doc.data.docSlug] || '';
+      return (
+        <a class="docs-card" href={`${base}/docs/${doc.data.docSlug}/`}>
+          <div class="docs-card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={iconPath} />
+          </div>
+          <div>
+            <h3>{doc.data.title}</h3>
+            {desc && <p>{desc}</p>}
+          </div>
+        </a>
+      );
+    })}
+  </section>
+</Base>

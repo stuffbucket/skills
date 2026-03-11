@@ -1,0 +1,182 @@
+---
+import '../styles/global.css';
+import '@fontsource-variable/inter';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Stuffbucket Skills — Agent Skill Library</title>
+  <meta name="description" content="An open, dynamic skill library that any agent can tap into at the point of need." />
+  <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
+</head>
+<body>
+
+<a class="github-corner" href="https://github.com/stuffbucket/skills" aria-label="View on GitHub">
+  <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+  GitHub
+</a>
+
+<div class="hero-gradient"><span class="blob"></span></div>
+
+<main>
+  <!-- ── Hero ──────────────────────────────────────────────── -->
+  <section class="hero">
+    <div class="hero-content">
+      <span class="hero-badge">Open Skill Library</span>
+      <h1>Expert skills<br /><span class="text-gradient">available on demand</span></h1>
+      <p class="hero-tagline">
+        Be a <span class="highlight"><b>do-it-all</b></span> without worrying about how to <span class="highlight"><b>know it all</b></span>.<br>Help your agent get the trusted skills it needs to <span class="highlight"><b>get the job done</b></span>.
+      </p>
+
+      <!-- ── Install CTA ─────────────────────────────────── -->
+      <div class="install-command" id="install-box">
+        <span class="install-prompt">$</span>
+        <span class="install-text" id="install-text">npm install @stuffbucket/skills</span>
+        <button class="install-copy" onclick="copyInstall()" aria-label="Copy install command">
+          <svg id="copy-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          <svg id="check-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><polyline points="20 6 9 17 4 12"/></svg>
+        </button>
+      </div>
+
+      <div class="hero-actions">
+        <a class="primary" href={`${base}/catalog/`}>
+          Browse skills
+        </a>
+        <a class="secondary" href={`${base}/docs/`}>
+          Documentation
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Feature cards ─────────────────────────────────────── -->
+  <section class="features">
+    <div class="feature">
+      <div class="feature-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      </div>
+      <h3>Skills on demand</h3>
+      <p>The agent recognizes it needs specialized knowledge, finds it, loads it, and applies it — you don't have to fill the gap.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+      </div>
+      <h3>Expert knowledge scales</h3>
+      <p>Document a process all in one place. The agent delivers it to everyone who needs it, at the moment they need it.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <h3>Always current</h3>
+      <p>Things change. When a skill is updated by an expert, agents apply the new knowledge on the next session.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      </div>
+      <h3>Works everywhere</h3>
+      <p>Works with any MCP and Skills compatible client or agent: Claude, Copilot, Codex, etc. One library, every assistant.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+      </div>
+      <h3>Open & composable</h3>
+      <p>Clone it to run your own. Fork, extend, and contribute back to share what you know.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <h3>MCP native</h3>
+      <p>Discoverable via MCP server. Agents query the library, pull in what's relevant, and move on.</p>
+    </div>
+  </section>
+
+  <!-- ── The problem ───────────────────────────────────────── -->
+  <section class="prose">
+    <h2>Skills are changing faster<br /><span class="text-gradient">for everyone</span></h2>
+    <p>
+      A quarter of job skills have turned over in the last decade.
+      <span class="highlight">By 2030, sixty-five percent will be different.</span>
+      Courses, docs, and mentorship can't keep pace.
+    </p>
+    <p>
+      The people who have the expertise can't distribute it fast enough.
+      Experts write guides that go stale, sit in meetings transferring context
+      one person at a time, and build docs that miss the twenty edge cases that
+      only surface in real conditions.
+    </p>
+  </section>
+
+  <!-- ── The solution ──────────────────────────────────────── -->
+  <section class="prose">
+    <h2>We need to close the gap<br /><span class="text-gradient">for everyone</span></h2>
+    <p>
+      Nobody can know everything, and everyone still needs to get the job done.
+      The gap between what you need to do and what you already know how to do
+      is where mistakes, rework, and delays live. AI is making that gap grow faster than ever before.
+    </p>
+    <p>
+      Documentation goes stale, gets buried, and takes too long to use — 
+      if anyone finds it at all. For creators, keeping it current is a
+      treadmill. For users, discovering the right guide at the right moment
+      is a coin flip. Stuffbucket Skills gives the expert one place to
+      share what they know. The agent can then deliver it on demand where it's needed.
+    </p>
+    <p>
+      Each skill can include its own proven scripts and resources created and
+      verified at the source, not invented on the fly. Leverage a proven path instead of leaving it up to chance that the agent gets it right.
+    </p>
+  </section>
+
+  <!-- ── Closing ───────────────────────────────────────────── -->
+  <section class="closing">
+    <h2>That's <span class="text-gradient">Stuffbucket Skills</span></h2>
+    <p>
+      Be a <span class="text-gradient"><b>do-it-all</b></span> without worrying about how to keep up with it all.
+    </p>
+    <div class="hero-actions">
+      <a class="primary" href={`${base}/catalog/`}>
+        Browse skills
+      </a>
+      <a class="secondary" href="https://github.com/stuffbucket/skills/issues/new?template=new-skill.yml">
+        Submit a skill
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <a href="https://github.com/stuffbucket/skills">Stuffbucket Skills</a> · MIT License
+</footer>
+
+<script is:inline>
+function copyInstall() {
+  const text = document.getElementById('install-text').textContent;
+  navigator.clipboard.writeText(text);
+  document.getElementById('copy-icon').style.display = 'none';
+  document.getElementById('check-icon').style.display = 'block';
+  setTimeout(() => {
+    document.getElementById('copy-icon').style.display = 'block';
+    document.getElementById('check-icon').style.display = 'none';
+  }, 2000);
+}
+
+document.querySelectorAll('.feature').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const rect = card.getBoundingClientRect();
+    card.style.setProperty('--spot-x', (e.clientX - rect.left) + 'px');
+    card.style.setProperty('--spot-y', (e.clientY - rect.top) + 'px');
+  });
+});
+</script>
+
+</body>
+</html>

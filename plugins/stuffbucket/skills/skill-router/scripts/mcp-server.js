@@ -17,7 +17,7 @@
 const fs = require("fs");
 const path = require("path");
 const readline = require("readline");
-const Fuse = require("fuse.js");
+const { createFuse, blendedSearch } = require("./search");
 
 // Resolve the package root where skills and index.json live.
 // Priority:
@@ -87,132 +87,45 @@ function loadIndex() {
   return JSON.parse(fs.readFileSync(INDEX_PATH, "utf8"));
 }
 
-// --- Lightweight Porter stemmer ---
-// Handles common English suffixes so "refactoring" matches "refactor",
-// "managing" matches "manage", "analysis" matches "analyze", etc.
-// Not a full NLP stemmer — just enough to close the keyword gap.
-function stem(word) {
-  let w = word.toLowerCase();
-  if (w.length < 4) return w;
+// --- Load semantic index (optional — enhances search when present) ---
+const SEMANTIC_PATH = path.join(__dirname, "..", "semantic-index.json");
 
-  // Order matters — longest suffixes first
-  const rules = [
-    [/ational$/, "ate"],
-    [/tional$/, "tion"],
-    [/encies$/, "ence"],
-    [/izing$/, "ize"],
-    [/ising$/, "ise"],
-    [/ating$/, "ate"],
-    [/ities$/, "ity"],
-    [/ness$/, ""],
-    [/ment$/, ""],
-    [/ings$/, ""],
-    [/tion$/, "t"],
-    [/sion$/, "s"],
-    [/ling$/, "le"],
-    [/ally$/, "al"],
-    [/ful$/, ""],
-    [/ing$/, ""],
-    [/ies$/, "y"],
-    [/ous$/, ""],
-    [/ive$/, ""],
-    [/ble$/, ""],
-    [/ers$/, ""],
-    [/ion$/, ""],
-    [/ed$/, ""],
-    [/ly$/, ""],
-    [/es$/, ""],
-    [/er$/, ""],
-    [/al$/, ""],
-    [/s$/, ""],
-  ];
-
-  for (const [pattern, replacement] of rules) {
-    if (pattern.test(w)) {
-      const stemmed = w.replace(pattern, replacement);
-      // Don't stem to nothing or a single char
-      if (stemmed.length >= 3) return stemmed;
-    }
+function loadSemanticIndex() {
+  if (!fs.existsSync(SEMANTIC_PATH)) return null;
+  try {
+    return JSON.parse(fs.readFileSync(SEMANTIC_PATH, "utf8"));
+  } catch {
+    return null;
   }
-  return w;
 }
 
-// Tokenize and stem a string for search indexing
-function stemTokens(str) {
-  return str
-    .toLowerCase()
-    .split(/[\s,\-_]+/)
-    .filter((t) => t.length >= 2)
-    .map(stem);
-}
+// --- Shared search (search.js) ---
 
-// --- Fuse.js search ---
+let searcher = null;
+let cachedSkills = null;
+let semanticIdx = null;
 
-// Build a Fuse index from the skill catalog.
-// Each skill gets an extra `stemmed` field for stem-aware matching.
-let fuseInstance = null;
-let fuseSkills = null;
-
-function getFuse() {
+function getSearcher() {
   const index = loadIndex();
 
-  // Rebuild if index changed
-  if (fuseSkills === index.skills && fuseInstance)
-    return { fuse: fuseInstance, skills: fuseSkills };
+  if (cachedSkills === index.skills && searcher)
+    return { searcher, skills: cachedSkills };
 
-  fuseSkills = index.skills;
+  cachedSkills = index.skills;
+  searcher = createFuse(cachedSkills);
+  semanticIdx = loadSemanticIndex();
 
-  // Enrich each skill with stemmed searchable text
-  const enriched = fuseSkills.map((s) => ({
-    ...s,
-    stemmed: stemTokens(
-      [s.name, s.description, ...(s.tags || [])].join(" "),
-    ).join(" "),
-  }));
-
-  fuseInstance = new Fuse(enriched, {
-    keys: [
-      { name: "name", weight: 3 },
-      { name: "tags", weight: 2 },
-      { name: "description", weight: 1 },
-      { name: "stemmed", weight: 1.5 },
-    ],
-    threshold: 0.4, // 0 = exact, 1 = match anything
-    ignoreLocation: true, // match anywhere in the string, not just near the start
-    includeScore: true,
-    useExtendedSearch: false,
-  });
-
-  return { fuse: fuseInstance, skills: fuseSkills };
+  return { searcher, skills: cachedSkills };
 }
 
-// --- Matching helpers ---
-
-// Search skills by query using Fuse.js with stemming
 function searchSkills(query) {
-  const { fuse, skills } = getFuse();
-  if (!query) return skills;
-
-  // Also search against the stemmed version of the query
-  const stemmedQuery = stemTokens(query).join(" ");
-
-  // Run both the raw query and stemmed query, merge results
-  const rawResults = fuse.search(query);
-  const stemResults =
-    stemmedQuery !== query.toLowerCase() ? fuse.search(stemmedQuery) : [];
-
-  // Merge and deduplicate, keeping best score
-  const seen = new Map();
-  for (const r of [...rawResults, ...stemResults]) {
-    const existing = seen.get(r.item.name);
-    if (!existing || r.score < existing.score) {
-      seen.set(r.item.name, r);
-    }
-  }
-
-  return Array.from(seen.values())
-    .sort((a, b) => a.score - b.score)
-    .map((r) => r.item);
+  const { searcher: s } = getSearcher();
+  return blendedSearch(query, {
+    fuse: s.fuse,
+    items: s.items,
+    semanticIdx,
+    idField: "name",
+  });
 }
 
 // Find the best fuzzy match for a skill name in get_skill.
@@ -276,8 +189,8 @@ function handleGetSkill(params) {
     };
   }
 
-  const { skills } = getFuse();
-  const { exact, matches } = fuzzyFindSkill(skills, params.name);
+  const { searcher: s } = getSearcher();
+  const { exact, matches } = fuzzyFindSkill(s.items, params.name);
 
   if (exact) {
     const skillMdPath = path.join(ROOT, exact.path, "SKILL.md");
@@ -323,7 +236,7 @@ function handleGetSkill(params) {
     };
   }
 
-  const available = skills.map((s) => s.name).join(", ");
+  const available = s.items.map((sk) => sk.name).join(", ");
   return {
     content: [
       {

@@ -16,6 +16,7 @@
   },
   "ignores": [
     "node_modules/**",
+    "site/node_modules/**",
     "THIRD_PARTY_NOTICES.md"
   ]
 }

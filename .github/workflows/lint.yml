@@ -50,3 +50,6 @@ jobs:
 
       - name: Check llms.txt is up to date
         run: npm run check:llms
+
+      - name: Build site
+        run: cd site && npm install && npm run build

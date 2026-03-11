@@ -1,0 +1,220 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+import { ICON_PATHS } from '../../lib/icons.js';
+
+const skills = await getCollection('skills');
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+// Separate pipeline groups from standalone skills
+const pipelineGroups = new Map<string, typeof skills>();
+const standalone: typeof skills = [];
+
+for (const skill of skills) {
+  const pid = skill.data.pipeline;
+  if (pid) {
+    if (!pipelineGroups.has(pid)) pipelineGroups.set(pid, []);
+    pipelineGroups.get(pid)!.push(skill);
+  } else {
+    standalone.push(skill);
+  }
+}
+
+// Sort pipeline stages by order
+for (const stages of pipelineGroups.values()) {
+  stages.sort((a, b) => (a.data.pipelineOrder ?? 99) - (b.data.pipelineOrder ?? 99));
+}
+
+// Build a mixed list sorted by name
+type CatalogItem =
+  | { type: 'skill'; skill: typeof skills[0]; sortKey: string }
+  | { type: 'pipeline'; pipelineId: string; stages: typeof skills; sortKey: string };
+
+const catalogItems: CatalogItem[] = [
+  ...standalone.map(s => ({ type: 'skill' as const, skill: s, sortKey: s.data.name })),
+  ...[...pipelineGroups.entries()].map(([pid, stages]) => ({
+    type: 'pipeline' as const,
+    pipelineId: pid,
+    stages,
+    sortKey: pid,
+  })),
+].sort((a, b) => a.sortKey.localeCompare(b.sortKey));
+---
+
+<Base title="Skill Catalog" description="Browse all available agent skills.">
+  <section class="catalog-hero">
+    <h1>Skill <span class="text-gradient">Catalog</span></h1>
+    <p class="catalog-subtitle">
+      {skills.length} skills available. Each page is generated directly from the
+      skill's source — no copy, no inference.
+    </p>
+  </section>
+
+  <section class="catalog-search">
+    <div class="search-input-wrap">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input
+        type="text"
+        class="search-input"
+        id="skill-search"
+        placeholder="Describe what you need to do..."
+        autocomplete="off"
+      />
+    </div>
+    <div class="search-status" id="search-status"></div>
+  </section>
+
+  <section class="catalog-grid" id="catalog-grid">
+    {catalogItems.map(item => {
+      if (item.type === 'skill') {
+        const skill = item.skill;
+        const iconPath = ICON_PATHS[skill.data.icon] || ICON_PATHS.package;
+        return (
+          <a class="catalog-card" href={`${base}/catalog/${skill.data.skillSlug}/`} data-slug={skill.data.skillSlug}>
+            <div class="catalog-card-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={iconPath} />
+            </div>
+            <h3>{skill.data.name}</h3>
+            <p>{skill.data.description}</p>
+            <div class="catalog-card-meta">
+              {skill.data.hasScripts && (
+                <span class="meta-badge">
+                  {skill.data.scriptCount} script{skill.data.scriptCount !== 1 ? 's' : ''}
+                </span>
+              )}
+              {skill.data.hasReferences && (
+                <span class="meta-badge">references</span>
+              )}
+              {skill.data.hasAssets && (
+                <span class="meta-badge">assets</span>
+              )}
+              {skill.data.allowedTools.length > 0 && (
+                <span class="meta-badge">
+                  {skill.data.allowedTools.length} tool{skill.data.allowedTools.length !== 1 ? 's' : ''}
+                </span>
+              )}
+            </div>
+          </a>
+        );
+      } else {
+        const { stages, pipelineId } = item;
+        const first = stages[0];
+        const iconPath = ICON_PATHS[first.data.icon] || ICON_PATHS.package;
+        const slugs = stages.map(s => s.data.skillSlug).join(',');
+        const label = pipelineId.split('-').map((w: string) => w[0].toUpperCase() + w.slice(1)).join(' ');
+        const firstSentence = first.data.description.split(/\.\s/)[0];
+        return (
+          <div class="catalog-card catalog-card--pipeline" data-slugs={slugs}>
+            <div class="catalog-card-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={iconPath} />
+            </div>
+            <h3>{label} Pipeline</h3>
+            <p>{firstSentence}.</p>
+            <div class="pipeline-stages">
+              {stages.map((stage, i) => (
+                <Fragment>
+                  {i > 0 && <span class="pipeline-arrow" aria-hidden="true">→</span>}
+                  <a href={`${base}/catalog/${stage.data.skillSlug}/`} class="pipeline-stage">
+                    {stage.data.pipelineStage}
+                  </a>
+                </Fragment>
+              ))}
+            </div>
+            <div class="catalog-card-meta">
+              <span class="meta-badge">{stages.length} stages</span>
+              {stages.some(s => s.data.hasScripts) && (
+                <span class="meta-badge">
+                  {stages.reduce((n, s) => n + s.data.scriptCount, 0)} scripts
+                </span>
+              )}
+              {stages.some(s => s.data.hasAssets) && (
+                <span class="meta-badge">assets</span>
+              )}
+            </div>
+          </div>
+        );
+      }
+    })}
+  </section>
+
+  <div class="catalog-empty" id="catalog-empty" style="display:none">
+    <p>No skills match your query.</p>
+    <p>Try a different description or <a href={`${base}/catalog/`}>browse all skills</a>.</p>
+  </div>
+
+  <script>
+    import search from '@skill-search';
+    const { createFuse, blendedSearch } = search;
+
+    const base = document.querySelector('link[rel="icon"]')?.getAttribute('href')?.replace('/favicon.svg', '') || '';
+
+    async function initSearch() {
+      const input = document.getElementById('skill-search') as HTMLInputElement;
+      const grid = document.getElementById('catalog-grid')!;
+      const status = document.getElementById('search-status')!;
+      const empty = document.getElementById('catalog-empty')!;
+      const allCards = Array.from(grid.querySelectorAll('.catalog-card, .catalog-card--pipeline')) as HTMLElement[];
+      const totalCount = allCards.length;
+
+      // Load both indices in parallel
+      const [skillRes, semRes] = await Promise.all([
+        fetch(`${base}/skill-index.json`),
+        fetch(`${base}/semantic-index.json`).catch(() => null),
+      ]);
+
+      const skills: Array<{ name: string; description: string; slug: string; tags: string[] }> = await skillRes.json();
+      const semanticIdx: Record<string, [string, number][]> | null =
+        semRes && semRes.ok ? await semRes.json() : null;
+
+      const { fuse, items } = createFuse(skills);
+
+      input.addEventListener('input', () => {
+        const query = input.value.trim();
+
+        if (!query) {
+          allCards.forEach(c => { c.style.display = ''; c.style.order = ''; });
+          status.innerHTML = '';
+          empty.style.display = 'none';
+          grid.style.display = '';
+          return;
+        }
+
+        const results = blendedSearch(query, { fuse, items, semanticIdx, idField: 'slug' });
+        const rankedSlugs = results.map((r: any) => r.slug);
+        const matchedSlugs = new Set(rankedSlugs);
+
+        let visibleCount = 0;
+        allCards.forEach(card => {
+          const cardSlugs = (card.dataset.slugs || card.dataset.slug || '').split(',');
+          const matchedAny = cardSlugs.some(s => matchedSlugs.has(s));
+          if (matchedAny) {
+            card.style.display = '';
+            const bestIdx = Math.min(
+              ...cardSlugs.map(s => {
+                const idx = rankedSlugs.indexOf(s);
+                return idx >= 0 ? idx : Infinity;
+              })
+            );
+            card.style.order = String(bestIdx);
+            visibleCount++;
+          } else {
+            card.style.display = 'none';
+            card.style.order = '';
+          }
+        });
+
+        if (visibleCount > 0) {
+          status.innerHTML = `<span class="search-highlight">${visibleCount}</span> of ${totalCount} skills`;
+          empty.style.display = 'none';
+          grid.style.display = '';
+        } else {
+          status.innerHTML = '';
+          grid.style.display = 'none';
+          empty.style.display = '';
+        }
+      });
+    }
+
+    initSearch();
+  </script>
+</Base>
