@@ -2,7 +2,7 @@
   "name": "stuffbucket-skills",
   "metadata": {
     "description": "Agent skills and MCP skill-router for Claude, Copilot, and other AI assistants",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "pluginRoot": "./plugins"
   },
   "owner": {
@@ -14,7 +14,7 @@
       "name": "stuffbucket",
       "source": "stuffbucket",
       "description": "Agent skills and MCP skill-router",
-      "version": "0.2.0"
+      "version": "0.2.1"
     }
   ]
 }
