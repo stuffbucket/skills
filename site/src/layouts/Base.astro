@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import '@fontsource-variable/inter';
+import { ClientRouter } from 'astro:transitions';
 
 interface Props {
   title: string;
@@ -18,12 +19,13 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   <title>{title} — Stuffbucket Skills</title>
   {description && <meta name="description" content={description} />}
   <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
+  <ClientRouter />
 </head>
 <body>
 
 <div class="hero-gradient"><span class="blob"></span></div>
 
-<nav class="site-nav">
+<nav class="site-nav" transition:persist>
   <div class="site-nav-inner">
     <a class="site-nav-brand" href={`${base}/`}>
       <span class="text-gradient"><b>Stuffbucket Skills</b></span>
@@ -42,7 +44,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   <slot />
 </main>
 
-<footer class="footer">
+<footer class="footer" transition:persist>
   <a href="https://github.com/stuffbucket/skills">Stuffbucket Skills</a> · MIT License
 </footer>
 

@@ -78,7 +78,7 @@ const iconPath = ICON_PATHS[skill.data.icon] || ICON_PATHS.package;
     </div>
 
     {pipelineStages.length > 1 && (
-      <nav class="pipeline-nav" aria-label="Pipeline stages">
+      <nav class="pipeline-nav" aria-label="Pipeline stages" transition:name="pipeline-nav" transition:animate="none">
         <span class="pipeline-nav-label">Pipeline</span>
         <div class="pipeline-stages">
           {pipelineStages.map((stage, i) => (
