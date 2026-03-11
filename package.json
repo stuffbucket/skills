@@ -1,6 +1,6 @@
 {
   "name": "@stuffbucket/skills",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Agent skills, MCP skill-router server, and dev tooling for Claude, Copilot, and other AI assistants",
   "bin": {
     "stuffbucket-skills": "plugins/stuffbucket/skills/skill-router/scripts/mcp-server.js"
