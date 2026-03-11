@@ -5,13 +5,22 @@ import { ICON_PATHS } from '../../lib/icons.js';
 
 export async function getStaticPaths() {
   const skills = await getCollection('skills');
-  return skills.map(skill => ({
-    params: { slug: skill.data.skillSlug },
-    props: { skill },
-  }));
+  return skills.map(skill => {
+    // Find pipeline siblings if this skill belongs to a pipeline
+    let pipelineStages: typeof skills = [];
+    if (skill.data.pipeline) {
+      pipelineStages = skills
+        .filter(s => s.data.pipeline === skill.data.pipeline)
+        .sort((a, b) => (a.data.pipelineOrder ?? 99) - (b.data.pipelineOrder ?? 99));
+    }
+    return {
+      params: { slug: skill.data.skillSlug },
+      props: { skill, pipelineStages },
+    };
+  });
 }
 
-const { skill } = Astro.props;
+const { skill, pipelineStages } = Astro.props;
 const { Content } = await render(skill);
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const repoUrl = `https://github.com/stuffbucket/skills/tree/main/${skill.data.repoPath}`;
@@ -67,6 +76,28 @@ const iconPath = ICON_PATHS[skill.data.icon] || ICON_PATHS.package;
         </a>
       </div>
     </div>
+
+    {pipelineStages.length > 1 && (
+      <nav class="pipeline-nav" aria-label="Pipeline stages">
+        <span class="pipeline-nav-label">Pipeline</span>
+        <div class="pipeline-stages">
+          {pipelineStages.map((stage, i) => (
+            <>
+              {i > 0 && <span class="pipeline-arrow" aria-hidden="true">→</span>}
+              {stage.data.skillSlug === skill.data.skillSlug ? (
+                <span class="pipeline-stage pipeline-stage--current" aria-current="step">
+                  {stage.data.pipelineStage ?? stage.data.name}
+                </span>
+              ) : (
+                <a class="pipeline-stage" href={`${base}/catalog/${stage.data.skillSlug}/`}>
+                  {stage.data.pipelineStage ?? stage.data.name}
+                </a>
+              )}
+            </>
+          ))}
+        </div>
+      </nav>
+    )}
 
     <div class="skill-content">
       <Content />

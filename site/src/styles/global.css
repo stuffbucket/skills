@@ -833,24 +833,56 @@ main {
 
 .pipeline-stage {
   font-size: var(--fs-xs);
-  font-weight: var(--fw-medium);
-  color: var(--sl-color-gray-2);
+  font-weight: var(--fw-semibold);
+  color: var(--sl-color-accent);
   text-decoration: none;
-  padding: 0.2rem 0.5rem;
-  border-radius: var(--radius-sm);
-  background: var(--sl-color-gray-5);
-  transition: color var(--duration-fast), background var(--duration-fast);
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-full, 999px);
+  background: color-mix(in srgb, var(--sl-color-accent) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--sl-color-accent) 30%, transparent);
+  transition: color var(--duration-fast), background var(--duration-fast), border-color var(--duration-fast);
+  cursor: pointer;
 }
 
 .pipeline-stage:hover {
-  color: var(--sl-color-accent);
-  background: var(--sl-color-gray-4);
+  color: var(--sl-color-white);
+  background: color-mix(in srgb, var(--sl-color-accent) 25%, transparent);
+  border-color: var(--sl-color-accent);
 }
 
 .pipeline-arrow {
   color: var(--sl-color-gray-3);
   font-size: var(--fs-2xs);
   user-select: none;
+}
+
+.pipeline-stage--current {
+  color: var(--sl-color-white);
+  background: var(--sl-color-accent);
+  border-color: var(--sl-color-accent);
+  cursor: default;
+}
+
+/* ── Pipeline nav (detail page) ──────────────────────────────── */
+
+.pipeline-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md, 0.5rem);
+  background: color-mix(in srgb, var(--sl-color-accent) 5%, var(--sl-color-bg));
+  border: 1px solid color-mix(in srgb, var(--sl-color-accent) 15%, transparent);
+}
+
+.pipeline-nav-label {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  color: var(--sl-color-gray-3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
 }
 
 /* ── Catalog search ──────────────────────────────────────────── */
