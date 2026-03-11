@@ -1,0 +1,155 @@
+---
+import Base from '../layouts/Base.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<Base title="Philosophy" description="Why agent skills need a trust layer — and how Stuffbucket Skills builds one.">
+
+  <!-- ── Hero ──────────────────────────────────────────────── -->
+  <section class="philosophy-hero">
+    <h1>Why <span class="text-gradient">skills</span></h1>
+    <p class="philosophy-subtitle">
+      The gap between what you need to do and what you already know
+      is where mistakes, rework, and delays live.
+    </p>
+  </section>
+
+  <!-- ── The Problem: Consumer ─────────────────────────────── -->
+  <section class="philosophy-section">
+    <h2><span class="text-gradient">The skill consumer</span></h2>
+    <div class="philosophy-cards">
+      <div class="philosophy-card">
+        <div class="philosophy-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+        </div>
+        <h3>You have a goal</h3>
+        <p>You have an outcome that you're looking for. You may not have all the tools and skills to achieve it.</p>
+      </div>
+      <div class="philosophy-card">
+        <div class="philosophy-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+        </div>
+        <h3>Discovery is broken</h3>
+        <p>Tutorials are generic, outdated, and out of context. They don't refer to what you are trying to accomplish. They lack nuance — happy case only.</p>
+      </div>
+      <div class="philosophy-card">
+        <div class="philosophy-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <h3>Skills don't scale</h3>
+        <p>Knowledge is trapped, work is duplicated, no vetting, hearsay knowledge vs. canonical knowledge, difficult for experts to update on the fly. Can't react to conditions on the ground.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── The Problem: Producer ─────────────────────────────── -->
+  <section class="philosophy-section">
+    <h2><span class="text-gradient">The skill producer</span></h2>
+    <div class="philosophy-cards">
+      <div class="philosophy-card">
+        <div class="philosophy-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        </div>
+        <h3>Experts don't scale</h3>
+        <p>New skills are needed faster than they can be produced. Support costs quickly swamp expert resources. Nonlinear processes are hard to model. Feedback is difficult to solicit.</p>
+      </div>
+      <div class="philosophy-card">
+        <div class="philosophy-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <h3>Lifetime 80/20 rule</h3>
+        <p>Over the lifetime of a piece of software 80% of the cost goes to maintenance. Only 20% is spent on initial creation. The same is likely true for skills.</p>
+      </div>
+      <div class="philosophy-card">
+        <div class="philosophy-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>Markets are risky</h3>
+        <p>Knowledge is trapped, work is duplicated, no vetting, hearsay vs. canonical knowledge, difficult for experts to update community in response to feedback, events can instantly invalidate existing knowledge.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── The Trust Gap ─────────────────────────────────────── -->
+  <section class="philosophy-section philosophy-trust-gap">
+    <h2>The trust gap is <span class="text-gradient">real</span></h2>
+    <div class="philosophy-stats">
+      <div class="philosophy-stat">
+        <span class="philosophy-stat-number">350K+</span>
+        <span class="philosophy-stat-label">skills published in 2 months</span>
+      </div>
+      <div class="philosophy-stat">
+        <span class="philosophy-stat-number">1,000+</span>
+        <span class="philosophy-stat-label">confirmed malicious</span>
+      </div>
+    </div>
+    <blockquote class="philosophy-quote">
+      The plumbing exists. The trust layer doesn't.
+    </blockquote>
+  </section>
+
+  <!-- ── How It Works ──────────────────────────────────────── -->
+  <section class="philosophy-section">
+    <h2>How <span class="text-gradient">skills work</span></h2>
+    <div class="philosophy-flow">
+      <div class="philosophy-flow-step">
+        <div class="philosophy-flow-number">1</div>
+        <h3>You ask for help</h3>
+        <p>The agent encounters a task that needs specialized knowledge.</p>
+      </div>
+      <svg class="philosophy-flow-arrow" aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+      <div class="philosophy-flow-step">
+        <div class="philosophy-flow-number">2</div>
+        <h3>Agent finds the skills</h3>
+        <p>You don't need to know a skill exists. The agent dynamically queries the skill library as needed.</p>
+      </div>
+      <svg class="philosophy-flow-arrow" aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+      <div class="philosophy-flow-step">
+        <div class="philosophy-flow-number">3</div>
+        <h3>Solution applied</h3>
+        <p>The right skill is found and loaded just in time from the skill library for the agent to use.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Trust Model ───────────────────────────────────────── -->
+  <section class="philosophy-section">
+    <h2>The <span class="text-gradient">trust model</span></h2>
+    <div class="philosophy-cards">
+      <div class="philosophy-card">
+        <div class="philosophy-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>Trust</h3>
+        <p>Trust who you know. Fork the project. Run your own library. Vet skills with your team. The trust boundary moves from a public to the people, tools, and context you know.</p>
+      </div>
+      <div class="philosophy-card">
+        <div class="philosophy-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+        </div>
+        <h3>Curate</h3>
+        <p>Skills can be created, continuously validated and refined without constant human intervention.</p>
+      </div>
+      <div class="philosophy-card">
+        <div class="philosophy-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        </div>
+        <h3>Share</h3>
+        <p>Create, consume, contribute back. Knowledge moves to where it is needed when it is needed. Experts can focus on creating solutions instead of controlling support costs.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Closing ───────────────────────────────────────────── -->
+  <section class="philosophy-closing">
+    <p class="philosophy-closing-line">Experts create skills.</p>
+    <p class="philosophy-closing-line">People find and use them easily.</p>
+    <p class="philosophy-closing-line"><span class="text-gradient">Skill markets can be trusted.</span></p>
+    <div class="hero-actions">
+      <a class="primary" href={`${base}/catalog/`}>Browse skills</a>
+      <a class="secondary" href="https://github.com/stuffbucket/skills">GitHub</a>
+    </div>
+  </section>
+
+</Base>

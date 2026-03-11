@@ -83,7 +83,9 @@ const iconPath = ICON_PATHS[skill.data.icon] || ICON_PATHS.package;
         <div class="pipeline-stages">
           {pipelineStages.map((stage, i) => (
             <>
-              {i > 0 && <span class="pipeline-arrow" aria-hidden="true">→</span>}
+              {i > 0 && (
+                <svg class="pipeline-chevron" aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+              )}
               {stage.data.skillSlug === skill.data.skillSlug ? (
                 <span class="pipeline-stage pipeline-stage--current" aria-current="step">
                   {stage.data.pipelineStage ?? stage.data.name}
