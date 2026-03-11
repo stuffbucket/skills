@@ -6,8 +6,9 @@
 //
 // Provides blended semantic + fuzzy search with consistent stemming,
 // Fuse.js configuration, and ranking across all search surfaces.
-
-const Fuse = require("fuse.js");
+//
+// Fuse.js is NOT required here — callers pass it in via createFuse(skills, Fuse)
+// so this module works in both CJS (Node) and ESM (Vite/browser) contexts.
 
 // ---------------------------------------------------------------------------
 // Stemmer — lightweight Porter-ish suffix stripping
@@ -131,9 +132,10 @@ const FUSE_CONFIG = {
  * stemmed searchable text.
  *
  * @param {Array} skills — array of skill objects (must have name, description, tags)
+ * @param {Function} Fuse — Fuse.js constructor (caller provides to avoid module format issues)
  * @returns {{ fuse: Fuse, items: Array }}
  */
-function createFuse(skills) {
+function createFuse(skills, Fuse) {
   const enriched = skills.map((s) => ({
     ...s,
     _stemmed: stemTokens(

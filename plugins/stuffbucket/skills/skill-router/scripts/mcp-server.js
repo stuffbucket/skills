@@ -17,6 +17,7 @@
 const fs = require("fs");
 const path = require("path");
 const readline = require("readline");
+const Fuse = require("fuse.js");
 const { createFuse, blendedSearch } = require("./search");
 
 // Resolve the package root where skills and index.json live.
@@ -112,7 +113,7 @@ function getSearcher() {
     return { searcher, skills: cachedSkills };
 
   cachedSkills = index.skills;
-  searcher = createFuse(cachedSkills);
+  searcher = createFuse(cachedSkills, Fuse);
   semanticIdx = loadSemanticIndex();
 
   return { searcher, skills: cachedSkills };

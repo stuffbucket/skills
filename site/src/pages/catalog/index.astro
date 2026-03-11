@@ -143,6 +143,7 @@ const catalogItems: CatalogItem[] = [
   </div>
 
   <script>
+    import Fuse from 'fuse.js';
     import search from '@skill-search';
     const { createFuse, blendedSearch } = search;
 
@@ -166,7 +167,7 @@ const catalogItems: CatalogItem[] = [
       const semanticIdx: Record<string, [string, number][]> | null =
         semRes && semRes.ok ? await semRes.json() : null;
 
-      const { fuse, items } = createFuse(skills);
+      const { fuse, items } = createFuse(skills, Fuse);
 
       input.addEventListener('input', () => {
         const query = input.value.trim();
