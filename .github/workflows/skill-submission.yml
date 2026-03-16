@@ -30,7 +30,7 @@ jobs:
 
       - name: Extract skill info from issue
         id: parse
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const body = context.payload.issue.body || '';
@@ -140,7 +140,7 @@ jobs:
 
       - name: Create PR or report failure
         if: steps.parse.outputs.has_attachment == 'true'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           SKILL_NAME: ${{ steps.parse.outputs.skill_name }}
           VALIDATE_OK: ${{ steps.validate.outputs.exit_code }}
