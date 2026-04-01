@@ -3,7 +3,8 @@
   "version": "0.2.7",
   "description": "Agent skills, MCP skill-router server, and dev tooling for Claude, Copilot, and other AI assistants",
   "bin": {
-    "stuffbucket-skills": "plugins/stuffbucket/skills/skill-router/scripts/mcp-server.js"
+    "stuffbucket-skills": "plugins/stuffbucket/skills/skill-router/scripts/mcp-server.js",
+    "skl": "plugins/stuffbucket/skills/skill-router/scripts/cli.js"
   },
   "files": [
     "plugins/stuffbucket/skills/*/SKILL.md",

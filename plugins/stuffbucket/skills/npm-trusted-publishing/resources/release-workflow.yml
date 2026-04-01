@@ -1,0 +1,60 @@
+# Working release workflow for @stuffbucket/figmma
+# Confirmed working: v1.0.3 published via OIDC trusted publishing on 2026-03-17
+#
+# Prerequisites:
+#   1. package.json has repository field matching this GitHub repo
+#   2. npmjs.com has trusted publishing linked to stuffbucket/figmma + release.yml
+#   3. Node 24 for npm >= 11.5.1 (OIDC token exchange)
+
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  release:
+    name: Build & Publish GitHub Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          registry-url: https://registry.npmjs.org
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type-check
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm test
+
+      - name: Package artifact
+        run: npm pack
+
+      - name: Publish to npm
+        run: npm publish --provenance --access public
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: stuffbucket-figmma-*.tgz

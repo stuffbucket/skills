@@ -15,6 +15,7 @@
     "fuse.js": "^7.1.0"
   },
   "devDependencies": {
-    "@huggingface/transformers": "^3.8.1"
+    "@huggingface/transformers": "^3.8.1",
+    "code-inspector-plugin": "^1.4.4"
   }
 }

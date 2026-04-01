@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import { resolve } from 'path';
+import { codeInspectorPlugin } from 'code-inspector-plugin';
 
 const GITHUB_USER = 'stuffbucket';
 const REPO_NAME = 'skills';
@@ -14,6 +15,7 @@ export default defineConfig({
     },
   },
   vite: {
+    plugins: [codeInspectorPlugin({ bundler: 'vite' })],
     resolve: {
       alias: {
         '@skill-search': resolve('../plugins/stuffbucket/skills/skill-router/scripts/search.js'),

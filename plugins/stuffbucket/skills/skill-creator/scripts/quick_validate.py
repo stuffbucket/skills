@@ -21,8 +21,10 @@ def parse_frontmatter(text):
     raw = match.group(1)
     result = {}
     for line in raw.split('\n'):
-        line = line.strip()
-        if not line or line.startswith('#'):
+        if not line.strip() or line.strip().startswith('#'):
+            continue
+        # Skip indented lines (nested YAML values under a parent key)
+        if line.startswith(' ') or line.startswith('\t'):
             continue
         if ':' in line:
             key, _, value = line.partition(':')

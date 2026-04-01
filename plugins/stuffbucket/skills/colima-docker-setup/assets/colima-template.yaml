@@ -1,0 +1,31 @@
+# Colima default profile template
+# Place at ~/.colima/_templates/default.yaml to auto-apply on 'colima start'
+# Values here are overridden by CLI flags.
+
+# VM resources
+cpu: 4
+memory: 8
+disk: 100
+# VM type: vz (Apple Virtualization, fast) or qemu (slower, more compatible)
+vmType: vz
+# Container runtime
+runtime: docker
+# Enable Rosetta for x86_64 container support on Apple Silicon
+rosetta: true
+# Mount configuration
+mountType: virtiofs
+mountInotify: true
+mounts:
+  - location: "~"
+    writable: true
+# Networking
+network:
+  address: false
+  dns: []
+  dnsHosts: {}
+# Automatically set as active Docker context on start
+autoActivate: true
+# Provision scripts run inside the VM on first start
+provision: []
+# Docker daemon configuration (merged into /etc/docker/daemon.json)
+docker: {}

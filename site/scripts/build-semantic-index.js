@@ -1,5 +1,12 @@
 #!/usr/bin/env node
 
+// Suppress @huggingface/transformers localStorage warning in Node.js
+const _origEmit = process.emitWarning;
+process.emitWarning = (warning, ...args) => {
+  if (typeof warning === 'string' && warning.includes('--localstorage-file')) return;
+  _origEmit.call(process, warning, ...args);
+};
+
 // Builds a pre-computed semantic search index at build time.
 //
 // Uses sentence-transformer embeddings (all-MiniLM-L6-v2) to compute
