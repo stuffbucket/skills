@@ -86,6 +86,10 @@ on PRs, but local checks are faster.
 (MD013 capped at 200 chars). A new skill that lints clean in isolation but fails MD040/MD013/MD032
 will block `npm run validate` — fix the markdown, don't suppress.
 
+**Trigger phrase + priming.** The catalog supports an explicit-routing memetic phrase — `use stuffbucket` — that signals downstream agents to call `list_skills`
+before answering. The README's "Trigger your agent to use skills" section is the canonical home for this, including a copy-pastable priming snippet for
+`CLAUDE.md` / `AGENTS.md` / `.clinerules`. When updating user-facing routing guidance, edit that README section rather than duplicating it here.
+
 **Tauri skill family (61 skills).** A large hierarchical cluster covers Tauri v2:
 `tauri-architecture`, `tauri-bundling`, `tauri-commands`, `tauri-debug-test`, `tauri-events`,
 `tauri-plugin-dev`, `tauri-plugins`, `tauri-security`, `tauri-setup`, `tauri-sidecar`,

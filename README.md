@@ -36,6 +36,33 @@ Or install as a plugin marketplace:
 
 That's it. Your agent can now discover and load skills on demand.
 
+## Trigger your agent to use skills
+
+Include the phrase **`use stuffbucket`** anywhere in a prompt to force-route the agent through `list_skills` before it answers — the memetic equivalent of Context7's
+`use context7`.
+
+```text
+"use stuffbucket — set up a Tauri app with a custom titlebar"
+```
+
+Agents will also discover skills *automatically* via the rich "Use when..." trigger sentences in each skill's `description` (the router ranks on this text), but the
+explicit phrase guarantees the catalog is consulted.
+
+**Recommended priming snippet** — paste into `CLAUDE.md`, `AGENTS.md`, `.clinerules`, or any project system prompt:
+
+```markdown
+This project has access to the @stuffbucket/skills catalog via MCP — packaged
+workflows for Tauri, React, design, GLSL/shaders, boundary TS, git, GitHub
+Pages, Azure, Docker, code review, and evals.
+
+For any task that might match a packaged workflow, call `list_skills` early and
+load matching skills with `get_skill` before improvising. Each skill ships rich
+"Use when..." trigger sentences — when one fits, follow it.
+
+The explicit-routing phrase is `use stuffbucket` — when the user includes it,
+always consult the catalog before answering.
+```
+
 ## How It Works
 
 The skill-router exposes two tools — `list_skills` and `get_skill` — instead of registering every skill separately. Agents search by intent, load what they need, and the context window cost stays
@@ -79,6 +106,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full guide, or read the [Best Pra
 | Skill | Description |
 | --- | --- |
 | `azure-cli-setup` | Install and configure Azure CLI on macOS for local development |
+| `boundary` | Root index for the boundary-* family — differential closure analysis for code and AI-generated code |
 | `boundary-domain-closure` | Structure code so that the set of representable states equals the set of valid states for a given domain, resolving the boundary condition d(S) → ∅ |
 | `boundary-drift-detection` | Detect when code changes reopen closed domains or widen boundary conditions — expanding d(S) where it was resolved |
 | `boundary-generation-control` | Constrain AI code generation to preserve or resolve boundary conditions — never expand them |
@@ -88,6 +116,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full guide, or read the [Best Pra
 | `code-analysis-skill` | A skill for analyzing code quality, identifying patterns, and suggesting improvements |
 | `code-review-cycle` | Run a full code review cycle on recent changes: lint auto-fix, three-agent quality review (reuse, quality, efficiency), boundary analysis with separate new-file and modified-file review tracks, code smell audit with deferred triggers, and error-contract review |
 | `colima-docker-setup` | Set up Docker, docker compose, and docker buildx on macOS using Colima |
+| `design` | Root index for the design-* family — UI/UX design review, refinement, and production polish across foundation (project context, design system, frontend scaffolding), visual treatment (color, typography, layout, motion), UX content and flow (clarity, onboarding, adaptation), and review/quality (audit, critique, check, polish, harden) |
 | `design-adapt` | Adapt designs to work across different screen sizes, devices, contexts, or platforms |
 | `design-animate` | Review a feature and enhance it with purposeful animations, micro-interactions, and motion effects that improve usability and delight |
 | `design-arrange` | Improve layout, spacing, and visual rhythm |
@@ -117,15 +146,18 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full guide, or read the [Best Pra
 | `ghostty-config` | Configure and optimize Ghostty terminal for any machine |
 | `git-workflow-skill` | Git operations and workflows |
 | `npm-trusted-publishing` | Publish npm packages from GitHub Actions using OIDC trusted publishing with provenance |
+| `pages` | Root index for the pages-* family — a five-step pipeline that deploys a Vite project to GitHub Pages via GitHub Actions, including GitHub Enterprise (GHE) codespace-style subdomain discovery |
 | `pages-build-vite` | Locally builds the Vite project and verifies the dist/ output before committing |
 | `pages-commit-vite` | Stages and commits the GitHub Pages configuration files to the local git repo |
 | `pages-prepare-vite` | Prepares a Vite project for GitHub Pages deployment via GitHub Actions |
 | `pages-publish-vite` | Monitors the GitHub Actions deployment workflow and reports the live GitHub Pages URL |
 | `pages-push-vite` | Pushes the current branch to the git remote, triggering the GitHub Actions workflow that builds and deploys the Vite project to GitHub Pages |
+| `react` | Root index for the react-* family — performance best practices (Vercel Engineering guidelines for React + Next.js) and composition patterns (compound components, render props, context, React 19 API changes) |
 | `react-best-practices` | React and Next.js performance optimization guidelines from Vercel Engineering |
 | `react-composition` | React composition patterns that scale |
 | `skill-creator` | Guide for creating effective skills |
 | `skill-eval-loop` | Run the observe-analyze-iterate loop on promptfoo evals for a skill collection |
+| `tauri` | Root index for Tauri v2 (desktop + mobile apps from a Rust core and a WebView frontend) — setup, architecture, commands, events, plugins, security, bundling, sidecars, windows, tray/menu, updater, plugin authoring, debug/test |
 | `tauri-architecture` | Use when reasoning about Tauri v2 internals — process boundaries (Core vs WebView), the IPC channel, binary-size tradeoffs, or deciding between commands/events/raw IPC for a given feature. |
 | `tauri-architecture-ipc-internals` | Use when reasoning about how Tauri v2's `invoke()` actually crosses the process boundary — the postMessage bridge, `__TAURI_INTERNALS__`, request/response correlation, JSON vs raw-byte vs `Channel` serialization, sync-stringify cost, throughput limits (~1k JSON commands/sec/WebView), and when to bypass the JSON path with raw IPC. |
 | `tauri-architecture-isolation-pattern` | Use when enabling Tauri v2's Isolation pattern — configuring `app.security.pattern: { use: "isolation", options: { dir } }`, authoring the sandboxed iframe app with `__TAURI_ISOLATION_HOOK__`, understanding the AES-GCM rewriting of IPC payloads, what XSS-class attacks it mitigates (and what Core-side bugs it does not), the one-isolation-app-per-Tauri-app constraint, and the Windows ESM-in-sandboxed-iframe caveat. |

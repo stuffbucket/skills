@@ -138,7 +138,8 @@ async function run() {
   );
 
   // --- Test 4: list_skills (no filter) ---
-  console.log("\n4. List Skills (all)");
+  // Empty query returns family-grouped markdown (not raw JSON).
+  console.log("\n4. List Skills (all, grouped markdown)");
   send(proc, "tools/call", {
     name: "list_skills",
     arguments: {},
@@ -147,22 +148,20 @@ async function run() {
   const listContent = listResp.result && listResp.result.content;
   test("returns content", Array.isArray(listContent), "content array");
   const listText = listContent && listContent[0] && listContent[0].text;
-  let allSkills;
-  try {
-    allSkills = JSON.parse(listText);
-  } catch (_) {
-    allSkills = null;
-  }
-  test("parses as JSON", Array.isArray(allSkills), "array");
-  test("has skills", allSkills && allSkills.length >= 3, ">= 3 skills");
+  test("returns text content", typeof listText === "string" && listText.length > 0, "non-empty text");
   test(
-    "skills have name + description",
-    allSkills && allSkills.every((s) => s.name && s.description),
-    "name + description on each",
+    "contains family heading",
+    listText && /^## /m.test(listText),
+    "## heading present",
   );
   test(
-    "does not include skill-router",
-    allSkills && !allSkills.some((s) => s.name === "skill-router"),
+    "contains skill bullets",
+    listText && /- `[a-z-]+` — /.test(listText),
+    "bullet rows with name and dash",
+  );
+  test(
+    "does not include skill-router as a listed skill",
+    listText && !/- `skill-router`/.test(listText),
     "skill-router excluded from index",
   );
 

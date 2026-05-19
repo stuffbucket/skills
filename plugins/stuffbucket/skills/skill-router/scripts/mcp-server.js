@@ -50,7 +50,7 @@ const TOOLS = [
   {
     name: "list_skills",
     description:
-      "Discover available skills. Call with no arguments to see all skills, or pass a query to filter by keyword.",
+      "Search the packaged-skill catalog before answering tasks that might match a curated workflow. Catalog covers Tauri (60+ skills), React, design systems, boundary-engineered TypeScript, GLSL/shaders, GitHub Pages, Azure CLI, git, Docker, code review, evals, and more. Call with no arguments to browse families grouped by root, or pass a natural-language query (e.g. 'tauri vibrancy', 'react performance', 'review my pull request'). Each result includes a 'use when' trigger sentence. Users can force-route by including the phrase 'use stuffbucket' in their request. Costs almost nothing and avoids reinventing solutions the catalog already encodes.",
     inputSchema: {
       type: "object",
       properties: {
@@ -164,17 +164,136 @@ function fuzzyFindSkill(skills, name) {
 }
 
 // --- Tool handlers ---
-function handleListSkills(params) {
-  const skills = searchSkills(params && params.query);
 
+// Group skills by prefix family for the empty-query case.
+// A "family root" is a skill whose name is the shared prefix of >=2 other skills
+// (e.g. `tauri` is root for `tauri-architecture`, `tauri-bundling`, …).
+// Returns markdown with families first, "Other" bucket last.
+function groupByFamily(skills) {
+  const byName = new Map(skills.map((s) => [s.name, s]));
+
+  // First pass: figure out which first-segment prefixes have >=2 skills
+  // (the root itself, if present, doesn't count toward the 2 — we want >=2 children OR root+2 children).
+  const firstSegBuckets = new Map();
+  for (const s of skills) {
+    const seg = s.name.split("-")[0];
+    if (!firstSegBuckets.has(seg)) firstSegBuckets.set(seg, []);
+    firstSegBuckets.get(seg).push(s);
+  }
+
+  // A family qualifies if it has >=3 skills sharing the first segment,
+  // OR has an explicit root skill (name === seg) plus >=2 others.
+  const families = [];
+  const claimed = new Set();
+  for (const [seg, members] of firstSegBuckets.entries()) {
+    const root = byName.get(seg);
+    const nonRoot = members.filter((m) => m.name !== seg);
+    if ((root && nonRoot.length >= 2) || members.length >= 3) {
+      families.push({ seg, root, members });
+      for (const m of members) claimed.add(m.name);
+    }
+  }
+
+  // Sort families by size, largest first
+  families.sort((a, b) => b.members.length - a.members.length);
+
+  const other = skills.filter((s) => !claimed.has(s.name));
+
+  const lines = [];
+  const truncDesc = (d, n = 140) => {
+    if (!d) return "";
+    const oneLine = d.replace(/\s+/g, " ").trim();
+    return oneLine.length > n ? oneLine.slice(0, n - 1) + "…" : oneLine;
+  };
+
+  for (const fam of families) {
+    const { seg, root, members } = fam;
+    const heading = root
+      ? `## ${seg} (${members.length} skills, including root)`
+      : `## ${seg} (${members.length} skills)`;
+    lines.push(heading);
+
+    // Sort members: root first, then alphabetically
+    const sorted = [...members].sort((a, b) => {
+      if (a.name === seg) return -1;
+      if (b.name === seg) return 1;
+      return a.name.localeCompare(b.name);
+    });
+
+    // Detect parent/child within family: a member is a parent of another member
+    // if the other's name starts with member.name + "-".
+    const isParentOf = (a, b) =>
+      b.name !== a.name && b.name.startsWith(a.name + "-");
+
+    // Build indent depth: count hyphens beyond the root segment.
+    // Examples (root = "tauri"):
+    //   tauri                          -> depth 0
+    //   tauri-architecture             -> depth 1
+    //   tauri-architecture-ipc-internals -> depth 2 (if tauri-architecture exists as a member)
+    const memberNames = new Set(sorted.map((m) => m.name));
+    const depthFor = (name) => {
+      if (name === seg) return 0;
+      // Walk back through hyphenated prefixes and count intermediate members
+      const parts = name.split("-");
+      let depth = 1;
+      // intermediate prefixes between root and this name
+      for (let i = 2; i < parts.length; i++) {
+        const prefix = parts.slice(0, i).join("-");
+        if (memberNames.has(prefix)) depth++;
+      }
+      return depth;
+    };
+
+    for (const m of sorted) {
+      const depth = depthFor(m.name);
+      const indent = "  ".repeat(depth);
+      lines.push(`${indent}- \`${m.name}\` — ${truncDesc(m.description)}`);
+    }
+    lines.push("");
+  }
+
+  if (other.length > 0) {
+    lines.push(`## Other (${other.length} skills)`);
+    other.sort((a, b) => a.name.localeCompare(b.name));
+    for (const s of other) {
+      lines.push(`- \`${s.name}\` — ${truncDesc(s.description)}`);
+    }
+    lines.push("");
+  }
+
+  return lines.join("\n");
+}
+
+function handleListSkills(params) {
+  const query = params && params.query;
+  const skills = searchSkills(query);
+
+  // Check for available updates (lazy, cached, non-blocking)
+  const updateInfo = checkFreshness();
+  const updateBanner = updateInfo
+    ? `Update available: ${updateInfo.localVersion} → ${updateInfo.latestVersion}. Call get_skill('update-skills') for instructions.\n\n`
+    : "";
+
+  // Empty-query path: grouped markdown by family.
+  if (!query) {
+    const grouped = groupByFamily(skills);
+    return {
+      content: [
+        {
+          type: "text",
+          text: updateBanner + grouped,
+        },
+      ],
+    };
+  }
+
+  // Query path: existing JSON shape (unchanged).
   const summaries = skills.map((s) => ({
     name: s.name,
     description: s.description,
     tags: s.tags,
   }));
 
-  // Check for available updates (lazy, cached, non-blocking)
-  const updateInfo = checkFreshness();
   if (updateInfo) {
     summaries.unshift({
       name: "update-skills",
@@ -191,6 +310,35 @@ function handleListSkills(params) {
       },
     ],
   };
+}
+
+// Build a markdown "Related skills" footer for get_skill responses.
+// Uses blendedSearch with the loaded skill's name + description as the query,
+// excludes the skill itself, and returns the top 5 as markdown bullets.
+function buildRelatedFooter(skill) {
+  try {
+    const query = `${skill.name} ${skill.description || ""}`.trim();
+    if (!query) return "";
+
+    const results = searchSkills(query).filter((s) => s.name !== skill.name);
+    const top = results.slice(0, 5);
+    if (top.length === 0) return "";
+
+    const trunc = (d, n = 100) => {
+      if (!d) return "";
+      const oneLine = d.replace(/\s+/g, " ").trim();
+      return oneLine.length > n ? oneLine.slice(0, n - 1) + "…" : oneLine;
+    };
+
+    const lines = ["", "---", "", "## Related skills", ""];
+    for (const s of top) {
+      lines.push(`- \`${s.name}\` — ${trunc(s.description)}`);
+    }
+    lines.push("");
+    return "\n" + lines.join("\n");
+  } catch {
+    return "";
+  }
 }
 
 function handleGetSkill(params) {
@@ -238,8 +386,12 @@ function handleGetSkill(params) {
         ? `Resolved "${params.name}" → ${exact.name}\n\n`
         : "";
 
+    // Build a "Related skills" footer with top-5 siblings by blended search
+    // against (name + description). Falls back to Fuse-only when no semantic idx.
+    const relatedFooter = buildRelatedFooter(exact);
+
     return {
-      content: [{ type: "text", text: resolved + content }],
+      content: [{ type: "text", text: resolved + content + relatedFooter }],
     };
   }
 

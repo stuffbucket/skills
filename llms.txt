@@ -2,6 +2,14 @@
 
 AI assistant skills for Claude, Copilot, and other LLMs, following the Agent Skills specification.
 
+## Trigger phrase
+
+Include `use stuffbucket` in a prompt to force-route through `list_skills` before answering.
+Skills also auto-trigger from "Use when..." sentences in each `description`.
+Recommended priming for system prompts: instruct the agent to call `list_skills` early
+for any task that might match a packaged workflow, load matches via `get_skill`, and
+follow the skill's "Use when..." guidance when present.
+
 ## Quick Start
 
   npm run setup          # create MCP symlinks + build skill index
@@ -15,6 +23,7 @@ AI assistant skills for Claude, Copilot, and other LLMs, following the Agent Ski
 
 Skill validation:
   ✓ azure-cli-setup
+  ✓ boundary
   ✓ boundary-domain-closure
   ✓ boundary-drift-detection
   ✓ boundary-generation-control
@@ -24,6 +33,7 @@ Skill validation:
   ✓ code-analysis-skill
   ✓ code-review-cycle
   ✓ colima-docker-setup
+  ✓ design
   ✓ design-adapt
   ✓ design-animate
   ✓ design-arrange
@@ -53,16 +63,19 @@ Skill validation:
   ✓ ghostty-config
   ✓ git-workflow-skill
   ✓ npm-trusted-publishing
+  ✓ pages
   ✓ pages-build-vite
   ✓ pages-commit-vite
   ✓ pages-prepare-vite
   ✓ pages-publish-vite
   ✓ pages-push-vite
+  ✓ react
   ✓ react-best-practices
   ✓ react-composition
   ✓ skill-creator
   ✓ skill-eval-loop
   ✓ skill-router
+  ✓ tauri
   ✓ tauri-architecture
   ✓ tauri-architecture-ipc-internals
   ✓ tauri-architecture-isolation-pattern
@@ -138,6 +151,7 @@ Schema validation: All 3 file(s) valid.
 | Skill | Description | Allowed Tools |
 |---|---|---|
 | azure-cli-setup | Install and configure Azure CLI on macOS for local development. Use when the ... | — |
+| boundary | Root index for the boundary-* family — differential closure analysis for code... | — |
 | boundary-domain-closure | "Structure code so that the set of representable states equals the set of val... | — |
 | boundary-drift-detection | "Detect when code changes reopen closed domains or widen boundary conditions ... | — |
 | boundary-generation-control | "Constrain AI code generation to preserve or resolve boundary conditions — ne... | — |
@@ -147,6 +161,7 @@ Schema validation: All 3 file(s) valid.
 | code-analysis-skill | A skill for analyzing code quality, identifying patterns, and suggesting impr... | read_file, grep, list_directory |
 | code-review-cycle | "Run a full code review cycle on recent changes: lint auto-fix, three-agent q... | — |
 | colima-docker-setup | Set up Docker, docker compose, and docker buildx on macOS using Colima. Use w... | — |
+| design | Root index for the design-* family — UI/UX design review, refinement, and pro... | — |
 | design-adapt | Adapt designs to work across different screen sizes, devices, contexts, or pl... | — |
 | design-animate | Review a feature and enhance it with purposeful animations, micro-interaction... | — |
 | design-arrange | Improve layout, spacing, and visual rhythm. Fixes monotonous grids, inconsist... | — |
@@ -176,16 +191,19 @@ Schema validation: All 3 file(s) valid.
 | ghostty-config | "Configure and optimize Ghostty terminal for any machine. Use when setting up... | — |
 | git-workflow-skill | Git operations and workflows. Use when committing, branching, merging, rebasi... | read_file, write_file, list_directory |
 | npm-trusted-publishing | "Publish npm packages from GitHub Actions using OIDC trusted publishing with ... | — |
+| pages | Root index for the pages-* family — a five-step pipeline that deploys a Vite ... | — |
 | pages-build-vite | Locally builds the Vite project and verifies the dist/ output before committi... | — |
 | pages-commit-vite | Stages and commits the GitHub Pages configuration files to the local git repo... | — |
 | pages-prepare-vite | Prepares a Vite project for GitHub Pages deployment via GitHub Actions. Patch... | — |
 | pages-publish-vite | Monitors the GitHub Actions deployment workflow and reports the live GitHub P... | — |
 | pages-push-vite | Pushes the current branch to the git remote, triggering the GitHub Actions wo... | — |
+| react | Root index for the react-* family — performance best practices (Vercel Engine... | — |
 | react-best-practices | React and Next.js performance optimization guidelines from Vercel Engineering... | — |
 | react-composition | React composition patterns that scale. Use when refactoring components with b... | — |
 | skill-creator | Guide for creating effective skills. This skill should be used when users wan... | — |
 | skill-eval-loop | Run the observe-analyze-iterate loop on promptfoo evals for a skill collectio... | — |
 | skill-router | Find and load skills on demand. Use when you need a specialized skill for a t... | list_skills, get_skill |
+| tauri | Root index for Tauri v2 (desktop + mobile apps from a Rust core and a WebView... | — |
 | tauri-architecture | Use when reasoning about Tauri v2 internals — process boundaries (Core vs Web... | — |
 | tauri-architecture-ipc-internals | Use when reasoning about how Tauri v2's `invoke()` actually crosses the proce... | — |
 | tauri-architecture-isolation-pattern | Use when enabling Tauri v2's Isolation pattern — configuring `app.security.pa... | — |
@@ -291,7 +309,7 @@ Server: `skill-router`
 Command: `npx -y @stuffbucket/skills`
 
 Tools:
-- `list_skills` — Discover available skills. Call with no arguments to see all skills, or pass a query to filter by keyword.
+- `list_skills` — Search the packaged-skill catalog before answering tasks that might match a curated workflow. Catalog covers Tauri (60+ skills), React, design systems, boundary-engineered TypeScript, GLSL/shaders, GitHub Pages, Azure CLI, git, Docker, code review, evals, and more. Call with no arguments to browse families grouped by root, or pass a natural-language query (e.g. 'tauri vibrancy', 'react performance', 'review my pull request'). Each result includes a 'use when' trigger sentence. Users can force-route by including the phrase 'use stuffbucket' in their request. Costs almost nothing and avoids reinventing solutions the catalog already encodes.
   - `query` (string, optional) — Keyword to filter skills by name, description, or tags. Omit to return all.
 - `get_skill` — Load a skill's full instructions by name. Skill names are kebab-case identifiers from list_skills.
   - `name` (string, required) — Skill name, e.g. code-analysis-skill.

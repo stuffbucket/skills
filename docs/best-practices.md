@@ -21,6 +21,16 @@
 - `compatibility`: List of supported AI assistants
 - `allowed-tools`: List of tools the skill expects to use
 
+## Writing trigger-friendly descriptions
+
+The router ranks skills by matching the user's intent against each `description`. A vague description never gets loaded. Make yours rank-friendly:
+
+- **Lead with "Use when..."** — state the triggering situation in the first clause so the matcher sees it (e.g. "Use when scaffolding a Tauri v2 app").
+- **Use concrete nouns the user will type** — library names, file extensions, error strings, CLI flags. "Vite", "tauri.conf.json", "webkit2gtk not found" beat "the build tool".
+- **List the specific sub-topics covered** — comma-separated keywords act as a search surface. Mention every API/command/flag the skill addresses.
+- **Skip marketing language** — "powerful", "comprehensive", "best-in-class" add tokens without ranking signal. Cut them.
+- **State both *what* and *when*** — the spec requires it, and the router uses both halves. "Configures X" is half a description; "Use when configuring X to do Y" is whole.
+
 ## Content Structure
 
 Follow the progressive disclosure principle:

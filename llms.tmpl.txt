@@ -2,6 +2,14 @@
 
 AI assistant skills for Claude, Copilot, and other LLMs, following the Agent Skills specification.
 
+## Trigger phrase
+
+Include `use stuffbucket` in a prompt to force-route through `list_skills` before answering.
+Skills also auto-trigger from "Use when..." sentences in each `description`.
+Recommended priming for system prompts: instruct the agent to call `list_skills` early
+for any task that might match a packaged workflow, load matches via `get_skill`, and
+follow the skill's "Use when..." guidance when present.
+
 ## Quick Start
 
 {{QUICK_START}}
