@@ -24,6 +24,29 @@ Skill validation:
   ✓ code-analysis-skill
   ✓ code-review-cycle
   ✓ colima-docker-setup
+  ✓ design-adapt
+  ✓ design-animate
+  ✓ design-arrange
+  ✓ design-audit
+  ✓ design-bolder
+  ✓ design-check
+  ✓ design-clarify
+  ✓ design-colorize
+  ✓ design-context
+  ✓ design-critique
+  ✓ design-delight
+  ✓ design-distill
+  ✓ design-extract
+  ✓ design-frontend
+  ✓ design-harden
+  ✓ design-normalize
+  ✓ design-onboard
+  ✓ design-optimize
+  ✓ design-overdrive
+  ✓ design-polish
+  ✓ design-quieter
+  ✓ design-typeset
+  ✓ design-typography-rules
   ✓ example-skill
   ✓ figma-make-to-vite
   ✓ file-management-skill
@@ -35,7 +58,10 @@ Skill validation:
   ✓ pages-prepare-vite
   ✓ pages-publish-vite
   ✓ pages-push-vite
+  ✓ react-best-practices
+  ✓ react-composition
   ✓ skill-creator
+  ✓ skill-eval-loop
   ✓ skill-router
   ✓ tauri-architecture
   ✓ tauri-architecture-ipc-internals
@@ -121,6 +147,29 @@ Schema validation: All 3 file(s) valid.
 | code-analysis-skill | A skill for analyzing code quality, identifying patterns, and suggesting impr... | read_file, grep, list_directory |
 | code-review-cycle | "Run a full code review cycle on recent changes: lint auto-fix, three-agent q... | — |
 | colima-docker-setup | Set up Docker, docker compose, and docker buildx on macOS using Colima. Use w... | — |
+| design-adapt | Adapt designs to work across different screen sizes, devices, contexts, or pl... | — |
+| design-animate | Review a feature and enhance it with purposeful animations, micro-interaction... | — |
+| design-arrange | Improve layout, spacing, and visual rhythm. Fixes monotonous grids, inconsist... | — |
+| design-audit | Evaluate and improve usability of existing front-end interfaces — local sourc... | WebFetch, Read, Glob, Grep |
+| design-bolder | Collaboratively amplify safe or boring designs by identifying where bold choi... | — |
+| design-check | Run technical quality checks across accessibility, performance, theming, resp... | — |
+| design-clarify | Improve unclear UX copy, error messages, microcopy, labels, and instructions ... | — |
+| design-colorize | Add strategic color to features that are too monochromatic or lack visual int... | — |
+| design-context | One-time setup that gathers design context for your project and saves it to a... | — |
+| design-critique | Evaluate design from a UX perspective, assessing visual hierarchy, informatio... | — |
+| design-delight | Add moments of joy, personality, and unexpected touches that make interfaces ... | — |
+| design-distill | Strip designs to their essence by removing unnecessary complexity. Great desi... | — |
+| design-extract | Extract and consolidate reusable components, design tokens, and patterns into... | — |
+| design-frontend | Create distinctive, production-grade frontend interfaces that avoid generic A... | — |
+| design-harden | Improve interface resilience through better error handling, i18n support, tex... | — |
+| design-normalize | Audit and realign UI to match design system standards, spacing, tokens, and p... | — |
+| design-onboard | Designs and improves onboarding flows, empty states, and first-run experience... | — |
+| design-optimize | Diagnose and fix UI performance across loading speed, rendering, animations, ... | — |
+| design-overdrive | Pushes interfaces past conventional limits with technically ambitious impleme... | Bash, Read, Glob |
+| design-polish | Perform a final quality pass fixing alignment, spacing, consistency, and micr... | — |
+| design-quieter | Tones down visually aggressive or overstimulating designs, reducing intensity... | — |
+| design-typeset | Improves typography by fixing font choices, hierarchy, sizing, weight, and re... | — |
+| design-typography-rules | Professional typography rules for UI design and web applications. Enforces ty... | — |
 | example-skill | An example skill to demonstrate the structure and format for Agent Skills. | — |
 | figma-make-to-vite | Initializes a Vite + React + TypeScript project and integrates a Figma Make e... | — |
 | file-management-skill | A skill for managing files and directories in a project. Use this skill when ... | read_file, write_file, list_directory, create_directory, delete_path, move_path, copy_path |
@@ -132,7 +181,10 @@ Schema validation: All 3 file(s) valid.
 | pages-prepare-vite | Prepares a Vite project for GitHub Pages deployment via GitHub Actions. Patch... | — |
 | pages-publish-vite | Monitors the GitHub Actions deployment workflow and reports the live GitHub P... | — |
 | pages-push-vite | Pushes the current branch to the git remote, triggering the GitHub Actions wo... | — |
+| react-best-practices | React and Next.js performance optimization guidelines from Vercel Engineering... | — |
+| react-composition | React composition patterns that scale. Use when refactoring components with b... | — |
 | skill-creator | Guide for creating effective skills. This skill should be used when users wan... | — |
+| skill-eval-loop | Run the observe-analyze-iterate loop on promptfoo evals for a skill collectio... | — |
 | skill-router | Find and load skills on demand. Use when you need a specialized skill for a t... | list_skills, get_skill |
 | tauri-architecture | Use when reasoning about Tauri v2 internals — process boundaries (Core vs Web... | — |
 | tauri-architecture-ipc-internals | Use when reasoning about how Tauri v2's `invoke()` actually crosses the proce... | — |
@@ -199,6 +251,12 @@ Schema validation: All 3 file(s) valid.
 | update-skills | Check for skill-router updates and apply them. Use when the user asks to upda... | Bash |
 
 ## Available Commands
+
+**design-colorize:**
+- `validate_colors.py` — validate_colors.py — Quantitative palette validator (WCAG + APCA + light/dark).
+
+**design-typeset:**
+- `validate_typography.py` — validate_typography.py — Quantitative typography CSS validator.
 
 **figma-make-to-vite:**
 - `python3 skills/figma-make-to-vite/scripts/apply_figma_make.py` — apply_figma_make.py — Integrate a Figma Make ZIP export into a Vite project.

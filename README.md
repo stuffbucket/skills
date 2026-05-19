@@ -88,6 +88,29 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full guide, or read the [Best Pra
 | `code-analysis-skill` | A skill for analyzing code quality, identifying patterns, and suggesting improvements |
 | `code-review-cycle` | Run a full code review cycle on recent changes: lint auto-fix, three-agent quality review (reuse, quality, efficiency), boundary analysis with separate new-file and modified-file review tracks, code smell audit with deferred triggers, and error-contract review |
 | `colima-docker-setup` | Set up Docker, docker compose, and docker buildx on macOS using Colima |
+| `design-adapt` | Adapt designs to work across different screen sizes, devices, contexts, or platforms |
+| `design-animate` | Review a feature and enhance it with purposeful animations, micro-interactions, and motion effects that improve usability and delight |
+| `design-arrange` | Improve layout, spacing, and visual rhythm |
+| `design-audit` | Evaluate and improve usability of existing front-end interfaces — local source code or live websites by URL |
+| `design-bolder` | Collaboratively amplify safe or boring designs by identifying where bold choices could be made and presenting concrete options at multiple intensity levels |
+| `design-check` | Run technical quality checks across accessibility, performance, theming, responsive design, and anti-patterns |
+| `design-clarify` | Improve unclear UX copy, error messages, microcopy, labels, and instructions to make interfaces easier to understand |
+| `design-colorize` | Add strategic color to features that are too monochromatic or lack visual interest, making interfaces more engaging and expressive |
+| `design-context` | One-time setup that gathers design context for your project and saves it to a config file |
+| `design-critique` | Evaluate design from a UX perspective, assessing visual hierarchy, information architecture, emotional resonance, cognitive load, and overall quality with quantitative scoring, persona-based testing, and actionable feedback |
+| `design-delight` | Add moments of joy, personality, and unexpected touches that make interfaces memorable and enjoyable to use |
+| `design-distill` | Strip designs to their essence by removing unnecessary complexity |
+| `design-extract` | Extract and consolidate reusable components, design tokens, and patterns into your design system |
+| `design-frontend` | Create distinctive, production-grade frontend interfaces that avoid generic AI aesthetics |
+| `design-harden` | Improve interface resilience through better error handling, i18n support, text overflow handling, and edge case management |
+| `design-normalize` | Audit and realign UI to match design system standards, spacing, tokens, and patterns |
+| `design-onboard` | Designs and improves onboarding flows, empty states, and first-run experiences to help users reach value quickly |
+| `design-optimize` | Diagnose and fix UI performance across loading speed, rendering, animations, images, and bundle size |
+| `design-overdrive` | Pushes interfaces past conventional limits with technically ambitious implementations — shaders, spring physics, scroll-driven reveals, 60fps animations |
+| `design-polish` | Perform a final quality pass fixing alignment, spacing, consistency, and micro-detail issues before shipping |
+| `design-quieter` | Tones down visually aggressive or overstimulating designs, reducing intensity while preserving quality |
+| `design-typeset` | Improves typography by fixing font choices, hierarchy, sizing, weight, and readability so text feels intentional |
+| `design-typography-rules` | Professional typography rules for UI design and web applications |
 | `example-skill` | An example skill to demonstrate the structure and format for Agent Skills. |
 | `figma-make-to-vite` | Initializes a Vite + React + TypeScript project and integrates a Figma Make exported ZIP prototype into it so it runs locally via `npm run dev` |
 | `file-management-skill` | A skill for managing files and directories in a project |
@@ -99,7 +122,10 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full guide, or read the [Best Pra
 | `pages-prepare-vite` | Prepares a Vite project for GitHub Pages deployment via GitHub Actions |
 | `pages-publish-vite` | Monitors the GitHub Actions deployment workflow and reports the live GitHub Pages URL |
 | `pages-push-vite` | Pushes the current branch to the git remote, triggering the GitHub Actions workflow that builds and deploys the Vite project to GitHub Pages |
+| `react-best-practices` | React and Next.js performance optimization guidelines from Vercel Engineering |
+| `react-composition` | React composition patterns that scale |
 | `skill-creator` | Guide for creating effective skills |
+| `skill-eval-loop` | Run the observe-analyze-iterate loop on promptfoo evals for a skill collection |
 | `tauri-architecture` | Use when reasoning about Tauri v2 internals — process boundaries (Core vs WebView), the IPC channel, binary-size tradeoffs, or deciding between commands/events/raw IPC for a given feature. |
 | `tauri-architecture-ipc-internals` | Use when reasoning about how Tauri v2's `invoke()` actually crosses the process boundary — the postMessage bridge, `__TAURI_INTERNALS__`, request/response correlation, JSON vs raw-byte vs `Channel` serialization, sync-stringify cost, throughput limits (~1k JSON commands/sec/WebView), and when to bypass the JSON path with raw IPC. |
 | `tauri-architecture-isolation-pattern` | Use when enabling Tauri v2's Isolation pattern — configuring `app.security.pattern: { use: "isolation", options: { dir } }`, authoring the sandboxed iframe app with `__TAURI_ISOLATION_HOOK__`, understanding the AES-GCM rewriting of IPC payloads, what XSS-class attacks it mitigates (and what Core-side bugs it does not), the one-isolation-app-per-Tauri-app constraint, and the Windows ESM-in-sandboxed-iframe caveat. |
