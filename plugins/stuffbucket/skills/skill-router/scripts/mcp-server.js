@@ -220,11 +220,6 @@ function groupByFamily(skills) {
       return a.name.localeCompare(b.name);
     });
 
-    // Detect parent/child within family: a member is a parent of another member
-    // if the other's name starts with member.name + "-".
-    const isParentOf = (a, b) =>
-      b.name !== a.name && b.name.startsWith(a.name + "-");
-
     // Build indent depth: count hyphens beyond the root segment.
     // Examples (root = "tauri"):
     //   tauri                          -> depth 0
