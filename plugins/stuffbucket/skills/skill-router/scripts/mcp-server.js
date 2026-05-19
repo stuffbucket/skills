@@ -19,6 +19,7 @@ const path = require("path");
 const readline = require("readline");
 const Fuse = require("fuse.js");
 const { createFuse, blendedSearch } = require("./search");
+const { checkFreshness, getUpdateInstructions } = require("./version-check");
 
 // Resolve the package root where skills and index.json live.
 // Priority:
@@ -172,6 +173,16 @@ function handleListSkills(params) {
     tags: s.tags,
   }));
 
+  // Check for available updates (lazy, cached, non-blocking)
+  const updateInfo = checkFreshness();
+  if (updateInfo) {
+    summaries.unshift({
+      name: "update-skills",
+      description: `Update available: ${updateInfo.localVersion} → ${updateInfo.latestVersion}. Call get_skill('update-skills') for instructions.`,
+      tags: ["update", "maintenance"],
+    });
+  }
+
   return {
     content: [
       {
@@ -187,6 +198,18 @@ function handleGetSkill(params) {
     return {
       content: [{ type: "text", text: "Error: name parameter is required." }],
       isError: true,
+    };
+  }
+
+  // Handle the virtual "update-skills" skill
+  if (params.name === "update-skills") {
+    const updateInfo = checkFreshness();
+    const instructions = getUpdateInstructions(updateInfo);
+    if (instructions) {
+      return { content: [{ type: "text", text: instructions }] };
+    }
+    return {
+      content: [{ type: "text", text: "@stuffbucket/skills is up to date." }],
     };
   }
 

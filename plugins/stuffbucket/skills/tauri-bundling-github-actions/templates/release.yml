@@ -1,0 +1,181 @@
+# .github/workflows/release.yml
+#
+# Production-ready Tauri v2 release workflow.
+# Build matrix: arm64 macOS, x86_64 macOS, x86_64 Linux, aarch64 Linux,
+# x86_64 Windows. Optional iOS and Android jobs below.
+#
+# Triggers: tag push (`v*`) for product releases, manual dispatch
+# for dry-runs.
+#
+# Result: a DRAFT GitHub Release with all platform installers attached
+# plus the signed updater `latest.json`. Inspect and publish manually.
+
+name: release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write   # create releases, upload assets
+
+jobs:
+  build-desktop:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: macos-latest     # Apple Silicon (M-series)
+            args: --target aarch64-apple-darwin
+            rust-target: aarch64-apple-darwin
+          - platform: macos-13         # Intel
+            args: --target x86_64-apple-darwin
+            rust-target: x86_64-apple-darwin
+          - platform: ubuntu-22.04     # Linux x86_64
+            args: ''
+            rust-target: ''
+          - platform: ubuntu-22.04-arm # Linux aarch64 (public repos only)
+            args: ''
+            rust-target: ''
+          - platform: windows-latest
+            args: ''
+            rust-target: ''
+
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # ────────────────────────────────────────────────────────────
+      # Toolchains
+      # ────────────────────────────────────────────────────────────
+      - name: Install Linux deps
+        if: startsWith(matrix.platform, 'ubuntu')
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            libappindicator3-dev \
+            librsvg2-dev \
+            patchelf
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.rust-target }}
+
+      - name: Cache Rust target dir
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
+
+      - name: Install JS deps
+        run: bun install --frozen-lockfile
+
+      # ────────────────────────────────────────────────────────────
+      # Build + sign + upload (all via tauri-action)
+      # ────────────────────────────────────────────────────────────
+      - name: Tauri release build
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+          # ── Updater (Ed25519 — separate from any OS code signature)
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+
+          # ── macOS code signing + notarization
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+          # Option A: App Store Connect API key (preferred)
+          APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
+          APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+          APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
+          # Option B: Apple ID + app-specific password (legacy)
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+
+          # ── Windows code signing (PFX flavor; for Azure, set signCommand
+          # in tauri.conf.json instead and pass the AZURE_* vars below)
+          WINDOWS_CERTIFICATE: ${{ secrets.WINDOWS_CERTIFICATE }}
+          WINDOWS_CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+
+          # ── Linux signing
+          TAURI_SIGNING_RPM_KEY: ${{ secrets.TAURI_SIGNING_RPM_KEY }}
+          TAURI_SIGNING_RPM_KEY_PASSPHRASE: ${{ secrets.TAURI_SIGNING_RPM_KEY_PASSPHRASE }}
+          SIGN: '1'
+          SIGN_KEY: ${{ secrets.APPIMAGE_SIGN_KEY }}
+          APPIMAGETOOL_SIGN_PASSPHRASE: ${{ secrets.APPIMAGETOOL_SIGN_PASSPHRASE }}
+          APPIMAGETOOL_FORCE_SIGN: '1'
+        with:
+          tagName: v__VERSION__
+          releaseName: 'v__VERSION__'
+          releaseBody: |
+            See the assets to download this release.
+
+            The updater will pick this up automatically once the draft is published.
+          releaseDraft: true     # never auto-publish — manual smoke-test gate
+          prerelease: false
+          args: ${{ matrix.args }}
+
+  # ────────────────────────────────────────────────────────────────
+  # Optional: iOS build. Uncomment + add the listed secrets.
+  # ────────────────────────────────────────────────────────────────
+  # build-ios:
+  #   runs-on: macos-latest
+  #   if: github.ref_type == 'tag'
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: oven-sh/setup-bun@v2
+  #     - uses: dtolnay/rust-toolchain@stable
+  #       with: { targets: aarch64-apple-ios }
+  #     - run: bun install --frozen-lockfile
+  #     - run: bun run tauri ios init
+  #     - run: bun run tauri ios build --export-method app-store-connect
+  #       env:
+  #         APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
+  #         APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+  #         APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
+  #         IOS_CERTIFICATE: ${{ secrets.IOS_CERTIFICATE }}
+  #         IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+  #         IOS_MOBILE_PROVISION: ${{ secrets.IOS_MOBILE_PROVISION }}
+  #     - run: |
+  #         xcrun altool --upload-app --type ios \
+  #           --file src-tauri/gen/apple/build/arm64/*.ipa \
+  #           --apiKey "$APPLE_API_KEY_ID" \
+  #           --apiIssuer "$APPLE_API_ISSUER"
+
+  # ────────────────────────────────────────────────────────────────
+  # Optional: Android build. Uncomment + add the listed secrets.
+  # ────────────────────────────────────────────────────────────────
+  # build-android:
+  #   runs-on: ubuntu-22.04
+  #   if: github.ref_type == 'tag'
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: oven-sh/setup-bun@v2
+  #     - uses: actions/setup-java@v4
+  #       with: { distribution: temurin, java-version: '17' }
+  #     - uses: android-actions/setup-android@v3
+  #     - uses: dtolnay/rust-toolchain@stable
+  #       with:
+  #         targets: aarch64-linux-android,armv7-linux-androideabi,x86_64-linux-android
+  #     - run: bun install --frozen-lockfile
+  #     - name: Materialize Android keystore
+  #       env:
+  #         ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+  #         ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+  #       run: bash .github/scripts/build-android.sh

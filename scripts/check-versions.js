@@ -1,29 +1,41 @@
 #!/usr/bin/env node
 
-// Verifies that version strings are consistent across all manifest files.
-// Exits with code 1 if any version doesn't match package.json.
+// Verifies that seed values (version, namespace, repo URL) are consistent
+// across all manifest files. Single source of truth: package.json.
+// Exits with code 1 if any value doesn't match.
 
 const fs = require("fs");
 const path = require("path");
 
 const ROOT = path.join(__dirname, "..");
-const pkgVersion = JSON.parse(
+const pkg = JSON.parse(
   fs.readFileSync(path.join(ROOT, "package.json"), "utf8"),
-).version;
+);
+
+// Derive seed values from package.json
+const seeds = {
+  version: pkg.version,
+  namespace: pkg.name.replace(/^@/, "").split("/")[0],
+  repoUrl: pkg.repository.url.replace(/^git\+/, ""),
+};
+
+function resolve(obj, fieldPath) {
+  return fieldPath.split(".").reduce((o, key) => o && o[key], obj);
+}
 
 const checks = [
-  {
-    file: ".claude-plugin/marketplace.json",
-    fields: ["plugins.0.version"],
-  },
-  {
-    file: ".github/plugin/marketplace.json",
-    fields: ["metadata.version", "plugins.0.version"],
-  },
-  {
-    file: "plugins/stuffbucket/.claude-plugin/plugin.json",
-    fields: ["version"],
-  },
+  // Version checks
+  { file: ".claude-plugin/marketplace.json", field: "plugins.0.version", seed: "version" },
+  { file: ".github/plugin/marketplace.json", field: "metadata.version", seed: "version" },
+  { file: ".github/plugin/marketplace.json", field: "plugins.0.version", seed: "version" },
+  { file: "plugins/stuffbucket/.claude-plugin/plugin.json", field: "version", seed: "version" },
+  // Namespace checks
+  { file: ".claude-plugin/marketplace.json", field: "plugins.0.name", seed: "namespace" },
+  { file: ".github/plugin/marketplace.json", field: "plugins.0.name", seed: "namespace" },
+  { file: "plugins/stuffbucket/.claude-plugin/plugin.json", field: "name", seed: "namespace" },
+  // Repo URL checks
+  { file: "plugins/stuffbucket/.claude-plugin/plugin.json", field: "homepage", seed: "repoUrl", transform: (v) => v.replace(/\.git$/, "") },
+  { file: "plugins/stuffbucket/.claude-plugin/plugin.json", field: "repository", seed: "repoUrl" },
 ];
 
 let failed = 0;
@@ -36,22 +48,23 @@ for (const check of checks) {
     continue;
   }
   const data = JSON.parse(fs.readFileSync(filePath, "utf8"));
-  for (const field of check.fields) {
-    const value = field.split(".").reduce((obj, key) => obj && obj[key], data);
-    if (value === pkgVersion) {
-      console.log(`  ✓ ${check.file} → ${field} = ${value}`);
-    } else {
-      console.log(
-        `  ✗ ${check.file} → ${field} = ${value} (expected ${pkgVersion})`,
-      );
-      failed++;
-    }
+  const actual = resolve(data, check.field);
+  let expected = seeds[check.seed];
+  if (check.transform) expected = check.transform(expected);
+
+  if (actual === expected) {
+    console.log(`  ✓ ${check.file} → ${check.field} = ${actual}`);
+  } else {
+    console.log(
+      `  ✗ ${check.file} → ${check.field} = ${actual} (expected ${expected})`,
+    );
+    failed++;
   }
 }
 
 if (failed > 0) {
-  console.log(`\nFAIL: ${failed} version mismatch(es)`);
+  console.log(`\nFAIL: ${failed} seed mismatch(es)`);
   process.exitCode = 1;
 } else {
-  console.log(`\nAll versions match ${pkgVersion}`);
+  console.log(`\nAll seeds consistent (version=${seeds.version}, namespace=${seeds.namespace})`);
 }

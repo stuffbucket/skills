@@ -1,0 +1,36 @@
+{
+  "$schema": "../node_modules/@tauri-apps/cli/schema.json",
+
+  "_comment": "Drop the `bundle.windows` and `bundle.publisher` blocks below into your main tauri.conf.json. This file is a reference snippet, not a complete config.",
+
+  "bundle": {
+    "publisher": "Example Inc.",
+
+    "windows": {
+      "_comment_signing": "Pick ONE of the three signing approaches below.",
+
+      "_comment_a": "Approach A: thumbprint of cert in CurrentUser\\My. Best for self-hosted runners.",
+      "certificateThumbprint": "A1B1A2B2A3B3A4B4A5B5A6B6A7B7A8B8A9B9A0B0",
+      "digestAlgorithm": "sha256",
+      "timestampUrl": "http://timestamp.digicert.com",
+
+      "_comment_b": "Approach B: drop the thumbprint block above, set WINDOWS_CERTIFICATE + WINDOWS_CERTIFICATE_PASSWORD env vars instead.",
+
+      "_comment_c": "Approach C: custom sign command (Azure Key Vault via relic, or Azure Trusted Signing). Tauri replaces %1 with each artifact.",
+      "signCommand": "trusted-signing-cli -e https://wus2.codesigning.azure.net -a MyAccount -c MyProfile -d MyApp %1",
+
+      "_comment_webview2": "Pick ONE webviewInstallMode. offlineInstaller is REQUIRED for MS Store.",
+      "webviewInstallMode": { "type": "downloadBootstrapper" },
+      "_comment_webview2_alt": "{ \"type\": \"offlineInstaller\" } for MS Store / enterprise. { \"type\": \"embedBootstrapper\" } for Win7 support. { \"type\": \"fixedRuntime\", \"path\": \"./Microsoft.WebView2.FixedVersionRuntime.x.y.z.x64/\" } to pin a build.",
+
+      "nsis": {
+        "installMode": "perMachine",
+        "languages": ["English"]
+      },
+
+      "wix": {
+        "language": ["en-US"]
+      }
+    }
+  }
+}

@@ -1,0 +1,27 @@
+# Hand-written permission file for the `greet` command.
+#
+# In practice you'll usually let `build.rs` autogenerate `allow-greet` /
+# `deny-greet` from the `COMMANDS` const — see SKILL.md. This file is the
+# explicit form, useful when you want a custom description or want to bundle
+# scope data with the allow rule.
+#
+# Drop this at `permissions/allow-greet.toml` in your plugin crate. The
+# identifier `allow-greet` is what consumers reference in their capability
+# file as `my-plugin:allow-greet` (the plugin name comes from the
+# `Builder::new("my-plugin")` call in lib.rs).
+
+"$schema" = "schemas/schema.json"
+
+[[permission]]
+identifier = "allow-greet"
+description = """
+Enables the `greet` command, which accepts a name string and returns a
+greeting plus the per-process call count. No side effects beyond the
+in-memory counter held in plugin state.
+"""
+commands.allow = ["greet"]
+
+[[permission]]
+identifier = "deny-greet"
+description = "Denies the `greet` command. Overrides `allow-greet` when both resolve."
+commands.deny = ["greet"]

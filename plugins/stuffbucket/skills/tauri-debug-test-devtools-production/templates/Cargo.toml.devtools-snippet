@@ -1,0 +1,40 @@
+# src-tauri/Cargo.toml — devtools wiring
+#
+# Three release channels:
+#   * Local dev / `tauri dev`        → cargo dev profile, devtools on by default
+#   * Public release with inspector  → `cargo build --release --features devtools`
+#   * macOS App Store / Mac Catalyst → `cargo build --release --no-default-features --features appstore`
+#
+# The `devtools` Cargo feature is what flips `WebviewWindow::open_devtools()`
+# on. Without it, the method does not exist and your `templates/devtools-toggle.rs`
+# correctly compiles to a no-op.
+
+[package]
+name = "tauri-app"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+# Empty default keeps `cargo build --release` safe to ship anywhere — including
+# the macOS App Store. CI flips features per channel.
+default = []
+
+# Public release (DMG, MSI, AppImage). Enables the Tauri devtools API and our
+# global-shortcut toggle.
+devtools = ["tauri/devtools"]
+
+# macOS App Store / Mac Catalyst. Mutually exclusive with `devtools` — Apple
+# rejects binaries that link the private inspector API.
+appstore = []
+
+[dependencies]
+# Pin the version range that matches your toolchain. `features` here lists
+# the always-on set; `devtools` is added via the workspace [features] table
+# above so it remains opt-in.
+tauri = { version = "2", features = [] }
+tauri-plugin-global-shortcut = "2"
+tauri-plugin-log = "2"
+log = "0.4"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }

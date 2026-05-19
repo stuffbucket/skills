@@ -31,6 +31,9 @@ site/public/semantic-index.json
 # Skill packaging output
 *.skill
 
+# update-skills runtime cache (per-machine)
+.version-cache.json
+
 # OS generated files
 .DS_Store
 Thumbs.db

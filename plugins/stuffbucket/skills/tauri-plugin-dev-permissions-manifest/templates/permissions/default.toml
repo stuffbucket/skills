@@ -1,0 +1,21 @@
+# permissions/default.toml
+#
+# The `default` set is the permission consumers implicitly enable when they
+# run `tauri cli plugin add <your-plugin>` and accept the suggested defaults.
+# It is also what `"<your-plugin>:default"` resolves to in a capability file.
+#
+# Rules of thumb:
+#  - Keep it minimal — prefer read-only / status commands.
+#  - Widening later is a non-breaking change. Narrowing is breaking.
+#  - Anything destructive (start/stop/write/delete) should require an explicit
+#    allow-<command> grant from the consumer.
+
+"$schema" = "schemas/schema.json"
+
+[default]
+description = """
+The default permission set for the example-server plugin.
+Grants the `ping` command so consumers can verify the plugin is wired
+without giving them the ability to start or stop the embedded server.
+"""
+permissions = ["allow-ping"]

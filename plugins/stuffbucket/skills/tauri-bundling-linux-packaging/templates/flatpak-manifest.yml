@@ -1,0 +1,48 @@
+# Flathub manifest for a Tauri v2 app.
+# Place at the root of your flathub-submission repo as
+# org.example.MyApp.yml (filename must match the `id`).
+
+id: org.example.MyApp
+runtime: org.gnome.Platform
+runtime-version: '46'
+sdk: org.gnome.Sdk
+command: myapp
+
+finish-args:
+  # Display
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --device=dri
+  - --share=ipc
+
+  # Audio (uncomment if needed)
+  # - --socket=pulseaudio
+
+  # Network (uncomment if the app makes any outbound HTTP)
+  - --share=network
+
+  # Filesystem (least-privilege; widen only as the app demands)
+  - --filesystem=xdg-download
+  # - --filesystem=home
+
+modules:
+  - name: myapp
+    buildsystem: simple
+    sources:
+      - type: archive
+        url: https://github.com/example/myapp/releases/download/v1.0.0/myapp_1.0.0_amd64.deb
+        sha256: 0000000000000000000000000000000000000000000000000000000000000000
+        only-arches: [x86_64]
+      - type: archive
+        url: https://github.com/example/myapp/releases/download/v1.0.0/myapp_1.0.0_arm64.deb
+        sha256: 0000000000000000000000000000000000000000000000000000000000000000
+        only-arches: [aarch64]
+    build-commands:
+      # .deb is already an `ar` archive; flatpak-builder's archive source
+      # auto-extracts data.tar.gz contents, leaving usr/ at the build root.
+      - cp -r usr /app/
+      # Install desktop file + appdata in the locations Flathub expects.
+      - install -Dm644 /app/usr/share/applications/myapp.desktop /app/share/applications/org.example.MyApp.desktop
+      - install -Dm644 /app/usr/share/icons/hicolor/256x256/apps/myapp.png /app/share/icons/hicolor/256x256/apps/org.example.MyApp.png
+      # Required by Flathub review: an AppStream metainfo file.
+      - install -Dm644 org.example.MyApp.metainfo.xml /app/share/metainfo/org.example.MyApp.metainfo.xml

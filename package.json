@@ -27,8 +27,11 @@
     "setup": "npm install && node scripts/setup-links.js && npm run build:index",
     "build:index": "node plugins/stuffbucket/skills/skill-router/scripts/build-index.js",
     "build:llms": "python3 plugins/stuffbucket/skills/skill-creator/scripts/generate_llms_txt.py",
+    "build:readme": "node scripts/build-readme.js",
     "check:llms": "python3 plugins/stuffbucket/skills/skill-creator/scripts/generate_llms_txt.py --check",
+    "check:readme": "node scripts/build-readme.js --check",
     "check:versions": "node scripts/check-versions.js",
+    "bump": "node scripts/bump-version.js",
     "lint": "npm run lint:md && npm run lint:js && npm run lint:json",
     "lint:md": "markdownlint-cli2 '**/*.md' '#node_modules'",
     "lint:js": "eslint .",
@@ -40,7 +43,7 @@
     "test": "npm run build:index && node plugins/stuffbucket/skills/skill-router/tests/test-mcp-server.js && node tests/test-plugin-structure.js",
     "test:structure": "node tests/test-plugin-structure.js",
     "test:repl": "npm run build:index && node plugins/stuffbucket/skills/skill-router/scripts/mcp-server.js",
-    "ci": "npm run lint && npm run validate && npm run check:versions && npm run test && npm run check:llms",
+    "ci": "npm run lint && npm run validate && npm run check:versions && npm run test && npm run check:llms && npm run check:readme",
     "prepublishOnly": "npm run build:index"
   },
   "dependencies": {

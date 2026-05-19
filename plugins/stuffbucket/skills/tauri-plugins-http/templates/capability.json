@@ -1,0 +1,19 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "http-main",
+  "description": "Outbound HTTP scoped to the API hosts we actually call.",
+  "windows": ["main"],
+  "permissions": [
+    {
+      "identifier": "http:default",
+      "allow": [
+        { "url": "https://api.example.com/**" },
+        { "url": "https://*.githubusercontent.com/**" },
+        { "url": "https://api.github.com/**" }
+      ],
+      "deny": [
+        { "url": "https://api.example.com/admin/**" }
+      ]
+    }
+  ]
+}

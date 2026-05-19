@@ -95,6 +95,12 @@ Every occurrence of the literal becomes a reference to the seed.
 
 If the toolchain accepts both the literal and the reference, add a lint rule or build step to reject the literal form. The domain is not closed until the bypass is blocked.
 
+**TypeScript-specific bypass:** `any` is a universal bypass that the compiler accepts.
+A domain is not closed if implementation code can use `any` to satisfy a contract without
+structural type checking. Enforce with the `no-explicit-any` lint rule — this makes the
+`any` bypass a lint error, moving it up the enforcement hierarchy from
+"Convention > Nothing" to "Lint error."
+
 ### Step 8: Verify closure
 
 Confirm d(S) = ∅ for this domain: the boundary condition between current state and closure is resolved. Then proceed to the next domain in dependency order.

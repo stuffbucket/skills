@@ -1,0 +1,73 @@
+/*
+ * Custom titlebar — 30px tall, fixed to top. Adjust height to match your
+ * content padding-top. user-select: none is critical (otherwise dragging
+ * selects text). touch-action: none stops pull-to-refresh swallowing drags
+ * on touchscreens.
+ */
+
+.titlebar {
+  height: 30px;
+  background: var(--titlebar-bg, #1f1f1f);
+  color: var(--titlebar-fg, #e5e5e5);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+  display: grid;
+  grid-template-columns: 1fr max-content;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.titlebar-title {
+  padding: 0 12px;
+  font-size: 12px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.titlebar-controls {
+  display: flex;
+  height: 100%;
+}
+
+.titlebar-controls button {
+  appearance: none;
+  border: none;
+  margin: 0;
+  padding: 0;
+  width: 46px;
+  height: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.titlebar-controls button:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.titlebar-controls button.danger:hover {
+  background: #e81123;
+  color: #fff;
+}
+
+/* Push page content below the titlebar */
+body {
+  padding-top: 30px;
+}
+
+/* macOS: leave room for traffic lights when using TitleBarStyle::Overlay.
+   The 78px inset matches the default OS traffic-light cluster width. */
+@media (platform: macos) {
+  .titlebar-title { padding-left: 78px; }
+  .titlebar-controls { display: none; }
+}

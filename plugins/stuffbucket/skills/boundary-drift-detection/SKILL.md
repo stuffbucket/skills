@@ -104,6 +104,24 @@ A function accepts more states than intended — `| string`, `any`, optional pro
 
 **Detection:** Type changes that increase representable states beyond ∂S.
 
+### Type Erasure (internal boundary collapse)
+
+The implementation uses `any`, `as unknown as`, or untyped containers where a narrow type
+exists or could be derived. The public contract compiles, but the internal state space is
+unbounded — invalid states are representable within the implementation even though they
+can't escape through the interface.
+
+This is distinct from interface widening: the public boundary holds, but the *implementation
+domain* is open. d(S) appears to be ∅ at the interface but is ≠ ∅ inside.
+
+**Detection:** Grep for `any` (excluding type declarations that re-export external types),
+`as unknown as`, and `as any` in implementation files. Each occurrence is a potential
+internal boundary collapse.
+
+**Severity:** Medium-High. The interface prevents invalid states from escaping, but the
+implementation can silently accept malformed data, pass wrong fields to dependencies, or
+drift during future edits without compiler protection.
+
 ### Style Contamination (bypassing domain boundaries)
 
 Inline styles or local overrides that duplicate or contradict token-derived values.
@@ -124,6 +142,7 @@ INTENDED DOMAIN: <Dn — name and layer>
 NOISE FILTERED: <variations classified as noise and excluded>
 d(S) EFFECT: resolves | preserves | expands
 DOMAINS TOUCHED: <list with layers>
+TYPE ERASURE: <count of `any` / unsafe casts in implementation code>
 DRIFT: none | boundary | escaped | cascade
 CONFIDENCE (κ): high | moderate | low | unreliable
 CASCADE IMPACT: <dependent domains invalidated, if any>

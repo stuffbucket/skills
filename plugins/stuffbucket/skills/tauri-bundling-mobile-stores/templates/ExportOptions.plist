@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+    iOS ExportOptions.plist for a Tauri v2 app.
+    `tauri ios build` writes one of these automatically based on
+    `--export-method`; drop this file in only when you need fine control
+    Xcode's defaults don't give you.
+
+    Common methods:
+      - app-store-connect : production submission, signed with Apple Distribution
+      - ad-hoc            : UDID-restricted distribution (internal testers)
+      - development       : sideload to registered dev devices
+-->
+<plist version="1.0">
+<dict>
+    <key>method</key>
+    <string>app-store-connect</string>
+
+    <key>teamID</key>
+    <string>TEAMID12AB</string>
+
+    <!-- Let Xcode manage signing. Set to "manual" + add
+         provisioningProfiles + signingCertificate keys if you have
+         a CI runner with a temp keychain. -->
+    <key>signingStyle</key>
+    <string>automatic</string>
+
+    <!-- Manual-signing example (uncomment + remove signingStyle above):
+    <key>signingCertificate</key>
+    <string>Apple Distribution</string>
+    <key>provisioningProfiles</key>
+    <dict>
+        <key>com.example.myapp</key>
+        <string>MyApp App Store Profile</string>
+    </dict>
+    -->
+
+    <!-- Submit to App Store Connect automatically after export.
+         Requires APPLE_API_KEY env wiring; alternative is to upload
+         via xcrun altool / Transporter after export. -->
+    <key>destination</key>
+    <string>export</string>
+
+    <key>stripSwiftSymbols</key>
+    <true/>
+
+    <!-- Include bitcode is deprecated as of Xcode 14; keep false. -->
+    <key>uploadBitcode</key>
+    <false/>
+
+    <key>uploadSymbols</key>
+    <true/>
+
+    <!-- For ad-hoc / development methods, list the devices' UDIDs is
+         handled by the provisioning profile, not this plist. -->
+</dict>
+</plist>

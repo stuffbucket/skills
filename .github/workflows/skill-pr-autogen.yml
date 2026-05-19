@@ -1,0 +1,122 @@
+name: Auto-generate PR Artifacts
+
+# Runs after Lint & Validate succeeds on a PR.
+# Rebuilds index.json, llms.txt, and README.md using main's trusted scripts,
+# then commits them to the PR branch. This means contributors never need to
+# touch generated files — they just push skill content.
+#
+# Security: Build scripts are always from main (trusted), not from the PR.
+# The PR only contributes skill content (SKILL.md, references, etc.).
+
+on:
+  workflow_run:
+    workflows: ["Lint & Validate"]
+    types: [completed]
+
+permissions:
+  contents: write
+  pull-requests: read
+  actions: read
+
+jobs:
+  autogen:
+    # Only run on successful PR checks (not push-to-main)
+    if: >
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get PR info
+        id: pr
+        uses: actions/github-script@v8
+        with:
+          script: |
+            // Find the PR associated with this workflow run
+            const head_sha = context.payload.workflow_run.head_sha;
+            const { data: prs } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              head: `${context.repo.owner}:${context.payload.workflow_run.head_branch}`,
+            });
+
+            if (prs.length === 0) {
+              core.info('No open PR found for this workflow run');
+              return;
+            }
+
+            const pr = prs[0];
+
+            // Only auto-commit for same-repo PRs (not forks)
+            if (pr.head.repo.full_name !== pr.base.repo.full_name) {
+              core.info('Skipping auto-commit for fork PR');
+              return;
+            }
+
+            core.setOutput('number', pr.number);
+            core.setOutput('branch', pr.head.ref);
+            core.setOutput('should_run', 'true');
+
+      - name: Checkout PR branch
+        if: steps.pr.outputs.should_run == 'true'
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ steps.pr.outputs.branch }}
+          fetch-depth: 0
+
+      # Use build scripts from main (trusted), not from the PR
+      - name: Checkout build scripts from main
+        if: steps.pr.outputs.should_run == 'true'
+        run: |
+          git checkout origin/main -- \
+            plugins/stuffbucket/skills/skill-router/scripts/build-index.js \
+            plugins/stuffbucket/skills/skill-creator/scripts/generate_llms_txt.py \
+            scripts/build-readme.js
+
+      - uses: actions/setup-node@v6
+        if: steps.pr.outputs.should_run == 'true'
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: actions/setup-python@v6
+        if: steps.pr.outputs.should_run == 'true'
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        if: steps.pr.outputs.should_run == 'true'
+        run: npm ci
+
+      - name: Rebuild generated files
+        if: steps.pr.outputs.should_run == 'true'
+        run: |
+          npm run build:index
+          npm run build:llms
+          npm run build:readme
+
+      # Restore build scripts to PR branch versions (don't commit main's scripts)
+      - name: Restore PR branch scripts
+        if: steps.pr.outputs.should_run == 'true'
+        run: |
+          git checkout HEAD -- \
+            plugins/stuffbucket/skills/skill-router/scripts/build-index.js \
+            plugins/stuffbucket/skills/skill-creator/scripts/generate_llms_txt.py \
+            scripts/build-readme.js \
+            2>/dev/null || true
+
+      - name: Commit generated files if changed
+        if: steps.pr.outputs.should_run == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add plugins/stuffbucket/skills/skill-router/index.json llms.txt README.md
+
+          if git diff --cached --quiet; then
+            echo "No changes to generated files"
+          else
+            git commit -m "chore: rebuild generated files (index, llms.txt, README)"
+            git push
+            echo "Committed and pushed generated files"
+          fi

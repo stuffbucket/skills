@@ -1,0 +1,31 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Production-tightened replacement for `tauri init`'s default.json. Grants only the core commands the frontend actually calls. No `core:default`, no shell, no fs. Add narrower capabilities alongside this one for plugin access.",
+  "windows": ["main"],
+  "platforms": ["macOS", "windows", "linux"],
+  "local": true,
+  "permissions": [
+    "core:app:allow-version",
+    "core:app:allow-name",
+    "core:app:allow-tauri-version",
+
+    "core:event:allow-listen",
+    "core:event:allow-unlisten",
+    "core:event:allow-emit",
+    "core:event:allow-emit-to",
+
+    "core:path:default",
+    "core:resources:default",
+    "core:image:default",
+
+    "core:window:allow-close",
+    "core:window:allow-minimize",
+    "core:window:allow-show",
+    "core:window:allow-hide",
+    "core:window:allow-set-title",
+    "core:window:allow-start-dragging",
+
+    "core:webview:allow-internal-toggle-devtools"
+  ]
+}

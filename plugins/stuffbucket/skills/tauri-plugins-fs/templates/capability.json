@@ -1,0 +1,38 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "fs-main",
+  "description": "File-system access for the main window: app dirs full RW, $HOME read-only.",
+  "windows": ["main"],
+  "permissions": [
+    "fs:default",
+    {
+      "identifier": "fs:allow-read-text-file",
+      "allow": [
+        { "path": "$APPCONFIG/**/*" },
+        { "path": "$APPDATA/**/*" },
+        { "path": "$HOME/**/*" }
+      ],
+      "deny": [{ "path": "$APPDATA/secrets/**" }]
+    },
+    {
+      "identifier": "fs:allow-write-text-file",
+      "allow": [
+        { "path": "$APPDATA/**/*" },
+        { "path": "$APPLOG/**/*" }
+      ]
+    },
+    {
+      "identifier": "fs:allow-mkdir",
+      "allow": [{ "path": "$APPDATA/**/*" }]
+    },
+    {
+      "identifier": "fs:scope",
+      "allow": [
+        { "path": "$APPCONFIG" },
+        { "path": "$APPCONFIG/**/*" },
+        { "path": "$APPDATA" },
+        { "path": "$APPDATA/**/*" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "deep-link-main",
+  "description": "Receive deep-link URLs in the main window. core:event:default is required for onOpenUrl to actually deliver.",
+  "windows": ["main"],
+  "permissions": [
+    "core:event:default",
+    "deep-link:default"
+  ]
+}

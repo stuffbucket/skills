@@ -1,0 +1,74 @@
+<!--
+  Minimal splash window. Pairs with a Tauri config entry like:
+    {
+      "label": "splash",
+      "url": "splash.html",
+      "width": 400, "height": 200,
+      "decorations": false,
+      "transparent": true,
+      "center": true,
+      "alwaysOnTop": true,
+      "skipTaskbar": true
+    }
+
+  The body is the visible card; the html background stays transparent
+  so the rounded corners + shadow render correctly on every OS.
+-->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Loading…</title>
+    <style>
+      html, body { margin: 0; padding: 0; height: 100%; background: transparent; }
+      body {
+        display: flex; align-items: center; justify-content: center;
+        gap: 16px;
+        font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+        color: #e5e5e5;
+      }
+      .card {
+        background: #1f1f1f;
+        border-radius: 12px;
+        box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+        padding: 24px 32px;
+        display: flex; align-items: center; gap: 16px;
+        transition: opacity 200ms ease;
+      }
+      body.fade-out .card { opacity: 0; }
+      .spinner {
+        width: 24px; height: 24px;
+        border: 3px solid rgba(255,255,255,0.15);
+        border-top-color: #4a9eff;
+        border-radius: 50%;
+        animation: spin 800ms linear infinite;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      .label { font-size: 14px; font-weight: 500; }
+      .sub   { font-size: 12px; color: #999; margin-top: 2px; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="spinner" role="status" aria-label="Loading"></div>
+      <div>
+        <div class="label">Starting My App</div>
+        <div class="sub">preparing your workspace…</div>
+      </div>
+    </div>
+
+    <script type="module">
+      // Optional Pattern C — listen for the ready event from Rust, fade out, then close.
+      // Comment this out if you're using Pattern A (pure-Rust orchestration).
+      try {
+        const { listen } = await import('@tauri-apps/api/event');
+        const { getCurrentWindow } = await import('@tauri-apps/api/window');
+        await listen('splash://ready', async () => {
+          document.body.classList.add('fade-out');
+          await new Promise((r) => setTimeout(r, 220));
+          await getCurrentWindow().close();
+        });
+      } catch { /* not running under Tauri — preview in browser */ }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Isolation Secure Script</title>
+    <!--
+      Keep this file minimal. No bundler, no dependencies, no ESM.
+      Windows sandboxed iframes can't load module scripts; classic
+      <script src> only. Tauri inlines this at build time.
+    -->
+  </head>
+  <body>
+    <script src="index.js"></script>
+  </body>
+</html>

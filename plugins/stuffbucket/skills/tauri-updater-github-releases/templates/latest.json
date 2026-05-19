@@ -1,0 +1,23 @@
+{
+  "version": "1.4.2",
+  "notes": "Bug fixes and performance improvements. Full changelog: https://github.com/my-org/my-app/releases/tag/v1.4.2",
+  "pub_date": "2025-12-01T10:00:00Z",
+  "platforms": {
+    "darwin-aarch64": {
+      "signature": "PASTE_CONTENTS_OF_MyApp_1.4.2_aarch64.app.tar.gz.sig_HERE",
+      "url": "https://github.com/my-org/my-app/releases/download/v1.4.2/MyApp_1.4.2_aarch64.app.tar.gz"
+    },
+    "darwin-x86_64": {
+      "signature": "PASTE_CONTENTS_OF_MyApp_1.4.2_x64.app.tar.gz.sig_HERE",
+      "url": "https://github.com/my-org/my-app/releases/download/v1.4.2/MyApp_1.4.2_x64.app.tar.gz"
+    },
+    "linux-x86_64": {
+      "signature": "PASTE_CONTENTS_OF_MyApp_1.4.2_amd64.AppImage.sig_HERE",
+      "url": "https://github.com/my-org/my-app/releases/download/v1.4.2/MyApp_1.4.2_amd64.AppImage"
+    },
+    "windows-x86_64": {
+      "signature": "PASTE_CONTENTS_OF_MyApp_1.4.2_x64-setup.nsis.zip.sig_HERE",
+      "url": "https://github.com/my-org/my-app/releases/download/v1.4.2/MyApp_1.4.2_x64-setup.nsis.zip"
+    }
+  }
+}

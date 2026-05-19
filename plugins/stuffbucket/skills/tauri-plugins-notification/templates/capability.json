@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "notification-main",
+  "description": "Send notifications and query permissions from the main window.",
+  "windows": ["main"],
+  "permissions": ["notification:default"]
+}

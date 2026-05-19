@@ -1,0 +1,47 @@
+{
+  "$schema": "../../gen/schemas/desktop-schema.json",
+  "identifier": "shell-scoped-capability",
+  "description": "Shell scope with literal args, regex-validated args, sidecar, and URL open scope.",
+  "windows": ["main"],
+  "permissions": [
+    "shell:default",
+    {
+      "identifier": "shell:allow-execute",
+      "allow": [
+        {
+          "name": "git-status",
+          "command": "git",
+          "args": ["status", "--porcelain"]
+        },
+        {
+          "name": "ffmpeg-to-mp4",
+          "command": "ffmpeg",
+          "args": [
+            "-y",
+            "-i",
+            { "validator": "^[A-Za-z0-9_./-]+\\.(mp4|mov|webm|mkv)$" },
+            "-c:v",
+            "libx264",
+            { "validator": "^[A-Za-z0-9_./-]+\\.mp4$" }
+          ]
+        },
+        {
+          "name": "my-helper",
+          "command": "binaries/my-helper",
+          "sidecar": true,
+          "args": [
+            "--config",
+            { "validator": "^[A-Za-z0-9_./-]+\\.json$" }
+          ]
+        }
+      ]
+    },
+    {
+      "identifier": "shell:allow-open",
+      "allow": [
+        { "url": "https://*.example.com/**" },
+        { "url": "mailto:**" }
+      ]
+    }
+  ]
+}

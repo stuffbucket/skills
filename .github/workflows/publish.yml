@@ -15,16 +15,16 @@ jobs:
     outputs:
       sha: ${{ steps.version.outputs.sha }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 2
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 24.x
           cache: npm
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.x'
 
@@ -45,6 +45,9 @@ jobs:
 
       - name: Check llms.txt is up to date
         run: npm run check:llms
+
+      - name: Check README is up to date
+        run: npm run check:readme
 
       - name: Bump version, sync manifests, and push
         id: version
@@ -103,11 +106,11 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           ref: ${{ needs.ci-and-version.outputs.sha }}
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 24.x
           cache: npm

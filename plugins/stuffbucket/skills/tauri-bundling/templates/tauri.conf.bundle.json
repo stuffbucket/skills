@@ -1,0 +1,90 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "MyApp",
+  "version": "0.1.0",
+  "identifier": "com.example.myapp",
+  "bundle": {
+    "active": true,
+    "category": "DeveloperTool",
+    "copyright": "Copyright (c) 2026 Example, Inc.",
+    "publisher": "Example, Inc.",
+    "homepage": "https://example.com",
+    "shortDescription": "Short product description (≤ 150 chars).",
+    "longDescription": "Longer description used by Linux package metadata and stores.",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "resources": [],
+    "externalBin": [],
+    "targets": "all",
+
+    "macOS": {
+      "minimumSystemVersion": "10.15",
+      "entitlements": "./Entitlements.plist",
+      "exceptionDomain": "",
+      "signingIdentity": null,
+      "providerShortName": null,
+      "frameworks": [],
+      "dmg": {
+        "background": "./assets/dmg-background.png",
+        "windowSize": { "width": 660, "height": 400 },
+        "windowPosition": { "x": 200, "y": 120 },
+        "appPosition": { "x": 180, "y": 170 },
+        "applicationFolderPosition": { "x": 480, "y": 170 }
+      }
+    },
+
+    "windows": {
+      "digestAlgorithm": "sha256",
+      "timestampUrl": "http://timestamp.digicert.com",
+      "tsp": false,
+      "certificateThumbprint": null,
+      "webviewInstallMode": {
+        "type": "downloadBootstrapper",
+        "silent": true
+      },
+      "wix": {
+        "language": ["en-US"],
+        "fragmentPaths": [],
+        "componentRefs": [],
+        "featureRefs": [],
+        "mergeRefs": []
+      },
+      "nsis": {
+        "installerIcon": "icons/icon.ico",
+        "installMode": "perMachine",
+        "languages": ["English"],
+        "displayLanguageSelector": false
+      },
+      "allowDowngrades": false
+    },
+
+    "linux": {
+      "appimage": {
+        "bundleMediaFramework": false,
+        "files": {}
+      },
+      "deb": {
+        "depends": [
+          "libwebkit2gtk-4.1-0",
+          "libgtk-3-0",
+          "libappindicator3-1"
+        ],
+        "section": "utils",
+        "priority": "optional",
+        "files": {}
+      },
+      "rpm": {
+        "license": "MIT",
+        "depends": ["webkit2gtk4.1", "gtk3"],
+        "release": "1",
+        "epoch": 0,
+        "files": {}
+      }
+    }
+  }
+}

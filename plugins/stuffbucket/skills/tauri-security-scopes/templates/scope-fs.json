@@ -1,0 +1,30 @@
+{
+  "$schema": "../../gen/schemas/desktop-schema.json",
+  "identifier": "fs-scoped-capability",
+  "description": "Filesystem scope demonstrating deny-wins, dotfile handling, and per-permission split scopes.",
+  "windows": ["main"],
+  "permissions": [
+    "fs:default",
+    {
+      "identifier": "fs:allow-read-text-file",
+      "allow": [
+        { "path": "$APPDATA/**" },
+        { "path": "$APPDATA/.cache/**" },
+        { "path": "$RESOURCE/**" }
+      ],
+      "deny": [
+        { "path": "$APPDATA/secrets.json" },
+        { "path": "$APPDATA/keys/**" }
+      ]
+    },
+    {
+      "identifier": "fs:allow-write-text-file",
+      "allow": [{ "path": "$APPDATA/profile.json" }, { "path": "$APPLOG/**" }],
+      "deny":  [{ "path": "$APPLOG/audit/**" }]
+    },
+    {
+      "identifier": "fs:allow-read-dir",
+      "allow": [{ "path": "$DOCUMENT/MyApp/**" }]
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>App</title>
+    <style>
+      :root {
+        --titlebar-h: 32px;
+        --titlebar-bg: #1f2024;
+        --titlebar-fg: #e6e6e6;
+        --titlebar-hover: #2c2d33;
+        --titlebar-close-hover: #e81123;
+      }
+      html, body { margin: 0; height: 100%; background: #14151a; color: var(--titlebar-fg); font: 13px/1.4 system-ui, sans-serif; }
+
+      .titlebar {
+        position: fixed; top: 0; left: 0; right: 0; height: var(--titlebar-h);
+        display: grid; grid-template-columns: 1fr auto;
+        background: var(--titlebar-bg);
+        user-select: none;
+        -webkit-user-select: none;
+      }
+      .titlebar-drag {
+        display: flex; align-items: center; padding: 0 12px;
+        font-weight: 500;
+      }
+      .titlebar-controls { display: flex; }
+      .titlebar-controls button {
+        width: 44px; height: var(--titlebar-h);
+        background: transparent; color: inherit; border: 0;
+        font-size: 13px; cursor: pointer;
+      }
+      .titlebar-controls button:hover { background: var(--titlebar-hover); }
+      .titlebar-controls #titlebar-close:hover { background: var(--titlebar-close-hover); color: #fff; }
+
+      main { padding: calc(var(--titlebar-h) + 16px) 16px 16px; }
+    </style>
+  </head>
+  <body>
+    <div class="titlebar">
+      <div class="titlebar-drag" data-tauri-drag-region>My App</div>
+      <div class="titlebar-controls">
+        <button id="titlebar-minimize" aria-label="Minimize">&#x2014;</button>
+        <button id="titlebar-maximize" aria-label="Maximize">&#x25A1;</button>
+        <button id="titlebar-close" aria-label="Close">&#x2715;</button>
+      </div>
+    </div>
+
+    <main>
+      <h1>Frameless window</h1>
+      <p>The bar above is HTML. Drag it to move the window; double-click the drag region to maximize.</p>
+    </main>
+
+    <script type="module">
+      import { getCurrentWindow } from '@tauri-apps/api/window';
+      const win = getCurrentWindow();
+      document.getElementById('titlebar-minimize')?.addEventListener('click', () => win.minimize());
+      document.getElementById('titlebar-maximize')?.addEventListener('click', () => win.toggleMaximize());
+      document.getElementById('titlebar-close')?.addEventListener('click', () => win.close());
+    </script>
+  </body>
+</html>

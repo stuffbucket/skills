@@ -22,10 +22,12 @@ Skill validation:
   ✓ boundary-scope-escape
   ✓ boundary-seed-encoding
   ✓ code-analysis-skill
+  ✓ code-review-cycle
   ✓ colima-docker-setup
   ✓ example-skill
   ✓ figma-make-to-vite
   ✓ file-management-skill
+  ✓ ghostty-config
   ✓ git-workflow-skill
   ✓ npm-trusted-publishing
   ✓ pages-build-vite
@@ -35,7 +37,69 @@ Skill validation:
   ✓ pages-push-vite
   ✓ skill-creator
   ✓ skill-router
+  ✓ tauri-architecture
+  ✓ tauri-architecture-ipc-internals
+  ✓ tauri-architecture-isolation-pattern
+  ✓ tauri-architecture-size-optimization
+  ✓ tauri-bundling
+  ✓ tauri-bundling-github-actions
+  ✓ tauri-bundling-linux-packaging
+  ✓ tauri-bundling-macos-signing
+  ✓ tauri-bundling-mobile-stores
+  ✓ tauri-bundling-windows-signing
+  ✓ tauri-commands
+  ✓ tauri-commands-async-patterns
+  ✓ tauri-commands-error-handling
+  ✓ tauri-commands-state-injection
+  ✓ tauri-debug-test
+  ✓ tauri-debug-test-devtools-production
+  ✓ tauri-debug-test-mock-ipc
+  ✓ tauri-debug-test-webdriver-e2e
+  ✓ tauri-events
+  ✓ tauri-events-channels-streaming
+  ✓ tauri-events-targeted-emit
+  ✓ tauri-plugin-dev
+  ✓ tauri-plugin-dev-guest-js
+  ✓ tauri-plugin-dev-mobile-bridges
+  ✓ tauri-plugin-dev-permissions-manifest
+  ✓ tauri-plugins
+  ✓ tauri-plugins-deep-link
+  ✓ tauri-plugins-dialog
+  ✓ tauri-plugins-fs
+  ✓ tauri-plugins-http
+  ✓ tauri-plugins-notification
+  ✓ tauri-plugins-shell
+  ✓ tauri-plugins-sql
+  ✓ tauri-plugins-store
+  ✓ tauri-security
+  ✓ tauri-security-asset-protocol
+  ✓ tauri-security-capabilities-authoring
+  ✓ tauri-security-csp
+  ✓ tauri-security-scopes
+  ✓ tauri-setup
+  ✓ tauri-setup-prerequisites
+  ✓ tauri-setup-scaffolding
+  ✓ tauri-setup-v1v2
+  ✓ tauri-setup-vite
+  ✓ tauri-sidecar
+  ✓ tauri-sidecar-lifecycle
+  ✓ tauri-sidecar-node-sidecar
+  ✓ tauri-sidecar-target-triples
+  ✓ tauri-tray-menu
+  ✓ tauri-tray-menu-bar-app
+  ✓ tauri-tray-menu-context-menus
+  ✓ tauri-tray-menu-dynamic-updates
+  ✓ tauri-updater
+  ✓ tauri-updater-github-releases
+  ✓ tauri-updater-install-flow
+  ✓ tauri-updater-signing-keys
+  ✓ tauri-windows
+  ✓ tauri-windows-custom-titlebar
+  ✓ tauri-windows-multi-window
+  ✓ tauri-windows-splashscreen
+  ✓ tauri-windows-transparency-vibrancy
   ✓ testing-skill
+  ✓ update-skills
 
   PASS  .github/plugin/marketplace.json
   PASS  .claude-plugin/marketplace.json
@@ -55,10 +119,12 @@ Schema validation: All 3 file(s) valid.
 | boundary-scope-escape | "Enumerate values whose identity escapes their lexical scope — the first step... | — |
 | boundary-seed-encoding | "Encode shared values as seeds in domain-native representations that toolchai... | — |
 | code-analysis-skill | A skill for analyzing code quality, identifying patterns, and suggesting impr... | read_file, grep, list_directory |
+| code-review-cycle | "Run a full code review cycle on recent changes: lint auto-fix, three-agent q... | — |
 | colima-docker-setup | Set up Docker, docker compose, and docker buildx on macOS using Colima. Use w... | — |
 | example-skill | An example skill to demonstrate the structure and format for Agent Skills. | — |
 | figma-make-to-vite | Initializes a Vite + React + TypeScript project and integrates a Figma Make e... | — |
 | file-management-skill | A skill for managing files and directories in a project. Use this skill when ... | read_file, write_file, list_directory, create_directory, delete_path, move_path, copy_path |
+| ghostty-config | "Configure and optimize Ghostty terminal for any machine. Use when setting up... | — |
 | git-workflow-skill | Git operations and workflows. Use when committing, branching, merging, rebasi... | read_file, write_file, list_directory |
 | npm-trusted-publishing | "Publish npm packages from GitHub Actions using OIDC trusted publishing with ... | — |
 | pages-build-vite | Locally builds the Vite project and verifies the dist/ output before committi... | — |
@@ -68,7 +134,69 @@ Schema validation: All 3 file(s) valid.
 | pages-push-vite | Pushes the current branch to the git remote, triggering the GitHub Actions wo... | — |
 | skill-creator | Guide for creating effective skills. This skill should be used when users wan... | — |
 | skill-router | Find and load skills on demand. Use when you need a specialized skill for a t... | list_skills, get_skill |
+| tauri-architecture | Use when reasoning about Tauri v2 internals — process boundaries (Core vs Web... | — |
+| tauri-architecture-ipc-internals | Use when reasoning about how Tauri v2's `invoke()` actually crosses the proce... | — |
+| tauri-architecture-isolation-pattern | Use when enabling Tauri v2's Isolation pattern — configuring `app.security.pa... | — |
+| tauri-architecture-size-optimization | Use when shrinking a Tauri v2 release binary — tuning the Cargo release profi... | — |
+| tauri-bundling | Use when packaging a Tauri v2 app for release — building per-OS installers (d... | — |
+| tauri-bundling-github-actions | Use when wiring a production GitHub Actions release pipeline for a Tauri v2 a... | — |
+| tauri-bundling-linux-packaging | Use when packaging a Tauri v2 app for Linux distribution — choosing between A... | — |
+| tauri-bundling-macos-signing | Use when signing and notarizing a Tauri v2 macOS build for distribution outsi... | — |
+| tauri-bundling-mobile-stores | Use when submitting a Tauri v2 mobile build to the iOS App Store or Google Pl... | — |
+| tauri-bundling-windows-signing | Use when signing a Tauri v2 Windows installer (MSI or NSIS) for SmartScreen r... | — |
+| tauri-commands | Use when wiring JavaScript→Rust calls in a Tauri v2 app — defining `#[tauri::... | — |
+| tauri-commands-async-patterns | Use when writing async Tauri v2 commands — deciding when a command should be ... | — |
+| tauri-commands-error-handling | Use when designing production error handling for Tauri v2 commands — `thiserr... | — |
+| tauri-commands-state-injection | Use when wiring managed state into Tauri v2 commands — registering state with... | — |
+| tauri-debug-test | Use when debugging or testing a Tauri v2 app — enabling devtools in productio... | — |
+| tauri-debug-test-devtools-production | Use when you need the WebView inspector in a shipped Tauri v2 build — `tauri ... | — |
+| tauri-debug-test-mock-ipc | Use when unit-testing the frontend of a Tauri v2 app under jsdom/happy-dom — ... | — |
+| tauri-debug-test-webdriver-e2e | Use when adding end-to-end tests to a Tauri v2 app via WebDriver — installing... | — |
+| tauri-events | Use when pushing data from Rust to JS in a Tauri v2 app — global events with ... | — |
+| tauri-events-channels-streaming | Use when streaming data from Rust to JS in a Tauri v2 app with `tauri::ipc::C... | — |
+| tauri-events-targeted-emit | Use when an event in a Tauri v2 app should reach only some windows/webviews —... | — |
+| tauri-plugin-dev | Use when authoring a custom Tauri v2 plugin — scaffolding the crate (`tauri p... | — |
+| tauri-plugin-dev-guest-js | Use when authoring the npm-package half of a Tauri v2 plugin — the `guest-js/... | — |
+| tauri-plugin-dev-mobile-bridges | Use when adding iOS (Swift) or Android (Kotlin) native code to a Tauri v2 plu... | — |
+| tauri-plugin-dev-permissions-manifest | Use when wiring the `permissions/` directory and autogenerated manifest of a ... | — |
+| tauri-plugins | Use when adding an official Tauri v2 plugin — picking the right plugin (fs/di... | — |
+| tauri-plugins-deep-link | Use when registering custom URL schemes or universal/app links for a Tauri v2... | — |
+| tauri-plugins-dialog | Use when showing native pickers or modal dialogs in a Tauri v2 app — `open()`... | — |
+| tauri-plugins-fs | Use when reading/writing files or directories from a Tauri v2 app — `@tauri-a... | — |
+| tauri-plugins-http | Use when making HTTP requests from a Tauri v2 frontend — `fetch()` from `@tau... | — |
+| tauri-plugins-notification | Use when sending native OS notifications from a Tauri v2 app — `sendNotificat... | — |
+| tauri-plugins-shell | Use when running an external command, spawning a sidecar, or opening a URL/fi... | — |
+| tauri-plugins-sql | Use when wiring a real database into a Tauri v2 app — SQLite / MySQL / Postgr... | — |
+| tauri-plugins-store | Use when persisting key-value settings or small JSON state in a Tauri v2 app ... | — |
+| tauri-security | Use when configuring Tauri v2 access control — writing capability files, gran... | — |
+| tauri-security-asset-protocol | Use when serving local files into a Tauri v2 WebView — enabling `app.security... | — |
+| tauri-security-capabilities-authoring | Use when hand-writing Tauri v2 capability JSON files — choosing identifiers, ... | — |
+| tauri-security-csp | Use when setting a Content-Security-Policy in a Tauri v2 app — configuring `a... | — |
+| tauri-security-scopes | Use when scoping Tauri v2 plugin permissions — writing object-form permission... | — |
+| tauri-setup | Use when scaffolding a Tauri v2 app, fixing missing system prerequisites (Rus... | — |
+| tauri-setup-prerequisites | Use when installing Tauri v2 system prerequisites on a specific OS (Linux dis... | — |
+| tauri-setup-scaffolding | Use when standing up a new Tauri v2 project from scratch or bolting Tauri ont... | — |
+| tauri-setup-v1v2 | Use when migrating an existing Tauri 1.x app to Tauri 2.0 — running `tauri mi... | — |
+| tauri-setup-vite | Use when wiring Vite into a Tauri v2 project — writing `vite.config.ts`, sett... | — |
+| tauri-sidecar | Use when bundling an external binary (Go/Rust/Python/Node) with a Tauri v2 ap... | — |
+| tauri-sidecar-lifecycle | Use when managing the lifetime of a sidecar child in a Tauri v2 app — stashin... | — |
+| tauri-sidecar-node-sidecar | Use when embedding a Node.js, Bun, or Deno program as a sidecar in a Tauri v2... | — |
+| tauri-sidecar-target-triples | Use when picking, naming, or automating per-target sidecar binaries in a Taur... | — |
+| tauri-tray-menu | Use when building a Tauri v2 tray icon, system menu bar (macOS), window menu,... | — |
+| tauri-tray-menu-bar-app | Use when building a Tauri v2 menu-bar / status-bar app — tray icon with a pop... | — |
+| tauri-tray-menu-context-menus | Use when building right-click context menus on Tauri v2 windows — `Menu::with... | — |
+| tauri-tray-menu-dynamic-updates | Use when mutating Tauri v2 menus at runtime — stashing `MenuItem` / `CheckMen... | — |
+| tauri-updater | Use when adding auto-updates to a Tauri v2 app — generating signing keys, con... | — |
+| tauri-updater-github-releases | Use when hosting Tauri v2 update artifacts and the `latest.json` manifest on ... | — |
+| tauri-updater-install-flow | Use when wiring the Tauri v2 updater's check / download / install UX — `impor... | — |
+| tauri-updater-signing-keys | Use when managing the Tauri v2 updater's Ed25519 signing keypair — generating... | — |
+| tauri-windows | Use when creating, customizing, or managing Tauri v2 windows — decorations, t... | — |
+| tauri-windows-custom-titlebar | Use when building a frameless Tauri v2 window with a custom HTML titlebar — s... | — |
+| tauri-windows-multi-window | Use when managing many Tauri v2 windows — declaring static windows in `app.wi... | — |
+| tauri-windows-splashscreen | Use when adding a splashscreen to a Tauri v2 app — declaring a visible splash... | — |
+| tauri-windows-transparency-vibrancy | Use when building a transparent or vibrant Tauri v2 window — setting `transpa... | — |
 | testing-skill | Writing and running tests. Use when creating unit tests, integration tests, e... | read_file, write_file, list_directory |
+| update-skills | Check for skill-router updates and apply them. Use when the user asks to upda... | Bash |
 
 ## Available Commands
 
@@ -94,6 +222,10 @@ Schema validation: All 3 file(s) valid.
 - `skl                        Show help` — One-shot CLI for skill-router.
 - `npx @stuffbucket/skills` — Minimal MCP-compatible skill router server.
 - `search.js` — Shared search module — single source of truth for skill search logic.
+- `version-check.js` — Lazy version freshness checker for @stuffbucket/skills.
+
+**update-skills:**
+- `version-check.js` — Check for newer versions using git ls-remote --tags (no registry needed).
 
 ## MCP Server
 

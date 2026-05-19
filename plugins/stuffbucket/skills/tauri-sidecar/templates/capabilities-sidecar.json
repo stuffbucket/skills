@@ -1,0 +1,44 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Permissions for the myproxy sidecar.",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+
+    {
+      "identifier": "shell:allow-execute",
+      "allow": [
+        {
+          "name": "binaries/myproxy",
+          "sidecar": true,
+          "args": [
+            "--port",
+            { "validator": "^\\d{2,5}$" }
+          ]
+        }
+      ]
+    },
+
+    {
+      "identifier": "shell:allow-spawn",
+      "allow": [
+        {
+          "name": "binaries/myproxy",
+          "sidecar": true,
+          "args": [
+            "--port",
+            { "validator": "^\\d{2,5}$" }
+          ]
+        }
+      ]
+    },
+
+    "shell:allow-kill",
+
+    {
+      "identifier": "fs:scope",
+      "allow": ["$RESOURCE/**/*"]
+    }
+  ]
+}

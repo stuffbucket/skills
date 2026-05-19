@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "store-main",
+  "description": "Allow the main window to read/write the JSON store.",
+  "windows": ["main"],
+  "permissions": ["store:default"]
+}

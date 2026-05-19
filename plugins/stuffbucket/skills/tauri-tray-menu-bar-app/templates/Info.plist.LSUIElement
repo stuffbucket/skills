@@ -1,0 +1,34 @@
+<!--
+  Drop into src-tauri/Info.plist (create the file if it doesn't exist) and
+  reference from tauri.conf.json:
+
+      "bundle": {
+        "macOS": {
+          "infoPlistPath": "../Info.plist"
+        }
+      }
+
+  Or, simpler in most cases, set:
+
+      "bundle": { "macOS": { "dockIcon": false } }
+
+  which adds LSUIElement automatically. Use this raw snippet only when you
+  need extra plist entries the Tauri config doesn't cover.
+-->
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Hide from Dock and Cmd-Tab; app runs as an "agent" (menu-bar-only). -->
+    <key>LSUIElement</key>
+    <true/>
+
+    <!-- Optional: prevent macOS from putting the app to sleep on idle. -->
+    <!--
+    <key>NSSupportsAutomaticTermination</key>
+    <false/>
+    <key>NSSupportsSuddenTermination</key>
+    <false/>
+    -->
+</dict>
+</plist>

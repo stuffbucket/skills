@@ -1,0 +1,50 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "shell-and-opener",
+  "description": "Allow git status, a bundled proxy sidecar, and a narrow set of URLs/paths.",
+  "windows": ["main"],
+  "permissions": [
+    {
+      "identifier": "shell:allow-execute",
+      "allow": [
+        {
+          "name": "git-status",
+          "cmd": "git",
+          "args": ["status", "--porcelain"],
+          "sidecar": false
+        },
+        {
+          "name": "proxy",
+          "sidecar": true,
+          "args": [
+            "--port",
+            { "validator": "^\\d{2,5}$" }
+          ]
+        }
+      ]
+    },
+    "shell:allow-spawn",
+    "shell:allow-kill",
+    "shell:allow-stdin-write",
+
+    {
+      "identifier": "opener:allow-open-url",
+      "allow": [
+        { "url": "https://*.tauri.app" },
+        { "url": "https://github.com/**" },
+        { "url": "mailto:*" }
+      ]
+    },
+    {
+      "identifier": "opener:allow-open-path",
+      "allow": [
+        { "path": "$DOWNLOAD/**" },
+        { "path": "$DOCUMENT/**" }
+      ]
+    },
+    {
+      "identifier": "opener:allow-reveal-item-in-dir",
+      "allow": [{ "path": "$DOWNLOAD/**" }]
+    }
+  ]
+}

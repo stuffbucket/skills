@@ -167,7 +167,54 @@ def validate_skill(skill_path):
             if not script_file.exists():
                 return False, f"SKILL.md references scripts/{script_name} but the file does not exist"
 
+    # ── Markdown lint checks ──
+    md_warnings = lint_markdown_files(skill_path)
+    if md_warnings:
+        warnings_str = "; ".join(md_warnings[:5])
+        return False, f"Markdown lint issues: {warnings_str}"
+
     return True, "Skill is valid!"
+
+
+def lint_markdown_files(skill_path):
+    """Check .md files for common markdown lint issues using markdownlint-cli2."""
+    import subprocess
+    import shutil
+
+    md_files = list(skill_path.rglob("*.md"))
+    if not md_files:
+        return []
+
+    # Find markdownlint-cli2 (direct install or via npx)
+    cmd = None
+    if shutil.which("markdownlint-cli2"):
+        cmd = ["markdownlint-cli2"]
+    elif shutil.which("npx"):
+        cmd = ["npx", "--yes", "markdownlint-cli2"]
+
+    if cmd is None:
+        print("  Warning: markdownlint-cli2 not found. Markdown lint issues may cause CI failures.")
+        print("  Install with: npm i -g markdownlint-cli2")
+        return []
+
+    try:
+        result = subprocess.run(
+            cmd + [str(f) for f in md_files],
+            capture_output=True, text=True, timeout=60,
+        )
+        if result.returncode != 0:
+            # Extract error lines from stdout (markdownlint outputs there)
+            output = result.stdout + result.stderr
+            errors = [
+                line for line in output.splitlines()
+                if " error " in line
+            ]
+            return errors[:5] if errors else ["markdownlint-cli2 reported errors (run it directly for details)"]
+    except (subprocess.TimeoutExpired, OSError):
+        print("  Warning: markdownlint-cli2 timed out or failed to run")
+        return []
+
+    return []
 
 
 def validate_all_skills(skills_root):

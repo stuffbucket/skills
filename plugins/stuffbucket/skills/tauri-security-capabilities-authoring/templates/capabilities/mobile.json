@@ -1,0 +1,15 @@
+{
+  "$schema": "../../gen/schemas/mobile-schema.json",
+  "identifier": "mobile-capability",
+  "description": "Default permissions for mobile platforms. Mobile apps are single-window, so `windows` is omitted to match any.",
+  "platforms": ["android", "iOS"],
+  "local": true,
+  "permissions": [
+    "core:default",
+    "core:webview:default",
+    "dialog:allow-open",
+    "notification:default",
+    "os:allow-platform",
+    "os:allow-version"
+  ]
+}

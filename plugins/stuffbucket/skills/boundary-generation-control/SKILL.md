@@ -118,6 +118,11 @@ After generation, apply `boundary-drift-detection` with noise filtering:
 
 1. Filter noise-floor variations (naming, formatting, equivalent expressions)
 2. Did the remaining signal stay in the intended domain?
+2b. Did it introduce `any`, `as unknown as`, or `as any`? These indicate the generation
+    context lacked a type the model needed — the context has an unresolved boundary
+    condition. Do not accept `any` as valid output. Instead: find or derive the correct
+    type (e.g., `Parameters<Fn>[0]`, re-export from the dependency), add it to the
+    context, and regenerate.
 3. Did it use seeds/references or introduce new literals?
 4. Does it type-check against the domain's closure?
 5. Did any resolved boundary conditions reopen?
@@ -137,6 +142,11 @@ If drift is detected:
 
 Each iteration resolves a context boundary condition that permitted drift, increasing κ for the next attempt. If κ remains low after tightening, the prerequisite domains may not be sufficiently
 closed — step back in the partial order.
+
+A common signal that context needs tightening: the model emits `any` for a value it
+passes to an external API. The fix is to make the external API's parameter type visible
+in the context — import it, derive it via `Parameters<>`, or define a compatible local
+interface. `any` means the model couldn't find a type, not that no type exists.
 
 ## The Generation Boundary Model
 

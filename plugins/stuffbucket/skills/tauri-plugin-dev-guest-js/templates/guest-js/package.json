@@ -1,0 +1,49 @@
+{
+  "name": "@my-org/plugin-my-plugin",
+  "version": "0.1.0",
+  "description": "JavaScript bindings for the my-plugin Tauri v2 plugin.",
+  "license": "MIT OR Apache-2.0",
+  "type": "module",
+  "//main": "Legacy CJS entry — required for Node tooling that ignores `exports`.",
+  "main": "./dist-js/index.cjs",
+  "module": "./dist-js/index.js",
+  "types": "./dist-js/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist-js/index.d.ts",
+      "import": "./dist-js/index.js",
+      "require": "./dist-js/index.cjs"
+    }
+  },
+  "//files": "Restricts the published tarball. guest-js/ source stays in git but never ships.",
+  "files": [
+    "dist-js",
+    "README.md",
+    "LICENSE-MIT",
+    "LICENSE-APACHE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "//prepublishOnly": "Belt-and-braces — never publish a stale dist-js/.",
+    "prepublishOnly": "npm run build",
+    "typecheck": "tsc --noEmit"
+  },
+  "//peerDependencies": "App brings its own @tauri-apps/api. Two copies would split __TAURI_INTERNALS__ and break event listeners.",
+  "peerDependencies": {
+    "@tauri-apps/api": "^2.0.0"
+  },
+  "devDependencies": {
+    "@tauri-apps/api": "^2.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.4.0"
+  },
+  "//repository": "Surface the source repo so npm links to GitHub.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/my-org/tauri-plugin-my-plugin.git"
+  },
+  "keywords": ["tauri", "tauri-plugin"],
+  "publishConfig": {
+    "access": "public"
+  }
+}

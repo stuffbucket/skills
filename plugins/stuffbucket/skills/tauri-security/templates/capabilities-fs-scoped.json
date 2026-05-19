@@ -1,0 +1,41 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "fs-app-data",
+  "description": "Filesystem access restricted to a single app subdirectory under $APPDATA. Read across the whole subtree; write only into $APPDATA/<app>/user. Denies the webview-data folders that ship alongside on Linux and Windows. Pair with the `default` capability — do not merge into it.",
+  "windows": ["main"],
+  "platforms": ["macOS", "windows", "linux"],
+  "permissions": [
+    "fs:default",
+
+    {
+      "identifier": "fs:allow-read-text-file",
+      "allow": [{ "path": "$APPDATA/**/*" }],
+      "deny":  [
+        { "path": "$APPDATA/EBWebView/**" },
+        { "path": "$APPDATA/**/secrets/**" }
+      ]
+    },
+    {
+      "identifier": "fs:allow-read-dir",
+      "allow": [{ "path": "$APPDATA/**" }],
+      "deny":  [{ "path": "$APPDATA/EBWebView/**" }]
+    },
+    {
+      "identifier": "fs:allow-exists",
+      "allow": [{ "path": "$APPDATA/**/*" }]
+    },
+
+    {
+      "identifier": "fs:allow-write-text-file",
+      "allow": [{ "path": "$APPDATA/user/**/*" }]
+    },
+    {
+      "identifier": "fs:allow-mkdir",
+      "allow": [{ "path": "$APPDATA/user/**" }]
+    },
+    {
+      "identifier": "fs:allow-remove",
+      "allow": [{ "path": "$APPDATA/user/**/*" }]
+    }
+  ]
+}

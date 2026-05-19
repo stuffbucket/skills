@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- ============================================================
+         Hardened-runtime baseline for Developer ID distribution.
+         Required for notarization. Remove any line you don't need —
+         every extra entitlement weakens hardening.
+         ============================================================ -->
+
+    <!-- WebKit JIT. Almost always required for Tauri's webview. -->
+    <key>com.apple.security.cs.allow-jit</key>
+    <true/>
+
+    <!-- Required alongside allow-jit on some macOS versions for V8/JSC. -->
+    <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+    <true/>
+
+    <!-- Outbound network (HTTP, WebSockets, sidecar talking to a server). -->
+    <key>com.apple.security.network.client</key>
+    <true/>
+
+    <!-- Uncomment if you run a local server (sidecar listening on a port). -->
+    <!--
+    <key>com.apple.security.network.server</key>
+    <true/>
+    -->
+
+    <!-- Uncomment if you dlopen unsigned dylibs (rare, weakens security). -->
+    <!--
+    <key>com.apple.security.cs.disable-library-validation</key>
+    <true/>
+    -->
+
+    <!-- Uncomment if you read DYLD_* env vars (e.g. for plugin systems). -->
+    <!--
+    <key>com.apple.security.cs.allow-dyld-environment-variables</key>
+    <true/>
+    -->
+
+    <!-- ============================================================
+         App Store ONLY — DO NOT enable for Developer ID builds.
+         ============================================================ -->
+    <!--
+    <key>com.apple.security.app-sandbox</key>
+    <true/>
+    <key>com.apple.security.files.user-selected.read-write</key>
+    <true/>
+    -->
+</dict>
+</plist>

@@ -1,0 +1,32 @@
+{
+  "$schema": "../../gen/schemas/desktop-schema.json",
+  "identifier": "main-capability",
+  "description": "Default permissions for the main window on desktop platforms.",
+  "platforms": ["linux", "macOS", "windows"],
+  "windows": ["main"],
+  "webviews": [],
+  "local": true,
+  "permissions": [
+    "core:default",
+    "core:window:allow-close",
+    "core:window:allow-minimize",
+    "core:webview:default",
+    "dialog:allow-open",
+    "dialog:allow-save",
+    "opener:default",
+    {
+      "identifier": "opener:allow-open-url",
+      "allow": [
+        { "url": "https://*.example.com/*" },
+        { "url": "https://github.com/*" }
+      ]
+    },
+    {
+      "identifier": "fs:allow-read-text-file",
+      "allow": [
+        { "path": "$APPDATA/**" },
+        { "path": "$APPCONFIG/**" }
+      ]
+    }
+  ]
+}

@@ -14,14 +14,14 @@ jobs:
     if: contains(github.event.issue.labels.*.name, 'new-skill')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: npm
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.x'
 
@@ -30,7 +30,7 @@ jobs:
 
       - name: Extract skill info from issue
         id: parse
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const body = context.payload.issue.body || '';
@@ -131,16 +131,18 @@ jobs:
           npm run validate:one -- "$SKILL_PATH" 2>&1 | tee validate-output.txt
           echo "exit_code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
 
-      - name: Build index
+      - name: Build index and generated files
         if: steps.parse.outputs.has_attachment == 'true'
         id: index
         run: |
           npm run build:index 2>&1 | tee index-output.txt
           echo "exit_code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+          npm run build:llms
+          npm run build:readme
 
       - name: Create PR or report failure
         if: steps.parse.outputs.has_attachment == 'true'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           SKILL_NAME: ${{ steps.parse.outputs.skill_name }}
           VALIDATE_OK: ${{ steps.validate.outputs.exit_code }}
@@ -195,6 +197,7 @@ jobs:
             execSync(`git config user.email "github-actions[bot]@users.noreply.github.com"`);
             execSync(`git checkout -b ${branchName}`);
             execSync(`git add plugins/stuffbucket/skills/${skillName}/`);
+            execSync(`git add plugins/stuffbucket/skills/skill-router/index.json llms.txt README.md`);
             execSync(`git commit -m "feat: add ${skillName} skill\n\nSubmitted via #${context.issue.number}"`);
             execSync(`git push origin ${branchName}`);
 

@@ -30,6 +30,16 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     <a class="site-nav-brand" href={`${base}/`}>
       <span class="text-gradient"><b>Stuffbucket Skills</b></span>
     </a>
+    <div class="site-nav-search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input
+        type="text"
+        class="nav-search-input"
+        id="skill-search"
+        placeholder="Search skills..."
+        autocomplete="off"
+      />
+    </div>
     <div class="site-nav-links">
       <a href={`${base}/catalog/`}>Catalog</a>
       <a href={`${base}/create/`}>Create</a>
@@ -59,6 +69,88 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     window.addEventListener('scroll', update, { passive: true });
     update();
   }
+</script>
+
+<script>
+  // ── Global search coordinator ──────────────────────────────
+  // Runs on every page. Bridges the persisted nav search input
+  // to the catalog grid (if present) via a CustomEvent.
+
+  let restoreTimer: ReturnType<typeof setTimeout> | null = null;
+
+  function dispatchSearch(query: string) {
+    document.dispatchEvent(new CustomEvent('skill-search:query', { detail: { query } }));
+  }
+
+  function updateHero(query: string, inputFocused: boolean) {
+    const hero = document.getElementById('landing-hero');
+    if (!hero) return;
+
+    if (restoreTimer) { clearTimeout(restoreTimer); restoreTimer = null; }
+
+    if (query) {
+      hero.classList.add('hero--collapsed');
+    } else if (!inputFocused) {
+      restoreTimer = setTimeout(() => {
+        hero.classList.remove('hero--collapsed');
+      }, 1500);
+    }
+  }
+
+  function handleInput(e: Event) {
+    const input = e.target as HTMLInputElement;
+    const query = input.value.trim();
+    dispatchSearch(query);
+    updateHero(query, true);
+  }
+
+  function handleFocus() {
+    if (restoreTimer) { clearTimeout(restoreTimer); restoreTimer = null; }
+  }
+
+  function handleBlur() {
+    const input = document.getElementById('skill-search') as HTMLInputElement;
+    if (!input?.value.trim()) {
+      updateHero('', false);
+    }
+  }
+
+  document.addEventListener('astro:page-load', () => {
+    const input = document.getElementById('skill-search') as HTMLInputElement;
+    const searchWrap = document.querySelector('.site-nav-search') as HTMLElement;
+    const grid = document.getElementById('catalog-grid');
+
+    // Clear search on navigation
+    if (input) input.value = '';
+
+    // Show search only on pages with the catalog grid
+    if (searchWrap) {
+      searchWrap.style.display = grid ? '' : 'none';
+    }
+
+    if (!input || !grid) return;
+
+    // Bind listeners once (nav is persisted across transitions)
+    if (!input.dataset.globalBound) {
+      input.dataset.globalBound = 'true';
+      input.addEventListener('input', handleInput);
+      input.addEventListener('focus', handleFocus);
+      input.addEventListener('blur', handleBlur);
+    }
+
+    // Dispatch initial state
+    requestAnimationFrame(() => {
+      const query = input.value.trim();
+      if (query) {
+        dispatchSearch(query);
+        updateHero(query, document.activeElement === input);
+      } else {
+        const hero = document.getElementById('landing-hero');
+        if (hero) hero.classList.remove('hero--collapsed');
+        dispatchSearch('');
+      }
+    });
+  });
 </script>
 
 </body>

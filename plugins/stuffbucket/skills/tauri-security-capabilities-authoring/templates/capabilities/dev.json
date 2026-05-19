@@ -1,0 +1,23 @@
+{
+  "$schema": "../../gen/schemas/desktop-schema.json",
+  "identifier": "dev",
+  "description": "DEV ONLY — never include in `app.security.capabilities` for production builds. Enables devtools, broader FS, and verbose logging.",
+  "platforms": ["linux", "macOS", "windows"],
+  "windows": ["main", "settings", "*"],
+  "local": true,
+  "permissions": [
+    "core:default",
+    "core:webview:allow-internal-toggle-devtools",
+    "log:default",
+    "log:allow-log",
+    "process:allow-restart",
+    {
+      "identifier": "fs:allow-read-text-file",
+      "allow": [{ "path": "$HOME/**" }]
+    },
+    {
+      "identifier": "fs:allow-read-dir",
+      "allow": [{ "path": "$HOME/**" }]
+    }
+  ]
+}

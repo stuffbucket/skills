@@ -1,0 +1,23 @@
+{
+  "app": {
+    "security": {
+      "csp": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self'; img-src 'self' data: asset: https://asset.localhost; media-src 'self' asset: https://asset.localhost; font-src 'self' data:; connect-src 'self' ipc: http://ipc.localhost; frame-ancestors 'self'; base-uri 'self'; object-src 'none'",
+      "assetProtocol": {
+        "enable": true,
+        "scope": {
+          "allow": [
+            "$APPDATA/images/**",
+            "$APPDATA/media/**",
+            "$RESOURCE/**",
+            "$DOCUMENT/MyApp/**",
+            "$DOWNLOAD/**"
+          ],
+          "deny": [
+            "$APPDATA/images/.private/**",
+            "$DOWNLOAD/.*/**"
+          ]
+        }
+      }
+    }
+  }
+}

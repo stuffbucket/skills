@@ -1,0 +1,23 @@
+# Append to src-tauri/Cargo.toml — release profile tuned for binary size.
+# Measure with `du -h target/release/<app>` and `cargo bloat --release --crates`
+# before/after to confirm wins on your codebase.
+
+[profile.dev]
+incremental = true
+
+[profile.release]
+codegen-units = 1     # serialize codegen → maximal inlining/dedup
+lto = true            # full link-time optimization across crates
+opt-level = "s"       # size-optimized; try "z" for ~5-10% more at perf cost
+panic = "abort"       # drop unwinding tables (~100-300 KB)
+strip = true          # remove symbols from final binary
+
+# --- Nightly-only extras (uncomment if building on nightly) ---
+# trim-paths  = "all"
+# rustflags   = ["-Cdebuginfo=0", "-Zthreads=8"]
+
+# Example feature pruning. Audit every Tauri/plugin crate the same way.
+# [dependencies]
+# tauri              = { version = "2", default-features = false, features = ["wry"] }
+# tauri-plugin-fs    = { version = "2", default-features = false }
+# tauri-plugin-http  = { version = "2", default-features = false }
