@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "stuffbucket-skills",
-  "description": "Agent skills and MCP skill-router for Claude, Copilot, and other AI assistants",
+  "description": "Agent skills and stuffbucket MCP server for Claude, Copilot, and other AI assistants",
   "owner": {
     "name": "Stuffbucket",
     "email": "contact@stuffbucket.co"
@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "stuffbucket",
-      "description": "Agent skills and MCP skill-router",
+      "description": "Agent skills and stuffbucket MCP server",
       "version": "0.2.12",
       "author": {
         "name": "Stuffbucket",

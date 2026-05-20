@@ -30,11 +30,11 @@ The marketplace.json lists all skills and MCP configurations. No MCP server need
 
 ### Pattern 2: Dynamic routing via MCP
 
-The agent uses the skill-router MCP for on-demand skill discovery and loading.
+The agent uses the `stuffbucket` MCP server for on-demand skill discovery and loading.
 Skills are not installed or configured permanently —
 they are capabilities of the MCP that return knowledge to the agent on demand.
 At the end of the agent session, that knowledge is gone.
-Only the skill-router MCP configuration persists between sessions.
+Only the `stuffbucket` MCP server configuration persists between sessions.
 
 This requires installing the MCP onto the host and into the agent's configuration.
 The MCP runs locally as a stdio tool — it does not call any remote service.
@@ -61,7 +61,7 @@ Add to the agent's MCP configuration:
 ```json
 {
   "mcpServers": {
-    "skill-router": {
+    "stuffbucket": {
       "command": "npx",
       "args": ["-y", "@stuffbucket/skills"]
     }

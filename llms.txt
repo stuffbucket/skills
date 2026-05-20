@@ -266,7 +266,7 @@ Schema validation: All 3 file(s) valid.
 | tauri-windows-splashscreen | Use when adding a splashscreen to a Tauri v2 app — declaring a visible splash... | — |
 | tauri-windows-transparency-vibrancy | Use when building a transparent or vibrant Tauri v2 window — setting `transpa... | — |
 | testing-skill | Writing and running tests. Use when creating unit tests, integration tests, e... | read_file, write_file, list_directory |
-| update-skills | Check for skill-router updates and apply them. Use when the user asks to upda... | Bash |
+| update-skills | Check for stuffbucket MCP server updates and apply them. Use when the user as... | Bash |
 
 ## Available Commands
 
@@ -305,14 +305,10 @@ Schema validation: All 3 file(s) valid.
 
 ## MCP Server
 
-Server: `skill-router`
+Server: `stuffbucket`
 Command: `npx -y @stuffbucket/skills`
 
 Tools:
-- `list_skills` — Search the packaged-skill catalog before answering tasks that might match a curated workflow. Catalog covers Tauri (60+ skills), React, design systems, boundary-engineered TypeScript, GLSL/shaders, GitHub Pages, Azure CLI, git, Docker, code review, evals, and more. Call with no arguments to browse families grouped by root, or pass a natural-language query (e.g. 'tauri vibrancy', 'react performance', 'review my pull request'). Each result includes a 'use when' trigger sentence. Users can force-route by including the phrase 'use stuffbucket' in their request. Costs almost nothing and avoids reinventing solutions the catalog already encodes.
-  - `query` (string, optional) — Keyword to filter skills by name, description, or tags. Omit to return all.
-- `get_skill` — Load a skill's full instructions by name. Skill names are kebab-case identifiers from list_skills.
-  - `name` (string, required) — Skill name, e.g. code-analysis-skill.
 
 ## Structure
 

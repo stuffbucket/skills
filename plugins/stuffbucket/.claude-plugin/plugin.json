@@ -1,6 +1,6 @@
 {
   "name": "stuffbucket",
-  "description": "Agent skills and MCP skill-router for Claude, Copilot, and other AI assistants",
+  "description": "Agent skills and stuffbucket MCP server for Claude, Copilot, and other AI assistants",
   "version": "0.2.12",
   "author": {
     "name": "Stuffbucket",

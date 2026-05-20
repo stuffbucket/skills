@@ -16,7 +16,7 @@ Add the MCP server to any client:
 ```json
 {
   "mcpServers": {
-    "skill-router": {
+    "stuffbucket": {
       "command": "npx",
       "args": ["-y", "@stuffbucket/skills"]
     }
@@ -65,8 +65,9 @@ always consult the catalog before answering.
 
 ## How It Works
 
-The skill-router exposes two tools — `list_skills` and `get_skill` — instead of registering every skill separately. Agents search by intent, load what they need, and the context window cost stays
-constant.
+The `stuffbucket` MCP server exposes two tools — `list_skills` and `get_skill` — instead of
+registering every skill separately. Agents search by intent, load what they need, and the context
+window cost stays constant.
 
 Each skill is a self-contained package: a `SKILL.md` with instructions plus optional `scripts/`, `references/`, and `assets/`. Skills are authored once by an expert and delivered automatically to
 anyone whose agent needs them.
@@ -220,7 +221,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full guide, or read the [Best Pra
 | `tauri-windows-splashscreen` | Use when adding a splashscreen to a Tauri v2 app — declaring a visible splash window and a hidden main window in config, doing initialization work in the Rust `setup` hook with `tokio::spawn` (never `std::thread::sleep`), signaling readiness via a `splash://ready` event or directly via `get_webview_window("splash").close()` + main `.show()`, and choosing JS-driven vs pure-Rust orchestration. |
 | `tauri-windows-transparency-vibrancy` | Use when building a transparent or vibrant Tauri v2 window — setting `transparent: true` in config, applying macOS NSVisualEffect via the `window-vibrancy` crate (`apply_vibrancy(window, NSVisualEffectMaterial::HudWindow, ...)`), Windows 11 `apply_mica` / `apply_acrylic`, the platform support matrix, CSS for transparent backgrounds with rounded corners, and the menubar-app combo (`alwaysOnTop` + `transparent: true` + `decorations: false`). |
 | `testing-skill` | Writing and running tests |
-| `update-skills` | Check for skill-router updates and apply them |
+| `update-skills` | Check for stuffbucket MCP server updates and apply them |
 <!-- END:SKILLS -->
 
 ## Development Setup

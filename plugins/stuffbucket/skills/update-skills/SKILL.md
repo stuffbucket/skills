@@ -1,6 +1,6 @@
 ---
 name: update-skills
-description: Check for skill-router updates and apply them. Use when the user asks to update skills, check for new versions, or upgrade the skill-router.
+description: Check for stuffbucket MCP server updates and apply them. Use when the user asks to update skills, check for new versions, or upgrade the stuffbucket MCP server.
 allowed-tools: Bash
 ---
 

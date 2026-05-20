@@ -4,8 +4,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repo is
 
-A monorepo that publishes `@stuffbucket/skills` — an MCP server (`skill-router`) plus a collection of
-agent **skills**. The skill-router exposes only two MCP tools (`list_skills`, `get_skill`) so agents
+A monorepo that publishes `@stuffbucket/skills` — an MCP server (`stuffbucket`) plus a collection of
+agent **skills**. The `stuffbucket` MCP server exposes only two MCP tools (`list_skills`, `get_skill`) so agents
 can search by intent and load skill content on demand instead of registering every skill as its own
 tool. This keeps context-window cost constant as the skill catalog grows.
 
