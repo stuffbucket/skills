@@ -3,6 +3,7 @@
   "version": "0.2.13",
   "description": "Agent skills, MCP skill-router server, and dev tooling for Claude, Copilot, and other AI assistants",
   "bin": {
+    "skills": "plugins/stuffbucket/skills/skill-router/scripts/mcp-server.js",
     "stuffbucket-skills": "plugins/stuffbucket/skills/skill-router/scripts/mcp-server.js",
     "skl": "plugins/stuffbucket/skills/skill-router/scripts/cli.js"
   },
@@ -40,7 +41,7 @@
     "package": "python3 plugins/stuffbucket/skills/skill-creator/scripts/package_skill.py",
     "validate": "python3 plugins/stuffbucket/skills/skill-creator/scripts/quick_validate.py --all plugins/stuffbucket/skills",
     "validate:one": "python3 plugins/stuffbucket/skills/skill-creator/scripts/quick_validate.py",
-    "test": "npm run build:index && node plugins/stuffbucket/skills/skill-router/tests/test-mcp-server.js && node tests/test-plugin-structure.js",
+    "test": "npm run build:index && node plugins/stuffbucket/skills/skill-router/tests/test-mcp-server.js && node tests/test-plugin-structure.js && node tests/test-mcp-launch-command.js",
     "test:structure": "node tests/test-plugin-structure.js",
     "test:repl": "npm run build:index && node plugins/stuffbucket/skills/skill-router/scripts/mcp-server.js",
     "ci": "npm run lint && npm run validate && npm run check:versions && npm run test && npm run check:llms && npm run check:readme",
