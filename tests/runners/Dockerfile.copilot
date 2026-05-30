@@ -1,0 +1,28 @@
+# GitHub Copilot CLI runner for the @stuffbucket/skills MCP server.
+#
+# Build context: tests/runners/ (run.sh drops the freshly packed pkg.tgz here).
+# Built with network; intended to be RUN with `--network none` so the smoke
+# test provably needs no model subscription or npm registry access.
+FROM node:22-bookworm-slim
+
+# CA certs keep the CLIs from warning about TLS init; this layer is cache-stable.
+RUN apt-get update -qq \
+  && apt-get install -y -qq --no-install-recommends ca-certificates \
+  && rm -rf /var/lib/apt/lists/*
+
+# Big, stable layer: the GitHub Copilot CLI. Pinned for reproducibility.
+RUN npm install -g @github/copilot@1.0.56
+
+# Per-run layer: local install of the build under test, so the documented
+# `npx -y @stuffbucket/skills` resolves offline from /work.
+WORKDIR /work
+COPY pkg.tgz /tmp/pkg.tgz
+RUN npm init -y >/dev/null 2>&1 && npm install /tmp/pkg.tgz
+
+# Test harness.
+COPY mcp-smoke.mjs /opt/runner/mcp-smoke.mjs
+COPY copilot-runner.sh /opt/runner/copilot-runner.sh
+
+ENV CI=1
+
+CMD ["bash", "/opt/runner/copilot-runner.sh"]
