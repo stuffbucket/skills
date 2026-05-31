@@ -62,6 +62,28 @@ Drives the MCP server over stdio and asserts it actually serves skills:
 It takes the server command as `node mcp-smoke.mjs -- <command> [args...]`, so it
 can exercise the same `npx -y @stuffbucket/skills` invocation the CLIs use.
 
+## Images
+
+Both runners use a small **`node:24-alpine`** base (Copilot requires Node 24+).
+Only what each CLI needs is added — `bash` + `ca-certificates` for Claude, plus
+`libstdc++`/`libgcc` for Copilot's native binary — and the npm cache is cleaned
+in each layer. Approximate sizes (arm64):
+
+| Runner  | Image    |
+| ------- | -------- |
+| claude  | ~550 MB  |
+| copilot | ~825 MB  |
+
+The size is dominated by the CLI packages themselves (the Copilot native binary
+alone is ~127 MB), not the base distro.
+
+**Copilot on musl:** the Copilot CLI ships a musl build, but its native *agent*
+binary currently segfaults on startup under Alpine/musl (an upstream bug — it
+prints a benign `terminated by signal SIGSEGV` line). That binary is never used
+by the config commands this runner exercises (`mcp add/list/get` fall back to
+JS) or by `mcp-smoke.mjs` (plain node), so the runner passes. `copilot-runner.sh`
+filters only that one known-benign line so a genuine error would still surface.
+
 ## Requirements
 
 - Docker (daemon running).

@@ -1,23 +1,26 @@
-# Claude Code CLI runner for the @stuffbucket/skills MCP server.
+# Claude Code CLI runner for the @stuffbucket/skills MCP server (Alpine, musl).
 #
 # Build context: tests/runners/ (run.sh drops the freshly packed pkg.tgz here).
 # Built with network; intended to be RUN with `--network none` so the smoke
 # test provably needs no model subscription or npm registry access.
-FROM node:22-bookworm-slim
+#
+# Alpine note: the Claude Code CLI runs cleanly on musl. node:24-alpine keeps
+# the image small; only bash (runner script) and ca-certificates are added.
+FROM node:24-alpine
 
-# CA certs keep the CLIs from warning about TLS init; this layer is cache-stable.
-RUN apt-get update -qq \
-  && apt-get install -y -qq --no-install-recommends ca-certificates \
-  && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache bash ca-certificates
 
-# Big, stable layer: the Claude Code CLI. Pinned for reproducibility.
-RUN npm install -g @anthropic-ai/claude-code@2.1.158
+# Big, stable layer: the Claude Code CLI. Pinned; npm cache cleaned to stay small.
+RUN npm install -g @anthropic-ai/claude-code@2.1.158 && npm cache clean --force
 
 # Per-run layer: local install of the build under test, so the documented
 # `npx -y @stuffbucket/skills` resolves offline from /work.
 WORKDIR /work
 COPY pkg.tgz /tmp/pkg.tgz
-RUN npm init -y >/dev/null 2>&1 && npm install /tmp/pkg.tgz
+RUN npm init -y >/dev/null 2>&1 \
+  && npm install /tmp/pkg.tgz \
+  && npm cache clean --force \
+  && rm -f /tmp/pkg.tgz
 
 # Test harness.
 COPY mcp-smoke.mjs /opt/runner/mcp-smoke.mjs
