@@ -43,6 +43,7 @@
     "validate:one": "python3 plugins/stuffbucket/skills/skill-creator/scripts/quick_validate.py",
     "test": "npm run build:index && node plugins/stuffbucket/skills/skill-router/tests/test-mcp-server.js && node tests/test-plugin-structure.js && node tests/test-mcp-launch-command.js",
     "test:structure": "node tests/test-plugin-structure.js",
+    "test:runners": "tests/runners/run.sh",
     "test:repl": "npm run build:index && node plugins/stuffbucket/skills/skill-router/scripts/mcp-server.js",
     "ci": "npm run lint && npm run validate && npm run check:versions && npm run test && npm run check:llms && npm run check:readme",
     "prepublishOnly": "npm run build:index"
