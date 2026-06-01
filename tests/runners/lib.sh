@@ -9,7 +9,7 @@
 set -uo pipefail
 
 RUNNER_DIR="${RUNNER_DIR:-/opt/runner}"
-PKG="${RUNNER_DIR}/pkg.tgz"
+PKG="${PKG:-${RUNNER_DIR}/pkg.tgz}"   # the build under test (overridable for the negative control)
 SERVER_NAME="stuffbucket"             # registration key — matches canonical .mcp.json
 LAUNCH=(npx -y @stuffbucket/skills)   # the documented launch command
 
@@ -17,6 +17,20 @@ fail=0
 say() { printf '\n=== %s ===\n' "$1"; }
 ok()  { printf '  [ok] %s\n' "$1"; }
 bad() { printf '  [FAIL] %s\n' "$1"; fail=1; }
+
+# Print container identity — proof to anyone reading the log that this ran inside
+# a docker container (a specific ai-cli-* image), not on the host. Emitted on
+# source, so every runner leads with it.
+container_evidence() {
+  say "container evidence (this is running inside docker, not on the host)"
+  printf '  image:     %s\n' "${RUNNER_IMAGE:-<unset>}"
+  printf '  container: %s\n' "$(hostname)"
+  printf '  kernel:    %s\n' "$(uname -srm)"
+  printf '  distro:    %s\n' "$( . /etc/os-release 2>/dev/null && echo "$PRETTY_NAME" || echo '?')"
+  printf '  node:      %s\n' "$(node -v 2>/dev/null)"
+  printf '  build:     %s\n' "$PKG"
+}
+container_evidence
 
 # Install the deferred CLI (claude/copilot) exactly as the image's bootstrap
 # entrypoint would — we bypass that entrypoint to run this script, so we mirror

@@ -30,10 +30,44 @@ doesn't expose a `skills` bin, that command fails and the runner goes red.
 tests/runners/run.sh                 # all three runners
 tests/runners/run.sh claude          # one (claude | copilot | codex)
 tests/runners/run.sh claude codex    # a subset
+tests/runners/run.sh --self-test     # negative control (see below)
 ```
 
 `run.sh` packs the current working tree (`npm run build:index && npm pack`), so
 it always tests your local build.
+
+## Evidence it really runs in docker
+
+Each runner leads with a **container-evidence** block printed from *inside* the
+container — the resolved image (by digest), the container id, the kernel, the
+distro (`Alpine`/`Debian`, not your host), and the node version. `run.sh` also
+prints the image id + repo digest host-side before `docker run`. Together these
+are proof the install/registration happened in a specific `ai-cli-*` image, not
+on the host.
+
+## Negative control — proof the test can fail
+
+A green check is only meaningful if it can go red. `run.sh --self-test [cli]`
+proves the runner discriminates:
+
+1. packs the real build **and** a deliberately broken copy (`pkg-broken.tgz`,
+   whose `mcp-server.js` is replaced with a stub that exits immediately — the
+   `skills` bin still resolves, so install + launch succeed, but the server never
+   speaks the protocol);
+2. runs the chosen CLI's runner against the **good** build → expects **exit 0**;
+3. runs it against the **broken** build → expects **exit ≠ 0** (the CLI health
+   check reports *not connected* and the smoke times out);
+4. passes only if good→0 **and** broken→≠0, printing a summary:
+
+```text
+NEGATIVE-CONTROL SUMMARY (claude, in docker)
+  good build   -> exit 0   (want 0)     MATCH
+  broken build -> exit 1   (want != 0)  MATCH
+RESULT: PASS — the runner passes a good build and fails a broken one …
+```
+
+CI runs this as the dedicated **`negative-control`** job, so every change
+re-proves the runners can still go red.
 
 | Env | Default | Meaning |
 | --- | --- | --- |

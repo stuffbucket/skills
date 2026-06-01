@@ -12,6 +12,9 @@
 #   tests/runners/run.sh                 # all three runners
 #   tests/runners/run.sh claude          # one (claude | copilot | codex)
 #   tests/runners/run.sh claude codex    # a subset
+#   tests/runners/run.sh --self-test [cli]   # negative control: prove the runner
+#                                            # PASSES a good build and FAILS a
+#                                            # broken one (default cli: claude)
 #
 # Env:
 #   AI_CLI_REGISTRY  image registry/namespace      (default ghcr.io/stuffbucket)
@@ -19,13 +22,17 @@
 #   AI_CLI_PULL=1    always `docker pull` (CI);     default: reuse a local image
 #                    of the same name if present, else pull.
 #
-# Exit code: 0 if all selected runners pass, 1 otherwise.
+# Exit code: 0 if all selected runners pass (or, in --self-test, if the runner
+# discriminates good from broken), 1 otherwise.
 set -euo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT="$(cd "$HERE/../.." && pwd)"
 REGISTRY="${AI_CLI_REGISTRY:-ghcr.io/stuffbucket}"
 TAG="${AI_CLI_TAG:-latest}"
+
+SELFTEST=0
+if [ "${1:-}" = "--self-test" ]; then SELFTEST=1; shift; fi
 
 command -v docker >/dev/null 2>&1 || { echo "docker is required"; exit 2; }
 docker info >/dev/null 2>&1 || { echo "docker daemon is not running"; exit 2; }
@@ -44,8 +51,29 @@ echo "==> Packing the build under test"
 ( cd "$ROOT" && npm run build:index >/dev/null )
 tarball="$(cd "$ROOT" && npm pack --silent | tail -1)"
 mv "$ROOT/$tarball" "$HERE/pkg.tgz"
-trap 'rm -f "$HERE/pkg.tgz"' EXIT
+trap 'rm -f "$HERE/pkg.tgz" "$HERE/pkg-broken.tgz"' EXIT
 echo "    packed $tarball -> tests/runners/pkg.tgz"
+
+# Negative control: a copy of the packed build whose MCP server is replaced with
+# a stub that exits immediately. The `skills` bin still resolves (so install +
+# launch succeed), but the server never speaks the protocol — so health checks
+# and the smoke MUST fail. This is what proves the runner can actually go red.
+make_broken_tarball() {
+  echo "==> Building a deliberately broken build (negative control)"
+  local tmp; tmp="$(mktemp -d)"
+  tar xzf "$HERE/pkg.tgz" -C "$tmp"
+  local srv="$tmp/package/plugins/stuffbucket/skills/skill-router/scripts/mcp-server.js"
+  [ -f "$srv" ] || { echo "cannot find mcp-server.js in the packed build"; exit 2; }
+  printf '%s\n' \
+    '#!/usr/bin/env node' \
+    '// NEGATIVE CONTROL: a broken MCP server that exits immediately, so the CLI' \
+    '// health check and the protocol smoke must fail.' \
+    'process.exit(0)' > "$srv"
+  chmod +x "$srv"
+  ( cd "$tmp" && tar czf "$HERE/pkg-broken.tgz" package )
+  rm -rf "$tmp"
+  echo "    wrote tests/runners/pkg-broken.tgz (mcp-server.js stubbed out)"
+}
 
 # Reuse a local image of the same name when present (so locally-built images work
 # before the GHCR packages are public); otherwise pull. AI_CLI_PULL=1 forces a
@@ -74,14 +102,57 @@ run_one() {
   echo "# $name runner  ($image)"
   echo "################################################################"
   acquire "$image" || return 1
+  # Pin the exact image identity as evidence (digest survives even if :latest moves).
+  local ref; ref="$(docker inspect --format '{{.Id}}' "$image" 2>/dev/null)"
+  local digest; digest="$(docker inspect --format '{{if .RepoDigests}}{{index .RepoDigests 0}}{{end}}' "$image" 2>/dev/null)"
+  echo "    image id:     ${ref:-?}"
+  [ -n "$digest" ] && echo "    repo digest:  $digest"
   # Override the image entrypoint (the CLI) to run our script; mount the runner
   # dir (pkg.tgz + scripts) read-only. No auth env var is passed -> keyless.
   docker run --rm \
     --entrypoint bash \
     -e NO_COLOR=1 \
+    -e "RUNNER_IMAGE=${digest:-$image} (${ref:-?})" \
+    ${PKG_IN_CONTAINER:+-e "PKG=$PKG_IN_CONTAINER"} \
     -v "$HERE:/opt/runner:ro" \
     "$image" "/opt/runner/$(script_of "$1")"
 }
+
+if [ "$SELFTEST" = "1" ]; then
+  cli="${sel[0]}"
+  make_broken_tarball
+
+  echo
+  echo "================================================================"
+  echo "# NEGATIVE CONTROL — does the '$cli' runner actually discriminate?"
+  echo "================================================================"
+
+  echo
+  echo ">>> (A) GOOD build — expect the runner to PASS (exit 0)"
+  unset PKG_IN_CONTAINER || true
+  if run_one "$cli"; then rc_pos=0; else rc_pos=$?; fi
+
+  echo
+  echo ">>> (B) BROKEN build — expect the runner to FAIL (exit != 0)"
+  export PKG_IN_CONTAINER=/opt/runner/pkg-broken.tgz
+  if run_one "$cli"; then rc_neg=0; else rc_neg=$?; fi
+  unset PKG_IN_CONTAINER
+
+  echo
+  echo "================================================================"
+  echo "NEGATIVE-CONTROL SUMMARY ($cli, in docker)"
+  printf '  good build   -> exit %s   (want 0)     %s\n'  "$rc_pos" "$([ "$rc_pos" -eq 0 ] && echo MATCH || echo MISMATCH)"
+  printf '  broken build -> exit %s   (want != 0)  %s\n' "$rc_neg" "$([ "$rc_neg" -ne 0 ] && echo MATCH || echo MISMATCH)"
+  if [ "$rc_pos" -eq 0 ] && [ "$rc_neg" -ne 0 ]; then
+    echo "RESULT: PASS — the runner passes a good build and fails a broken one,"
+    echo "        so a green result is meaningful (the test can go red)."
+    echo "================================================================"
+    exit 0
+  fi
+  echo "RESULT: FAIL — the runner did not discriminate (a test that cannot fail)."
+  echo "================================================================"
+  exit 1
+fi
 
 rc=0
 for c in "${sel[@]}"; do run_one "$c" || rc=1; done
