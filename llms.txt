@@ -296,7 +296,7 @@ Schema validation: All 3 file(s) valid.
 **skill-router:**
 - `node build-index.js [rootDir]` — Builds a compact skill index from SKILL.md frontmatter across all plugins.
 - `skl                        Show help` — One-shot CLI for skill-router.
-- `npx @stuffbucket/skills` — Minimal MCP-compatible skill router server.
+- `npx -y -p @stuffbucket/skills stuffbucket-skills` — Minimal MCP-compatible skill router server.
 - `search.js` — Shared search module — single source of truth for skill search logic.
 - `version-check.js` — Lazy version freshness checker for @stuffbucket/skills.
 
@@ -306,7 +306,7 @@ Schema validation: All 3 file(s) valid.
 ## MCP Server
 
 Server: `stuffbucket`
-Command: `npx -y @stuffbucket/skills`
+Command: `npx -y -p @stuffbucket/skills stuffbucket-skills`
 
 Tools:
 

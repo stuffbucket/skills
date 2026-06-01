@@ -10,7 +10,7 @@
 //   Pipe (MCP client):  JSON-RPC over stdin/stdout per MCP stdio transport spec.
 //
 // Usage:
-//   npx @stuffbucket/skills         # via published package (offline after first install)
+//   npx -y -p @stuffbucket/skills stuffbucket-skills   # via published package (offline after first install)
 //   node mcp-server.js              # interactive REPL if run in a terminal
 //   node mcp-server.js [rootDir]    # MCP mode when piped from a client
 
