@@ -4,12 +4,24 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      republish:
+        description: "Republish the current package.json version without bumping (recovery)"
+        type: boolean
+        default: true
+
+# Serialize publish runs so concurrent pushes to main can never race on the
+# version bump / tag. Never cancel an in-flight publish midway.
+concurrency:
+  group: publish-to-npm
+  cancel-in-progress: false
 
 jobs:
   ci-and-version:
     runs-on: ubuntu-latest
-    # Skip version bump commits created by this workflow
-    if: "!startsWith(github.event.head_commit.message, 'chore: bump version to')"
+    # Skip the bump commits this workflow creates; always run on manual dispatch.
+    if: "${{ github.event_name == 'workflow_dispatch' || !startsWith(github.event.head_commit.message, 'chore: bump version to') }}"
     permissions:
       contents: write
     outputs:
@@ -55,10 +67,14 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+          EVENT="${{ github.event_name }}"
           CURRENT_VERSION=$(node -p 'require("./package.json").version')
           PREV_VERSION=$(git show HEAD~1:package.json 2>/dev/null | node -p 'JSON.parse(require("fs").readFileSync(0,"utf8")).version' 2>/dev/null || echo "")
 
-          if [ "$CURRENT_VERSION" != "$PREV_VERSION" ] && [ -n "$PREV_VERSION" ]; then
+          if [ "$EVENT" = "workflow_dispatch" ]; then
+            echo "Manual dispatch: republishing current version ${CURRENT_VERSION} without bump"
+            NEW_VERSION="v${CURRENT_VERSION}"
+          elif [ "$CURRENT_VERSION" != "$PREV_VERSION" ] && [ -n "$PREV_VERSION" ]; then
             echo "Version manually changed: $PREV_VERSION → $CURRENT_VERSION"
             NEW_VERSION="v${CURRENT_VERSION}"
           else
@@ -87,12 +103,24 @@ jobs:
           "
 
           git add package.json package-lock.json .claude-plugin/marketplace.json .github/plugin/marketplace.json plugins/stuffbucket/.claude-plugin/plugin.json
+          COMMITTED=false
           if ! git diff --cached --quiet; then
             git commit -m "chore: bump version to ${NEW_VERSION}"
+            COMMITTED=true
           fi
 
-          git tag "${NEW_VERSION}" || true
-          git push origin main --tags
+          if [ "$EVENT" = "workflow_dispatch" ]; then
+            # Recovery: (re)point the tag at HEAD and force-push only the tag.
+            # Push main only if dispatch produced a manifest-sync commit.
+            git tag -f "${NEW_VERSION}"
+            git push --force origin "refs/tags/${NEW_VERSION}"
+            if [ "$COMMITTED" = "true" ]; then git push origin main; fi
+          else
+            # Atomic: the commit and its tag land together or not at all, so a
+            # losing concurrent run can never leave an orphan tag behind.
+            git tag "${NEW_VERSION}"
+            git push --atomic origin main "refs/tags/${NEW_VERSION}"
+          fi
 
           echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
