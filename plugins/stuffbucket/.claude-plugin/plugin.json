@@ -1,7 +1,7 @@
 {
   "name": "stuffbucket",
   "description": "Agent skills and stuffbucket MCP server for Claude, Copilot, and other AI assistants",
-  "version": "0.2.16",
+  "version": "0.2.17",
   "author": {
     "name": "Stuffbucket",
     "email": "contact@stuffbucket.co"
