@@ -1,49 +1,38 @@
 #!/usr/bin/env bash
-# Static, subscription-free smoke test driven by the Claude Code CLI.
+# Claude Code CLI — keyless install + MCP-registration proof (runs in-container).
 #
-# Runs inside the claude runner container, intended to be launched with
-# `docker run --network none` so there is provably no model API or npm registry
-# access — only the locally-installed @stuffbucket/skills build.
+# Launched by run.sh inside ghcr.io/stuffbucket/ai-cli-claude with no auth env
+# var set, so there is provably no model access — only the locally-installed
+# @stuffbucket/skills build and the local MCP server.
 #
 # Asserts:
-#   1. claude CLI runs offline (no login)
-#   2. claude can register the MCP server via the documented launch command
-#      `npx -y @stuffbucket/skills`
-#   3. claude's own health check connects to that server (✓ Connected)
+#   1. the (deferred) claude CLI installs and runs, keyless
+#   2. claude registers the MCP via the documented `npx -y @stuffbucket/skills`
+#   3. claude's own health check connects to it  (✓ Connected) — keyless
 #   4. the server actually serves skills (shared mcp-smoke.mjs)
-set -uo pipefail
+source "$(dirname "$0")/lib.sh"
 
-cd /work   # has node_modules/@stuffbucket/skills, so npx resolves offline
-fail=0
-say() { printf '\n=== %s ===\n' "$1"; }
+say "1. claude CLI present and runs (keyless)"
+ensure_cli
+claude --version || bad "claude --version failed"
 
-say "1. claude CLI runs offline"
-claude --version || { echo "claude --version failed"; fail=1; }
+setup_local_build
 
-say "2. register MCP server with the documented command"
-# default (local) scope is auto-approved and health-checked by `mcp list`
-claude mcp remove skill-router >/dev/null 2>&1 || true
-claude mcp add skill-router -- npx -y @stuffbucket/skills \
-  || { echo "claude mcp add failed"; fail=1; }
+say "2. register the MCP with the documented launch command"
+claude mcp remove "$SERVER_NAME" >/dev/null 2>&1 || true
+claude mcp add "$SERVER_NAME" -- "${LAUNCH[@]}" || bad "claude mcp add failed"
 
-say "3. claude health-checks and connects to the server"
+say "3. claude health-checks and connects (✓ Connected) — keyless"
 listing="$(claude mcp list 2>&1)"
 echo "$listing"
-echo "$listing" | grep -q "skill-router" || { echo "server not listed"; fail=1; }
-if echo "$listing" | grep -E "skill-router" | grep -qi "Connected"; then
-  echo "[ok] claude reports the skill-router server as Connected"
+echo "$listing" | grep -q "$SERVER_NAME" || bad "server '$SERVER_NAME' not listed"
+if echo "$listing" | grep -E "$SERVER_NAME" | grep -qi "Connected"; then
+  ok "claude reports '$SERVER_NAME' as Connected"
 else
-  echo "[FAIL] claude did not report skill-router as Connected"
-  fail=1
+  bad "claude did not report '$SERVER_NAME' as Connected"
 fi
 
 say "4. the server serves skills (CLI-agnostic protocol smoke)"
-node /opt/runner/mcp-smoke.mjs -- npx -y @stuffbucket/skills || fail=1
+smoke
 
-say "RESULT"
-if [ "$fail" -eq 0 ]; then
-  echo "CLAUDE RUNNER: PASS"
-else
-  echo "CLAUDE RUNNER: FAIL"
-fi
-exit "$fail"
+result CLAUDE
