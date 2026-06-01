@@ -2,7 +2,7 @@
   "name": "stuffbucket-skills",
   "metadata": {
     "description": "Agent skills and stuffbucket MCP server for Claude, Copilot, and other AI assistants",
-    "version": "0.2.14",
+    "version": "0.2.15",
     "pluginRoot": "./plugins"
   },
   "owner": {
@@ -14,7 +14,7 @@
       "name": "stuffbucket",
       "source": "stuffbucket",
       "description": "Agent skills and stuffbucket MCP server",
-      "version": "0.2.14"
+      "version": "0.2.15"
     }
   ]
 }
