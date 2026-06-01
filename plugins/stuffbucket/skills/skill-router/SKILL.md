@@ -63,7 +63,7 @@ Add to the agent's MCP configuration:
   "mcpServers": {
     "stuffbucket": {
       "command": "npx",
-      "args": ["-y", "@stuffbucket/skills"]
+      "args": ["-y", "-p", "@stuffbucket/skills", "stuffbucket-skills"]
     }
   }
 }

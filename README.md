@@ -18,7 +18,7 @@ Add the MCP server to any client:
   "mcpServers": {
     "stuffbucket": {
       "command": "npx",
-      "args": ["-y", "@stuffbucket/skills"]
+      "args": ["-y", "-p", "@stuffbucket/skills", "stuffbucket-skills"]
     }
   }
 }
