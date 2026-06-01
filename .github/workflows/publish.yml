@@ -4,12 +4,9 @@ on:
   push:
     branches:
       - main
+  # Manual recovery: republish the current package.json version without bumping
+  # (e.g. a version that landed on main but never reached npm).
   workflow_dispatch:
-    inputs:
-      republish:
-        description: "Republish the current package.json version without bumping (recovery)"
-        type: boolean
-        default: true
 
 # Serialize publish runs so concurrent pushes to main can never race on the
 # version bump / tag. Never cancel an in-flight publish midway.
