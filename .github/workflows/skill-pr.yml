@@ -67,7 +67,7 @@ jobs:
 
       - name: Label new skill PRs
         if: steps.detect.outputs.has_new == 'true'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             await github.rest.issues.addLabels({
@@ -91,7 +91,7 @@ jobs:
 
       - name: Post validation summary
         if: steps.detect.outputs.has_new == 'true'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const fs = require('fs');
