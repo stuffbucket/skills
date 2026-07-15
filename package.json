@@ -41,7 +41,7 @@
     "package": "python3 plugins/stuffbucket/skills/skill-creator/scripts/package_skill.py",
     "validate": "python3 plugins/stuffbucket/skills/skill-creator/scripts/quick_validate.py --all plugins/stuffbucket/skills",
     "validate:one": "python3 plugins/stuffbucket/skills/skill-creator/scripts/quick_validate.py",
-    "test": "npm run build:index && node plugins/stuffbucket/skills/skill-router/tests/test-mcp-server.js && node tests/test-plugin-structure.js && node tests/test-mcp-launch-command.js",
+    "test": "npm run build:index && node plugins/stuffbucket/skills/skill-router/tests/test-mcp-server.js && node plugins/stuffbucket/skills/skill-router/tests/test-version-check.js && node tests/test-plugin-structure.js && node tests/test-mcp-launch-command.js",
     "test:structure": "node tests/test-plugin-structure.js",
     "test:runners": "tests/runners/run.sh",
     "test:repl": "npm run build:index && node plugins/stuffbucket/skills/skill-router/scripts/mcp-server.js",
