@@ -298,10 +298,11 @@ Schema validation: All 3 file(s) valid.
 - `skl                        Show help` — One-shot CLI for skill-router.
 - `npx -y -p @stuffbucket/skills stuffbucket-skills` — Minimal MCP-compatible skill router server.
 - `search.js` — Shared search module — single source of truth for skill search logic.
-- `version-check.js` — Lazy version freshness checker for @stuffbucket/skills.
+- `version-check.js` — Lazy, never-throws version freshness checker for @stuffbucket/skills.
 
 **update-skills:**
-- `version-check.js` — Check for newer versions using git ls-remote --tags (no registry needed).
+- `detect-install.js` — Detects how @stuffbucket/skills is installed so the update-skills skill can
+- `version-check.js` — Thin wrapper over the single source-of-truth detector in skill-router.
 
 ## MCP Server
 
@@ -334,4 +335,5 @@ Tools:
 - `docs/best-practices.md` — Skill Creation Best Practices
 - `docs/contributing.md` — Contribution Guidelines
 - `docs/integration-status.md` — Integration Status
+- `docs/skillops-landscape.md` — SkillOps: Industry Landscape and Repo Positioning
 - `spec/agent-skills-spec.md` — Agent Skills Specification

@@ -1,6 +1,6 @@
 ---
 name: tauri-security-scopes
-description: Use when scoping Tauri v2 plugin permissions — writing object-form permissions with `allow`/`deny`, FS path scopes with `$HOME`/`$APPDATA`/`$RESOURCE` placeholders and glob rules, shell scopes that validate `name`/`command`/`args` (with regex args and `sidecar: true`), HTTP URL scopes with method filters, and the asset-protocol scope. Covers the "deny wins" rule, the leading-dot glob trap on Unix, and where each plugin reads its scope.
+description: Use when scoping Tauri v2 plugin permissions — writing object-form permissions with `allow`/`deny`, FS path scopes with `$HOME`/`$APPDATA`/`$RESOURCE` placeholders and glob rules, shell scopes that validate `name`/`command`/`args` (with regex args and `sidecar:true`), HTTP URL scopes with method filters, and the asset-protocol scope. Covers the "deny wins" rule, the leading-dot glob trap on Unix, and where each plugin reads its scope.
 ---
 
 # Tauri v2 Permission Scopes

@@ -1,6 +1,6 @@
 ---
 name: tauri-windows-transparency-vibrancy
-description: Use when building a transparent or vibrant Tauri v2 window — setting `transparent: true` in config, applying macOS NSVisualEffect via the `window-vibrancy` crate (`apply_vibrancy(window, NSVisualEffectMaterial::HudWindow, ...)`), Windows 11 `apply_mica` / `apply_acrylic`, the platform support matrix, CSS for transparent backgrounds with rounded corners, and the menubar-app combo (`alwaysOnTop` + `transparent: true` + `decorations: false`).
+description: Use when building a transparent or vibrant Tauri v2 window — setting `transparent:true` in config, applying macOS NSVisualEffect via the `window-vibrancy` crate (`apply_vibrancy(window, NSVisualEffectMaterial::HudWindow, ...)`), Windows 11 `apply_mica` / `apply_acrylic`, the platform support matrix, CSS for transparent backgrounds with rounded corners, and the menubar-app combo (`alwaysOnTop` + `transparent:true` + `decorations:false`).
 ---
 
 # Tauri v2 — Transparent & Vibrant Windows

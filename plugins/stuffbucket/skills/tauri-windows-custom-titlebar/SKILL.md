@@ -1,6 +1,6 @@
 ---
 name: tauri-windows-custom-titlebar
-description: Use when building a frameless Tauri v2 window with a custom HTML titlebar — setting `decorations: false`, wiring `data-tauri-drag-region`, implementing minimize/maximize/close traffic-light buttons via `getCurrentWindow()`, granting the `core:window:allow-*` capabilities, handling double-click-to-maximize, and bridging macOS traffic-light placement vs Windows snap-layouts (`core:window:allow-internal-toggle-maximize`).
+description: Use when building a frameless Tauri v2 window with a custom HTML titlebar — setting `decorations:false`, wiring `data-tauri-drag-region`, implementing minimize/maximize/close traffic-light buttons via `getCurrentWindow()`, granting the `core:window:allow-*` capabilities, handling double-click-to-maximize, and bridging macOS traffic-light placement vs Windows snap-layouts (`core:window:allow-internal-toggle-maximize`).
 ---
 
 # Tauri v2 — Frameless Windows + Custom Titlebars

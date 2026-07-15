@@ -1,6 +1,6 @@
 ---
 name: tauri-architecture-isolation-pattern
-description: Use when enabling Tauri v2's Isolation pattern — configuring `app.security.pattern: { use: "isolation", options: { dir } }`, authoring the sandboxed iframe app with `__TAURI_ISOLATION_HOOK__`, understanding the AES-GCM rewriting of IPC payloads, what XSS-class attacks it mitigates (and what Core-side bugs it does not), the one-isolation-app-per-Tauri-app constraint, and the Windows ESM-in-sandboxed-iframe caveat.
+description: Use when enabling Tauri v2's Isolation pattern — configuring `app.security.pattern:{ use:"isolation", options:{ dir } }`, authoring the sandboxed iframe app with `__TAURI_ISOLATION_HOOK__`, understanding the AES-GCM rewriting of IPC payloads, what XSS-class attacks it mitigates (and what Core-side bugs it does not), the one-isolation-app-per-Tauri-app constraint, and the Windows ESM-in-sandboxed-iframe caveat.
 ---
 
 # Tauri v2 Isolation Pattern

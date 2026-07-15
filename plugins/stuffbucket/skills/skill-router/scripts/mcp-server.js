@@ -19,7 +19,12 @@ const path = require("path");
 const readline = require("readline");
 const Fuse = require("fuse.js");
 const { createFuse, blendedSearch } = require("./search");
-const { checkFreshness, getUpdateInstructions } = require("./version-check");
+const {
+  checkFreshness,
+  getUpdateInstructions,
+  getUpdateStatusNow,
+  getLocalVersion,
+} = require("./version-check");
 
 // Resolve the package root where skills and index.json live.
 // Priority:
@@ -38,6 +43,10 @@ function resolveRoot() {
 
 const ROOT = resolveRoot();
 const INDEX_PATH = path.join(__dirname, "..", "index.json");
+
+// Real installed version, read from the package's package.json (not hardcoded).
+// Reported in the MCP `initialize` handshake and used by `check_updates`.
+const PACKAGE_VERSION = getLocalVersion() || "0.0.0";
 
 // --- Tool definitions (these are what go into the model's context) ---
 // Design principles for model-facing tool descriptions:
@@ -76,6 +85,16 @@ const TOOLS = [
         },
       },
       required: ["name"],
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "check_updates",
+    description:
+      "Check whether a newer @stuffbucket/skills release is on npm. Returns { current, latest, update_available, checked_at, last_error, enabled }. Notify-only — to apply, load the update-skills skill.",
+    inputSchema: {
+      type: "object",
+      properties: {},
       additionalProperties: false,
     },
   },
@@ -419,8 +438,18 @@ function handleGetSkill(params) {
   };
 }
 
+// Explicit update check (check_updates tool). Notify-only: reports status,
+// never installs. Awaits a fresh registry check so a client gets a real answer
+// without having to call list_skills first.
+async function handleCheckUpdates() {
+  const status = await getUpdateStatusNow();
+  return {
+    content: [{ type: "text", text: JSON.stringify(status, null, 2) }],
+  };
+}
+
 // --- MCP stdio transport ---
-function handleRequest(request) {
+async function handleRequest(request) {
   const { method, params, id } = request;
 
   switch (method) {
@@ -433,7 +462,7 @@ function handleRequest(request) {
           capabilities: { tools: {} },
           serverInfo: {
             name: "skill-router",
-            version: "1.0.0",
+            version: PACKAGE_VERSION,
           },
         },
       };
@@ -460,6 +489,8 @@ function handleRequest(request) {
         result = handleListSkills(toolArgs);
       } else if (toolName === "get_skill") {
         result = handleGetSkill(toolArgs);
+      } else if (toolName === "check_updates") {
+        result = await handleCheckUpdates();
       } else {
         result = {
           content: [{ type: "text", text: `Unknown tool: ${toolName}` }],
@@ -494,10 +525,10 @@ if (process.stdin.isTTY) {
 function startMcpTransport() {
   const rl = readline.createInterface({ input: process.stdin });
 
-  rl.on("line", (line) => {
+  rl.on("line", async (line) => {
     try {
       const request = JSON.parse(line);
-      const response = handleRequest(request);
+      const response = await handleRequest(request);
       if (response) {
         process.stdout.write(JSON.stringify(response) + "\n");
       }
@@ -523,6 +554,7 @@ function startRepl() {
   console.log("Commands:");
   console.log("  list [query]        List skills, optionally filtered");
   console.log("  get <name>          Load a skill by name (fuzzy matching)");
+  console.log("  check               Check npm for a newer release");
   console.log("  tools               Show available MCP tool definitions");
   console.log("  help                Show this help");
   console.log("  quit                Exit");
@@ -556,6 +588,12 @@ function startRepl() {
         }
         const result = handleGetSkill({ name: arg });
         printResult(result);
+        break;
+      }
+
+      case "check":
+      case "updates": {
+        handleCheckUpdates().then(printResult);
         break;
       }
 

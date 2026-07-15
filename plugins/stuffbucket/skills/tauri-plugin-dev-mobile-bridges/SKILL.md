@@ -1,6 +1,6 @@
 ---
 name: tauri-plugin-dev-mobile-bridges
-description: Use when adding iOS (Swift) or Android (Kotlin) native code to a Tauri v2 plugin — `tauri plugin android add` / `ios add` scaffolds, the `@TauriPlugin` Kotlin class with `@Command` methods, the Swift `Plugin` subclass with `@objc func cmd(_ invoke: Invoke)`, marshaling args via `@InvokeArg` / `Decodable`, calling native code from Rust with `PluginHandle::run_mobile_plugin("methodName", payload)`, the `checkPermissions` / `requestPermissions` UX, and debugging the native side in Xcode / Android Studio.
+description: Use when adding iOS (Swift) or Android (Kotlin) native code to a Tauri v2 plugin — `tauri plugin android add` / `ios add` scaffolds, the `@TauriPlugin` Kotlin class with `@Command` methods, the Swift `Plugin` subclass with `@objc func cmd(_ invoke:Invoke)`, marshaling args via `@InvokeArg` / `Decodable`, calling native code from Rust with `PluginHandle::run_mobile_plugin("methodName", payload)`, the `checkPermissions` / `requestPermissions` UX, and debugging the native side in Xcode / Android Studio.
 ---
 
 # Mobile Bridges in a Tauri v2 Plugin

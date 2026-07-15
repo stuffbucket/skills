@@ -1,6 +1,6 @@
 ---
 name: pages-build-vite
-description: Locally builds the Vite project and verifies the dist/ output before committing. Auto-detects package manager (npm/pnpm/yarn). Checks that vite.config.ts has a base path set and that dist/index.html exists. This is the local verification step in the Pages pipeline — the same build runs automatically in CI via .github/workflows/deploy.yml. USE FOR: confirming the build succeeds before pushing; catching base-path or asset errors locally.
+description: Locally builds the Vite project and verifies the dist/ output before committing. Auto-detects package manager (npm/pnpm/yarn). Checks that vite.config.ts has a base path set and that dist/index.html exists. This is the local verification step in the Pages pipeline — the same build runs automatically in CI via .github/workflows/deploy.yml. USE FOR — confirming the build succeeds before pushing; catching base-path or asset errors locally.
 ---
 
 # pages-build-vite
