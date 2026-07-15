@@ -147,6 +147,11 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full guide, or read the [Best Pra
 | `ghostty-config` | Configure and optimize Ghostty terminal for any machine |
 | `git-workflow-skill` | Git operations and workflows |
 | `npm-trusted-publishing` | Publish npm packages from GitHub Actions using OIDC trusted publishing with provenance |
+| `ops-automation` | Build deterministic, no-LLM, no-interactive-auth ops automation for maintaining a GitHub repo, plus the git hygiene for running many agents against one repo |
+| `ops-github-hygiene` | Enforce org GitHub conventions before any outward GitHub action — identity guarding, label routing, Conventional-Commit titling, and commit-message hygiene |
+| `ops-investigate` | Read-only investigation discipline that precedes writing issues or code — step 1 of the ops-workflow method |
+| `ops-issue-decomposition` | Turn a body of investigation findings into a small set of focused child issues unified by one tracking epic, with explicit dependency and conflict sequencing |
+| `ops-workflow` | Umbrella index and dispatcher for the ops-* skill family that manages a body of work in a GitHub repo |
 | `pages` | Root index for the pages-* family — a five-step pipeline that deploys a Vite project to GitHub Pages via GitHub Actions, including GitHub Enterprise (GHE) codespace-style subdomain discovery |
 | `pages-build-vite` | Locally builds the Vite project and verifies the dist/ output before committing |
 | `pages-commit-vite` | Stages and commits the GitHub Pages configuration files to the local git repo |
