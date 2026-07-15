@@ -63,6 +63,11 @@ Skill validation:
   ✓ ghostty-config
   ✓ git-workflow-skill
   ✓ npm-trusted-publishing
+  ✓ ops-automation
+  ✓ ops-github-hygiene
+  ✓ ops-investigate
+  ✓ ops-issue-decomposition
+  ✓ ops-workflow
   ✓ pages
   ✓ pages-build-vite
   ✓ pages-commit-vite
@@ -191,6 +196,11 @@ Schema validation: All 3 file(s) valid.
 | ghostty-config | "Configure and optimize Ghostty terminal for any machine. Use when setting up... | — |
 | git-workflow-skill | Git operations and workflows. Use when committing, branching, merging, rebasi... | read_file, write_file, list_directory |
 | npm-trusted-publishing | "Publish npm packages from GitHub Actions using OIDC trusted publishing with ... | — |
+| ops-automation | "Build deterministic, no-LLM, no-interactive-auth ops automation for maintain... | read_file, write_file, list_directory |
+| ops-github-hygiene | Enforce org GitHub conventions before any outward GitHub action — identity gu... | — |
+| ops-investigate | "Read-only investigation discipline that precedes writing issues or code — st... | — |
+| ops-issue-decomposition | Turn a body of investigation findings into a small set of focused child issue... | — |
+| ops-workflow | "Umbrella index and dispatcher for the ops-* skill family that manages a body... | — |
 | pages | Root index for the pages-* family — a five-step pipeline that deploys a Vite ... | — |
 | pages-build-vite | Locally builds the Vite project and verifies the dist/ output before committi... | — |
 | pages-commit-vite | Stages and commits the GitHub Pages configuration files to the local git repo... | — |
