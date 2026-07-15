@@ -144,5 +144,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # The router ships a pre-built semantic-search index (semantic-index.json),
+      # but prepublishOnly only builds the keyword index.json. Build the semantic
+      # index here so published packages get real semantic search instead of
+      # silently falling back to keyword-only. Best-effort: the builder catches
+      # its own errors and the server degrades gracefully, so a hiccup (e.g. a
+      # model-download blip) must never block a release.
+      - name: Build semantic search index (best-effort)
+        continue-on-error: true
+        run: npm run build:semantic
+
       - name: Publish
         run: npm publish --access public

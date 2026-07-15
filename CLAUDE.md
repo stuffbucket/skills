@@ -43,10 +43,15 @@ as the `stuffbucket-skills` bin). The `skl` bin is `cli.js` in the same director
 ## Architecture notes
 
 **Index build is required before tests/REPL.** `build-index.js` walks every skill directory, reads
-SKILL.md frontmatter, and emits `index.json` + `semantic-index.json` in
-`plugins/stuffbucket/skills/skill-router/`. These files are committed and shipped in the npm package
-— regenerate them whenever a skill's frontmatter or description changes. `prepublishOnly` runs this
-automatically.
+SKILL.md frontmatter, and emits the keyword `index.json` in
+`plugins/stuffbucket/skills/skill-router/`. The companion `semantic-index.json` (embedding-based
+search) is built separately by `site/scripts/build-semantic-index.js` (needs `@huggingface/
+transformers`) via the root `npm run build:semantic`. **Both files are `.gitignore`d, not committed**
+— they are generated at publish time: `prepublishOnly` runs `build:index`, and the `publish.yml`
+workflow additionally runs `build:semantic` (best-effort) before `npm publish` so shipped packages
+get real semantic search. `package.json#files` lists both, so whatever exists at pack time ships; a
+missing `semantic-index.json` makes the router degrade gracefully to keyword-only (Fuse.js).
+Regenerate whenever a skill's frontmatter or description changes.
 
 **Two parallel plugin manifests.** `.claude-plugin/marketplace.json` (Claude Code) and
 `.github/plugin/marketplace.json` (Copilot) describe the same plugin to different hosts. The
