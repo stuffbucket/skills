@@ -20,6 +20,11 @@ import sys
 from difflib import unified_diff
 from pathlib import Path
 
+try:
+    import yaml
+except ImportError:
+    yaml = None
+
 
 def find_repo_root():
     """Walk up from script location to find repo root."""
@@ -32,12 +37,27 @@ def find_repo_root():
 
 
 def parse_frontmatter(text):
-    """Parse YAML frontmatter without pyyaml dependency."""
+    """Parse YAML frontmatter.
+
+    Prefers PyYAML so this generator accepts/rejects exactly what the validator
+    (quick_validate.py) does — no lenient/strict divergence. Falls back to a
+    line parser only when PyYAML is unavailable (mirrors quick_validate).
+    """
     match = re.match(r'^---\n(.*?)\n---', text, re.DOTALL)
     if not match:
         return None
+    block = match.group(1)
+
+    if yaml:
+        try:
+            parsed = yaml.safe_load(block)
+            return parsed if isinstance(parsed, dict) else None
+        except yaml.YAMLError:
+            return None
+
+    # Fallback line parser (only when PyYAML is unavailable).
     result = {}
-    for line in match.group(1).split('\n'):
+    for line in block.split('\n'):
         line = line.strip()
         if not line or line.startswith('#'):
             continue

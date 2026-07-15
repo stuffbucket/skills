@@ -7,6 +7,17 @@
 const fs = require('fs');
 const path = require('path');
 
+// Prefer a real YAML parser so this builder rejects exactly what the validator
+// (quick_validate.py, which uses PyYAML) rejects — no lenient/strict divergence.
+// Optional so the shipped script still runs without devDeps: falls back to the
+// line parser below, mirroring quick_validate's own try/except-yaml pattern.
+let yaml = null;
+try {
+  yaml = require('js-yaml');
+} catch {
+  yaml = null;
+}
+
 const ROOT = process.argv[2] || path.join(__dirname, '..', '..', '..', '..', '..');
 const OUTPUT = path.join(__dirname, '..', 'index.json');
 
@@ -16,6 +27,22 @@ function parseFrontmatter(content) {
   if (end === -1) return null;
   const block = content.substring(3, end).trim();
 
+  // Strict path: a real YAML parse. Invalid YAML (e.g. an unquoted colon in a
+  // description) returns null → the skill is skipped and validate flags it,
+  // instead of being silently mis-parsed into a corrupt index entry.
+  if (yaml) {
+    try {
+      const parsed = yaml.load(block);
+      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+        return parsed;
+      }
+      return null;
+    } catch {
+      return null;
+    }
+  }
+
+  // Fallback line parser (only when js-yaml is unavailable).
   const fm = {};
   let currentKey = null;
   let inList = false;
@@ -130,4 +157,8 @@ function buildIndex() {
   }
 }
 
-buildIndex();
+module.exports = { parseFrontmatter, extractTags, discoverSkills, buildIndex };
+
+if (require.main === module) {
+  buildIndex();
+}

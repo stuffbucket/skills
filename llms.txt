@@ -152,14 +152,14 @@ Schema validation: All 3 file(s) valid.
 |---|---|---|
 | azure-cli-setup | Install and configure Azure CLI on macOS for local development. Use when the ... | — |
 | boundary | Root index for the boundary-* family — differential closure analysis for code... | — |
-| boundary-domain-closure | "Structure code so that the set of representable states equals the set of val... | — |
-| boundary-drift-detection | "Detect when code changes reopen closed domains or widen boundary conditions ... | — |
-| boundary-generation-control | "Constrain AI code generation to preserve or resolve boundary conditions — ne... | — |
-| boundary-noise-model | "Characterize the stochastic noise envelope of LLM code generation to disting... | — |
-| boundary-scope-escape | "Enumerate values whose identity escapes their lexical scope — the first step... | — |
-| boundary-seed-encoding | "Encode shared values as seeds in domain-native representations that toolchai... | — |
+| boundary-domain-closure | Structure code so that the set of representable states equals the set of vali... | — |
+| boundary-drift-detection | Detect when code changes reopen closed domains or widen boundary conditions —... | — |
+| boundary-generation-control | Constrain AI code generation to preserve or resolve boundary conditions — nev... | — |
+| boundary-noise-model | Characterize the stochastic noise envelope of LLM code generation to distingu... | — |
+| boundary-scope-escape | Enumerate values whose identity escapes their lexical scope — the first step ... | — |
+| boundary-seed-encoding | Encode shared values as seeds in domain-native representations that toolchain... | — |
 | code-analysis-skill | A skill for analyzing code quality, identifying patterns, and suggesting impr... | read_file, grep, list_directory |
-| code-review-cycle | "Run a full code review cycle on recent changes: lint auto-fix, three-agent q... | — |
+| code-review-cycle | Run a full code review cycle on recent changes: lint auto-fix, three-agent qu... | — |
 | colima-docker-setup | Set up Docker, docker compose, and docker buildx on macOS using Colima. Use w... | — |
 | design | Root index for the design-* family — UI/UX design review, refinement, and pro... | — |
 | design-adapt | Adapt designs to work across different screen sizes, devices, contexts, or pl... | — |
@@ -188,9 +188,9 @@ Schema validation: All 3 file(s) valid.
 | example-skill | An example skill to demonstrate the structure and format for Agent Skills. | — |
 | figma-make-to-vite | Initializes a Vite + React + TypeScript project and integrates a Figma Make e... | — |
 | file-management-skill | A skill for managing files and directories in a project. Use this skill when ... | read_file, write_file, list_directory, create_directory, delete_path, move_path, copy_path |
-| ghostty-config | "Configure and optimize Ghostty terminal for any machine. Use when setting up... | — |
+| ghostty-config | Configure and optimize Ghostty terminal for any machine. Use when setting up ... | — |
 | git-workflow-skill | Git operations and workflows. Use when committing, branching, merging, rebasi... | read_file, write_file, list_directory |
-| npm-trusted-publishing | "Publish npm packages from GitHub Actions using OIDC trusted publishing with ... | — |
+| npm-trusted-publishing | Publish npm packages from GitHub Actions using OIDC trusted publishing with p... | — |
 | pages | Root index for the pages-* family — a five-step pipeline that deploys a Vite ... | — |
 | pages-build-vite | Locally builds the Vite project and verifies the dist/ output before committi... | — |
 | pages-commit-vite | Stages and commits the GitHub Pages configuration files to the local git repo... | — |
