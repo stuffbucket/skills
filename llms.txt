@@ -137,7 +137,15 @@ Skill validation:
   ✓ tauri-windows-multi-window
   ✓ tauri-windows-splashscreen
   ✓ tauri-windows-transparency-vibrancy
-  ✓ testing-skill
+  ✓ testing
+  ✓ testing-bun-dom-free
+  ✓ testing-bun-http
+  ✓ testing-bun-mock-leaks
+  ✓ testing-bun-runner
+  ✓ testing-contract-tests
+  ✓ testing-dependency-injection
+  ✓ testing-fundamentals
+  ✓ testing-mutation
   ✓ update-skills
 
   PASS  .github/plugin/marketplace.json
@@ -265,7 +273,15 @@ Schema validation: All 3 file(s) valid.
 | tauri-windows-multi-window | Use when managing many Tauri v2 windows — declaring static windows in `app.wi... | — |
 | tauri-windows-splashscreen | Use when adding a splashscreen to a Tauri v2 app — declaring a visible splash... | — |
 | tauri-windows-transparency-vibrancy | Use when building a transparent or vibrant Tauri v2 window — setting `transpa... | — |
-| testing-skill | Writing and running tests. Use when creating unit tests, integration tests, e... | read_file, write_file, list_directory |
+| testing | Root index for the testing-* family — writing and running tests across any la... | — |
+| testing-bun-dom-free | Test UI logic in a Bun repo that has no DOM harness. Use when there is no jsd... | — |
+| testing-bun-http | Test HTTP servers and routes in Bun without binding a port. Use when testing ... | — |
+| testing-bun-mock-leaks | Avoid the Bun mock.module cross-file leak, the most common Bun testing footgu... | — |
+| testing-bun-runner | The Bun test runner and its idioms. Use when writing tests with the bun test ... | — |
+| testing-contract-tests | Pin contracts and cross-boundary agreements that a type checker cannot see. U... | — |
+| testing-dependency-injection | Design code for testability by injecting dependencies instead of mocking modu... | — |
+| testing-fundamentals | Core testing practices that apply in any language or runtime. Use when placin... | — |
+| testing-mutation | Mutation testing and how to act on surviving mutants. Use when coverage looks... | — |
 | update-skills | Check for stuffbucket MCP server updates and apply them. Use when the user as... | Bash |
 
 ## Available Commands

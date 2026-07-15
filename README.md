@@ -220,7 +220,15 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full guide, or read the [Best Pra
 | `tauri-windows-multi-window` | Use when managing many Tauri v2 windows — declaring static windows in `app.windows[]`, spawning runtime windows via `WebviewWindowBuilder`, choosing between `WebviewUrl::App` (local route) and `WebviewUrl::External` (remote URL), labeling windows as identifiers, parent-child relationships, cross-window messaging via targeted emit (`emit_to`), focus management, and hiding instead of closing on the OS close button (`onCloseRequested`). |
 | `tauri-windows-splashscreen` | Use when adding a splashscreen to a Tauri v2 app — declaring a visible splash window and a hidden main window in config, doing initialization work in the Rust `setup` hook with `tokio::spawn` (never `std::thread::sleep`), signaling readiness via a `splash://ready` event or directly via `get_webview_window("splash").close()` + main `.show()`, and choosing JS-driven vs pure-Rust orchestration. |
 | `tauri-windows-transparency-vibrancy` | Use when building a transparent or vibrant Tauri v2 window — setting `transparent: true` in config, applying macOS NSVisualEffect via the `window-vibrancy` crate (`apply_vibrancy(window, NSVisualEffectMaterial::HudWindow, ...)`), Windows 11 `apply_mica` / `apply_acrylic`, the platform support matrix, CSS for transparent backgrounds with rounded corners, and the menubar-app combo (`alwaysOnTop` + `transparent: true` + `decorations: false`). |
-| `testing-skill` | Writing and running tests |
+| `testing` | Root index for the testing-* family — writing and running tests across any language or runtime |
+| `testing-bun-dom-free` | Test UI logic in a Bun repo that has no DOM harness |
+| `testing-bun-http` | Test HTTP servers and routes in Bun without binding a port |
+| `testing-bun-mock-leaks` | Avoid the Bun mock.module cross-file leak, the most common Bun testing footgun |
+| `testing-bun-runner` | The Bun test runner and its idioms |
+| `testing-contract-tests` | Pin contracts and cross-boundary agreements that a type checker cannot see |
+| `testing-dependency-injection` | Design code for testability by injecting dependencies instead of mocking modules |
+| `testing-fundamentals` | Core testing practices that apply in any language or runtime |
+| `testing-mutation` | Mutation testing and how to act on surviving mutants |
 | `update-skills` | Check for stuffbucket MCP server updates and apply them |
 <!-- END:SKILLS -->
 
