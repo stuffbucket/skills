@@ -1,6 +1,6 @@
 ---
 name: tauri-debug-test-webdriver-e2e
-description: Use when adding end-to-end tests to a Tauri v2 app via WebDriver — installing `tauri-driver` (cargo install), the Linux `WebKitWebDriver` + `xvfb-run` headless setup, the Windows `msedgedriver` version-must-match-Edge dance via `msedgedriver-tool`, the macOS-desktop gap (no WKWebView driver), WebdriverIO vs Selenium config (`capabilities: [{ 'tauri:options': { application } }]`, port 4444), spawning `tauri-driver` from `beforeSession`/`before` and killing it on shutdown, and the GitHub Actions matrix that runs the suite headless on `ubuntu-latest` + `windows-latest`.
+description: Use when adding end-to-end tests to a Tauri v2 app via WebDriver — installing `tauri-driver` (cargo install), the Linux `WebKitWebDriver` + `xvfb-run` headless setup, the Windows `msedgedriver` version-must-match-Edge dance via `msedgedriver-tool`, the macOS-desktop gap (no WKWebView driver), WebdriverIO vs Selenium config (`capabilities:[{ 'tauri:options':{ application } }]`, port 4444), spawning `tauri-driver` from `beforeSession`/`before` and killing it on shutdown, and the GitHub Actions matrix that runs the suite headless on `ubuntu-latest` + `windows-latest`.
 ---
 
 # Tauri v2 — WebDriver End-to-End Testing

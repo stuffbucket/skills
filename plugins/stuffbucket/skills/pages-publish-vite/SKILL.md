@@ -1,6 +1,6 @@
 ---
 name: pages-publish-vite
-description: Monitors the GitHub Actions deployment workflow and reports the live GitHub Pages URL. Polls the workflow run status via the GitHub API, fetches Pages info, then follows curl redirects from the canonical Pages URL to discover the actual served URL. Handles GHE environments where Pages may redirect to a codespace-style randomised subdomain. USE FOR: the final step of the Pages deployment pipeline; confirming deployment succeeded; discovering the actual live URL on GHE.
+description: Monitors the GitHub Actions deployment workflow and reports the live GitHub Pages URL. Polls the workflow run status via the GitHub API, fetches Pages info, then follows curl redirects from the canonical Pages URL to discover the actual served URL. Handles GHE environments where Pages may redirect to a codespace-style randomised subdomain. USE FOR — the final step of the Pages deployment pipeline; confirming deployment succeeded; discovering the actual live URL on GHE.
 ---
 
 # pages-publish-vite

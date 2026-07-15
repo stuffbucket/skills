@@ -1,6 +1,6 @@
 ---
 name: pages-prepare-vite
-description: Prepares a Vite project for GitHub Pages deployment via GitHub Actions. Patches vite.config.ts with the correct base path, generates .github/workflows/deploy.yml (build + deploy jobs), and optionally configures the Pages source to 'GitHub Actions' via the GitHub API. Handles GitHub Enterprise (GHE) detection and discovers actual Pages URLs via curl redirect resolution for codespace-style random subdomains. USE FOR: first-time Pages setup; switching from branch to Actions source; regenerating the deploy workflow.
+description: Prepares a Vite project for GitHub Pages deployment via GitHub Actions. Patches vite.config.ts with the correct base path, generates .github/workflows/deploy.yml (build + deploy jobs), and optionally configures the Pages source to 'GitHub Actions' via the GitHub API. Handles GitHub Enterprise (GHE) detection and discovers actual Pages URLs via curl redirect resolution for codespace-style random subdomains. USE FOR — first-time Pages setup; switching from branch to Actions source; regenerating the deploy workflow.
 ---
 
 # pages-prepare-vite

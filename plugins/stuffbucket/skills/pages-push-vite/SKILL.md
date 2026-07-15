@@ -1,6 +1,6 @@
 ---
 name: pages-push-vite
-description: Pushes the current branch to the git remote, triggering the GitHub Actions workflow that builds and deploys the Vite project to GitHub Pages. Guards that the remote exists and the workflow file is committed before pushing. USE FOR: the push step in the Pages deployment pipeline after prepare → build → commit.
+description: Pushes the current branch to the git remote, triggering the GitHub Actions workflow that builds and deploys the Vite project to GitHub Pages. Guards that the remote exists and the workflow file is committed before pushing. USE FOR — the push step in the Pages deployment pipeline after prepare → build → commit.
 ---
 
 # pages-push-vite

@@ -1,6 +1,6 @@
 ---
 name: pages-commit-vite
-description: Stages and commits the GitHub Pages configuration files to the local git repo. Commits .github/workflows/deploy.yml and vite.config.ts (patched with base path). Does NOT commit dist/ — it is gitignored and built fresh in CI. Guards against committing without the workflow file present. USE FOR: the commit step in the prepare→build→commit→push→publish pipeline.
+description: Stages and commits the GitHub Pages configuration files to the local git repo. Commits .github/workflows/deploy.yml and vite.config.ts (patched with base path). Does NOT commit dist/ — it is gitignored and built fresh in CI. Guards against committing without the workflow file present. USE FOR — the commit step in the prepare→build→commit→push→publish pipeline.
 ---
 
 # pages-commit-vite
