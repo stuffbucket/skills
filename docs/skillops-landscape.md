@@ -117,8 +117,9 @@ needs. This document exists to orient future work — it is research, not a spec
   discovery service that … searches a catalog of capabilities and returns ranked matches that GitHub
   Copilot can use on demand," implementing the open ARD spec. It is itself **distributed as a
   skill** (drop its `SKILL.md` into `~/.copilot/skills`). This is essentially this repo's
-  `list_skills`/`get_skill` router, standardized. Catalog: `github.com/agentfinder`; spec:
-  `ards-project`.
+  `list_skills`/`get_skill` router in a draft-spec wrapper — the shape matches, but ARD is nascent
+  (see the maturity caveat under "Watch / interoperate"), so read this as convergent design, not a
+  standard to adopt. Catalog: `github.com/agentfinder`; spec: `ards-project`.
 - Older lineage: **Skillsets** (2024 Copilot Extensions) route over ≤5 remote API endpoints via
   natural-language inference descriptions — a server-side router, different lineage from `SKILL.md`.
 
@@ -155,8 +156,15 @@ This is the SkillOps core, and it recurs everywhere:
 
 **Watch / interoperate:**
 
-- **ARD (Agentic Resource Discovery)** is the emerging open standard for exactly this router. Worth
-  tracking as something this router could implement or interoperate with.
+- **ARD (Agentic Resource Discovery)** is a draft spec for exactly this router layer — *watch, don't
+  bet yet.* Announced ~June 2026 with a long roster of named backers (Microsoft, Google, GitHub,
+  Cisco, Databricks, Hugging Face, Nvidia, Salesforce, ServiceNow, Snowflake), but that roster is an
+  announcement, not a commit graph: the `ards-project` org is small (`ard-spec` ~375 stars, the other
+  repos in the low tens, ~47 followers) and the only shipping *harness* that consumes it is GitHub
+  Copilot's Agent Finder. Do **not** conflate its maturity with the `SKILL.md`/`agentskills.io`
+  standard (§below), which is genuinely broadly adopted — ARD is a separate, month-old proposal for
+  the discovery layer with one real consumer. Track it as a possible future interop target; the value
+  today is that it validates the router *shape*, not that it's a safe standard to implement against.
 - **Always-on tier.** OpenAI/Copilot pair on-demand Skills with always-on `AGENTS.md`. This repo has
   no always-on instruction tier beyond the README priming snippet — a gap to consider mirroring.
 - **`agentskills.io` conformance + `AGENTS.md` presence** would make every skill here portable to
@@ -180,8 +188,9 @@ Prioritized; see the session summary for detail. These are findings, not yet act
    published open standard and note any drift in `spec/agent-skills-spec.md`.
 4. **Consider an `AGENTS.md` / always-on tier** to match the OpenAI/Copilot split (conditional
    Skills vs persistent guidance).
-5. **Track ARD** as the router interop target; evaluate publishing the catalog in an ARD-compatible
-   shape.
+5. **Track ARD** (low priority) — a month-old draft spec with one real consumer (Copilot Agent
+   Finder), not an established standard. Watch for real multi-harness adoption before investing; do
+   not treat it as a safe interop target yet.
 6. **Cross-host distribution.** Given Vercel-plugin and Copilot both consume `.claude-plugin`
    manifests and `SKILL.md` dirs, document/verify this repo's skills installing cleanly into
    `.github/skills` / Vercel `skills` CLI / Codex.
