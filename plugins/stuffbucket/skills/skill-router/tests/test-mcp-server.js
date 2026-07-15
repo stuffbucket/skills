@@ -97,6 +97,14 @@ async function run() {
       initResp.result.capabilities.tools !== undefined,
     "capabilities.tools",
   );
+  test(
+    "reports real package version (semver, not hardcoded 1.0.0)",
+    initResp.result &&
+      initResp.result.serverInfo &&
+      /^\d+\.\d+\.\d+/.test(initResp.result.serverInfo.version) &&
+      initResp.result.serverInfo.version !== "1.0.0",
+    "serverInfo.version = real package version",
+  );
 
   // Send initialized notification (no response expected)
   proc.stdin.write(
@@ -119,7 +127,7 @@ async function run() {
   const toolsResp = await waitForResponse();
   const tools = toolsResp.result && toolsResp.result.tools;
   test("returns tools array", Array.isArray(tools), "array");
-  test("has 2 tools", tools && tools.length === 2, "2");
+  test("has 3 tools", tools && tools.length === 3, "3");
   test(
     "has list_skills",
     tools && tools.some((t) => t.name === "list_skills"),
@@ -129,6 +137,11 @@ async function run() {
     "has get_skill",
     tools && tools.some((t) => t.name === "get_skill"),
     "get_skill tool",
+  );
+  test(
+    "has check_updates",
+    tools && tools.some((t) => t.name === "check_updates"),
+    "check_updates tool",
   );
   test(
     "tools have inputSchema",
@@ -277,6 +290,39 @@ async function run() {
     "method not found code",
     unknownResp.error && unknownResp.error.code === -32601,
     "-32601",
+  );
+
+  // --- Test 12: check_updates (notify-only status tool) ---
+  console.log("\n12. Check Updates");
+  send(proc, "tools/call", {
+    name: "check_updates",
+    arguments: {},
+  });
+  const updResp = await waitForResponse();
+  let updStatus;
+  try {
+    updStatus = JSON.parse(updResp.result.content[0].text);
+  } catch (_) {
+    updStatus = null;
+  }
+  test("returns a status object", updStatus && typeof updStatus === "object");
+  test(
+    "status has UpdateStatus keys",
+    updStatus &&
+      ["current", "latest", "update_available", "checked_at", "last_error", "enabled"].every(
+        (k) => k in updStatus,
+      ),
+    "current/latest/update_available/checked_at/last_error/enabled",
+  );
+  test(
+    "current is a semver",
+    updStatus && /^\d+\.\d+\.\d+/.test(updStatus.current || ""),
+    "current version present",
+  );
+  test(
+    "update_available is boolean (never throws offline)",
+    updStatus && typeof updStatus.update_available === "boolean",
+    "boolean",
   );
 
   // --- Done ---
