@@ -73,7 +73,7 @@ jobs:
             plugins/stuffbucket/skills/skill-creator/scripts/generate_llms_txt.py \
             scripts/build-readme.js
 
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         if: steps.pr.outputs.should_run == 'true'
         with:
           node-version: 22
