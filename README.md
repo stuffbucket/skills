@@ -139,6 +139,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full guide, or read the [Best Pra
 | `design-overdrive` | Pushes interfaces past conventional limits with technically ambitious implementations — shaders, spring physics, scroll-driven reveals, 60fps animations |
 | `design-polish` | Perform a final quality pass fixing alignment, spacing, consistency, and micro-detail issues before shipping |
 | `design-quieter` | Tones down visually aggressive or overstimulating designs, reducing intensity while preserving quality |
+| `design-taste` | De-sloppification gate for UI — detect and remove generic "AI slop", the machine-default tells across type, color, layout, depth, decoration, motion, copy, and page structure, with an imperative check-and-fix for each |
 | `design-typeset` | Improves typography by fixing font choices, hierarchy, sizing, weight, and readability so text feels intentional |
 | `design-typography-rules` | Professional typography rules for UI design and web applications |
 | `example-skill` | An example skill to demonstrate the structure and format for Agent Skills. |

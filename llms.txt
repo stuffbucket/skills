@@ -55,6 +55,7 @@ Skill validation:
   ✓ design-overdrive
   ✓ design-polish
   ✓ design-quieter
+  ✓ design-taste
   ✓ design-typeset
   ✓ design-typography-rules
   ✓ example-skill
@@ -183,6 +184,7 @@ Schema validation: All 3 file(s) valid.
 | design-overdrive | Pushes interfaces past conventional limits with technically ambitious impleme... | Bash, Read, Glob |
 | design-polish | Perform a final quality pass fixing alignment, spacing, consistency, and micr... | — |
 | design-quieter | Tones down visually aggressive or overstimulating designs, reducing intensity... | — |
+| design-taste | De-sloppification gate for UI — detect and remove generic "AI slop", the mach... | — |
 | design-typeset | Improves typography by fixing font choices, hierarchy, sizing, weight, and re... | — |
 | design-typography-rules | Professional typography rules for UI design and web applications. Enforces ty... | — |
 | example-skill | An example skill to demonstrate the structure and format for Agent Skills. | — |
@@ -272,6 +274,9 @@ Schema validation: All 3 file(s) valid.
 
 **design-colorize:**
 - `validate_colors.py` — validate_colors.py — Quantitative palette validator (WCAG + APCA + light/dark).
+
+**design-taste:**
+- `detect-slop.py [PATH ...]        # default: current directory` — detect-slop.py — deterministic first pass for the design-taste skill.
 
 **design-typeset:**
 - `validate_typography.py` — validate_typography.py — Quantitative typography CSS validator.

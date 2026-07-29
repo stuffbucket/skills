@@ -49,6 +49,7 @@ start by establishing project context (`design-context`), then branch into a tra
 
 - `design-audit` — usability eval of existing source or live URL; for symptoms like "users keep abandoning this form".
 - `design-critique` — UX critique with scoring, persona testing, actionable feedback.
+- `design-taste` — diagnose why a UI reads as generic "AI slop"; taxonomy of tells (type/color/layout/copy/…), taste heuristics, and the anti-slop move for each, with a slop score.
 - `design-check` — technical quality report (a11y, perf, theming, responsive, anti-patterns) with P0–P3 ratings.
 - `design-polish` — final pre-ship pass: alignment, spacing, micro-detail.
 
@@ -66,9 +67,13 @@ start by establishing project context (`design-context`), then branch into a tra
 1. No `.design-context.md` in repo → start with `design-context` regardless of the immediate ask.
 2. Building something new → `design-frontend`.
 3. User describes a symptom ("feels off", "users confused") → `design-audit` or `design-critique`.
-4. User names a specific lever (color / type / motion / layout / copy) → jump directly to that sibling.
-5. User says "ship-ready" / "final pass" → `design-polish`, then `design-check`, then `design-harden`.
-6. User wants a design system out of repeated UI → `design-extract`, then `design-normalize` to retrofit usages.
+4. User says it "looks AI-made" / generic / templated / safe → `design-taste` (detect the tells), then `design-bolder` or `design-frontend` to fix.
+5. User names a specific lever (color / type / motion / layout / copy) → jump directly to that sibling.
+6. User says "ship-ready" / "final pass" → `design-polish`, then `design-check`, then `design-harden`.
+7. User wants a design system out of repeated UI → `design-extract`, then `design-normalize` to retrofit usages.
+8. **Closing gate for any sequence** — after build / amplify / animate / polish, run `design-taste`
+   before shipping to confirm none of that work introduced slop (its `scripts/detect-slop.py`
+   catches the mechanical tells deterministically).
 
 ## When NOT to use this skill
 

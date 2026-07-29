@@ -139,6 +139,10 @@ Match implementation complexity to the aesthetic vision. Maximalist = elaborate 
 
 Interpret creatively. Make unexpected choices. No design should be the same. Vary between light/dark, different fonts, different aesthetics. NEVER converge on common choices.
 
+**Closing gate:** after building, run `/design-taste` to confirm no slop was introduced — its
+`scripts/detect-slop.py` deterministically catches the mechanical tells (banned fonts, `#000`/`#fff`,
+the AI gradient, slop copy) before you ship.
+
 For detailed guidance, read these references:
 
 - `references/visual-foundations.md` — color systems, typography scales, spacing, layout grids, responsive patterns, visual hierarchy, data visualization
