@@ -28,7 +28,7 @@ jobs:
     steps:
       - name: Get PR info
         id: pr
-        uses: actions/github-script@v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         with:
           script: |
             // Find the PR associated with this workflow run
@@ -59,7 +59,7 @@ jobs:
 
       - name: Checkout PR branch
         if: steps.pr.outputs.should_run == 'true'
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           ref: ${{ steps.pr.outputs.branch }}
           fetch-depth: 0
@@ -73,13 +73,13 @@ jobs:
             plugins/stuffbucket/skills/skill-creator/scripts/generate_llms_txt.py \
             scripts/build-readme.js
 
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         if: steps.pr.outputs.should_run == 'true'
         with:
           node-version: 22
           cache: npm
 
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         if: steps.pr.outputs.should_run == 'true'
         with:
           python-version: '3.x'
