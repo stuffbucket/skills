@@ -42,6 +42,7 @@ Skill validation:
   ✓ design-check
   ✓ design-clarify
   ✓ design-colorize
+  ✓ design-conform
   ✓ design-context
   ✓ design-critique
   ✓ design-delight
@@ -171,6 +172,7 @@ Schema validation: All 3 file(s) valid.
 | design-check | Run technical quality checks across accessibility, performance, theming, resp... | — |
 | design-clarify | Improve unclear UX copy, error messages, microcopy, labels, and instructions ... | — |
 | design-colorize | Add strategic color to features that are too monochromatic or lack visual int... | — |
+| design-conform | "Reports where a rendered page's computed styles fall outside its own declare... | — |
 | design-context | One-time setup that gathers design context for your project and saves it to a... | — |
 | design-critique | Evaluate design from a UX perspective, assessing visual hierarchy, informatio... | — |
 | design-delight | Add moments of joy, personality, and unexpected touches that make interfaces ... | — |
@@ -274,6 +276,9 @@ Schema validation: All 3 file(s) valid.
 
 **design-colorize:**
 - `validate_colors.py` — validate_colors.py — Quantitative palette validator (WCAG + APCA + light/dark).
+
+**design-conform:**
+- `analyzer.js` — In-page conformance analyzer. Runs in the page via CDP Runtime.evaluate and
 
 **design-taste:**
 - `detect-slop.py [PATH ...]        # default: current directory` — detect-slop.py — deterministic first pass for the design-taste skill.

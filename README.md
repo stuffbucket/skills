@@ -126,6 +126,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full guide, or read the [Best Pra
 | `design-check` | Run technical quality checks across accessibility, performance, theming, responsive design, and anti-patterns |
 | `design-clarify` | Improve unclear UX copy, error messages, microcopy, labels, and instructions to make interfaces easier to understand |
 | `design-colorize` | Add strategic color to features that are too monochromatic or lack visual interest, making interfaces more engaging and expressive |
+| `design-conform` | Reports where a rendered page's computed styles fall outside its own declared design tokens: colors off the token set, the identity/brand color used as a background (with viewport coverage), motion durations and easings, and off-stack fonts |
 | `design-context` | One-time setup that gathers design context for your project and saves it to a config file |
 | `design-critique` | Evaluate design from a UX perspective, assessing visual hierarchy, information architecture, emotional resonance, cognitive load, and overall quality with quantitative scoring, persona-based testing, and actionable feedback |
 | `design-delight` | Add moments of joy, personality, and unexpected touches that make interfaces memorable and enjoyable to use |
